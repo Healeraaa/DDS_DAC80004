@@ -1,0 +1,17 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "name": "DAC8004_Driver",
+            "path": ".."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "main_init.h": "c"
+        }
+    },
+    "extensions": {}
+}
