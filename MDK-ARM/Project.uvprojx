@@ -429,6 +429,11 @@
               <FileType>5</FileType>
               <FilePath>..\Core\Inc\main_init.h</FilePath>
             </File>
+            <File>
+              <FileName>tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -474,6 +479,11 @@
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f4xx_ll_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -508,6 +518,16 @@
               <FileName>DAC80004.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\BSP\DAC80004.h</FilePath>
+            </File>
+            <File>
+              <FileName>DDS_DAC80004.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\DDS_DAC80004.c</FilePath>
+            </File>
+            <File>
+              <FileName>DDS_DAC80004.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\DDS_DAC80004.h</FilePath>
             </File>
           </Files>
         </Group>

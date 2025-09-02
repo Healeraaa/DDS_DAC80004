@@ -47,6 +47,9 @@
                   },
                   {
                     "path": "../Core/Inc/main_init.h"
+                  },
+                  {
+                    "path": "../Core/Src/tim.c"
                   }
                 ],
                 "folders": []
@@ -85,6 +88,9 @@
               },
               {
                 "path": "../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c"
+              },
+              {
+                "path": "../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_tim.c"
               }
             ],
             "folders": []

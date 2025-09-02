@@ -2,15 +2,15 @@
     "folders": [
         {
             "path": "."
-        },
-        {
-            "name": "DAC8004_Driver",
-            "path": ".."
         }
     ],
     "settings": {
         "files.associations": {
-            "main_init.h": "c"
+            "tim.h": "c",
+            "dac80004.h": "c",
+            "main_init.h": "c",
+            "dds_dac80004.h": "c",
+            "dma.h": "c"
         }
     },
     "extensions": {}

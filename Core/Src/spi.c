@@ -30,17 +30,16 @@ void SPI1_Init(void)
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;               // 无上下拉
   GPIO_InitStruct.Alternate = LL_GPIO_AF_5;             // 复用功能5
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /* SPI1 DMA初始化 - 配置DMA2_Stream2用于SPI1_TX */
-  LL_DMA_SetChannelSelection(DMA2, LL_DMA_STREAM_2, LL_DMA_CHANNEL_2);         // 选择通道2
-  LL_DMA_SetDataTransferDirection(DMA2, LL_DMA_STREAM_2, LL_DMA_DIRECTION_MEMORY_TO_PERIPH); // 内存到外设
-  LL_DMA_SetStreamPriorityLevel(DMA2, LL_DMA_STREAM_2, LL_DMA_PRIORITY_LOW);   // 低优先级
-  LL_DMA_SetMode(DMA2, LL_DMA_STREAM_2, LL_DMA_MODE_NORMAL);                  // 正常模式(非循环)
-  LL_DMA_SetPeriphIncMode(DMA2, LL_DMA_STREAM_2, LL_DMA_PERIPH_NOINCREMENT);  // 外设地址不递增
-  LL_DMA_SetMemoryIncMode(DMA2, LL_DMA_STREAM_2, LL_DMA_MEMORY_INCREMENT);    // 内存地址递增
-  LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_2, LL_DMA_PDATAALIGN_HALFWORD);    // 外设数据宽度16位
-  LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_2, LL_DMA_MDATAALIGN_HALFWORD);    // 内存数据宽度16位
-  LL_DMA_DisableFifoMode(DMA2, LL_DMA_STREAM_2);                              // 禁用FIFO模式
+  // /* SPI1 DMA初始化 - 配置DMA2_Stream2用于SPI1_TX */
+  // LL_DMA_SetChannelSelection(DMA2, LL_DMA_STREAM_2, LL_DMA_CHANNEL_2);         // 选择通道2
+  // LL_DMA_SetDataTransferDirection(DMA2, LL_DMA_STREAM_2, LL_DMA_DIRECTION_MEMORY_TO_PERIPH); // 内存到外设
+  // LL_DMA_SetStreamPriorityLevel(DMA2, LL_DMA_STREAM_2, LL_DMA_PRIORITY_LOW);  // 低优先级
+  // LL_DMA_SetMode(DMA2, LL_DMA_STREAM_2, LL_DMA_MODE_NORMAL);                  // 正常模式(非循环)
+  // LL_DMA_SetPeriphIncMode(DMA2, LL_DMA_STREAM_2, LL_DMA_PERIPH_NOINCREMENT);  // 外设地址不递增
+  // LL_DMA_SetMemoryIncMode(DMA2, LL_DMA_STREAM_2, LL_DMA_MEMORY_INCREMENT);    // 内存地址递增
+  // LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_2, LL_DMA_PDATAALIGN_HALFWORD);    // 外设数据宽度16位
+  // LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_2, LL_DMA_MDATAALIGN_HALFWORD);    // 内存数据宽度16位
+  // LL_DMA_DisableFifoMode(DMA2, LL_DMA_STREAM_2);                              // 禁用FIFO模式
 
   /* SPI1参数配置 */
   SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;           // 全双工模式
@@ -49,14 +48,14 @@ void SPI1_Init(void)
   SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;             // 时钟空闲时为低电平
   SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;                 // 第一个边沿采样
   SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;                           // 软件控制NSS
-  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV2;      // 波特率分频128
+  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;      // 波特率分频128
   SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;                     // MSB先发送
   SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;  // 禁用CRC校验
   SPI_InitStruct.CRCPoly = 10;                                    // CRC多项式(未使用)
   LL_SPI_Init(SPI1, &SPI_InitStruct);
   LL_SPI_SetStandard(SPI1, LL_SPI_PROTOCOL_MOTOROLA);            // 使用Motorola SPI协议
 
-  /* 使能SPI1的DMA发送请求 */
+  // /* 使能SPI1的DMA发送请求 */
   LL_SPI_EnableDMAReq_TX(SPI1);
 
   /* 使能SPI1 */
@@ -188,7 +187,7 @@ void SPI1_Transmit_DMA(uint8_t *data, uint32_t size)
   // 等待DMA传输完成（可选）
   while (LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_3))
   {
-    // 等待传输完成
+    // 等待传输完成 
   }
   while (!LL_DMA_IsActiveFlag_TC3(DMA2))
   {

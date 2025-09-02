@@ -37,8 +37,10 @@ project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_utils.h
 project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_pwr.h
 project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h
 project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
+project\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h
 project\main.o: ../Core/Inc/dma.h
 project\main.o: ../Core/Inc/gpio.h
 project\main.o: ..\BSP\LED.h
 project\main.o: ..\BSP\DAC80004.h
+project\main.o: ..\BSP\DDS_DAC80004.h
 project\main.o: ../Core/Inc/main_init.h

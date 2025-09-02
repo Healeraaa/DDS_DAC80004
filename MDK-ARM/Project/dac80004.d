@@ -38,4 +38,5 @@ project\dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_utils.h
 project\dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_pwr.h
 project\dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h
 project\dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
+project\dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h
 project\dac80004.o: ../Core/Inc/spi.h

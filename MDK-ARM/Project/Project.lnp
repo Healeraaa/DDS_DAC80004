@@ -6,6 +6,7 @@
 "project\spi.o"
 "project\stm32f4xx_it.o"
 "project\stm32f4xx_hal_msp.o"
+"project\tim.o"
 "project\stm32f4xx_ll_gpio.o"
 "project\stm32f4xx_ll_dma.o"
 "project\stm32f4xx_ll_spi.o"
@@ -14,9 +15,11 @@
 "project\stm32f4xx_ll_exti.o"
 "project\stm32f4xx_hal.o"
 "project\stm32f4xx_hal_cortex.o"
+"project\stm32f4xx_ll_tim.o"
 "project\system_stm32f4xx.o"
 "project\led.o"
 "project\dac80004.o"
+"project\dds_dac80004.o"
 --strict --scatter "Project\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

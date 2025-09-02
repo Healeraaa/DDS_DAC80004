@@ -4,7 +4,12 @@
 #include "gpio.h"
 #include "LED.h"
 #include "DAC80004.h"
+#include "DDS_DAC80004.h"
 #include "main_init.h"
+
+uint16_t wave_data[4] = {0xaaaa, 0x5555, 0xaaaa, 0x5555};
+uint16_t initial_dma_count = 0;
+uint16_t current_dma_count = 0;
 
 void SystemClock_Config(void);
 uint32_t data32 = 0;
@@ -20,21 +25,39 @@ int main(void)
   SystemClock_Config();
 
   System_GPIO_Init();
-  MX_DMA_Init();
-  DAC80004_Init(&DAC80004_Module1);
+  // MX_DMA_Init();
+  // DAC80004_Init(&DAC80004_Module1);
   // SPI1_Init();
   LED_Init();
   LED_ON();
+
+  DDS_Init(&DAC80004_Module1);
+  
+  DDS_Start(wave_data, 4, 1000); // 1kHz
+  initial_dma_count = LL_DMA_GetDataLength(DMA2, LL_DMA_STREAM_5);  // 改为DMA2_STREAM_5
+    
+    while (1)
+    {
+        current_dma_count = LL_DMA_GetDataLength(DMA2, LL_DMA_STREAM_5);  // 改为DMA2_STREAM_5
+        
+        // 检查各种状态
+        uint8_t tim_enabled = LL_TIM_IsEnabledCounter(TIM1);             // 改为TIM1
+        uint8_t dma_enabled = LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5); // 改为DMA2_STREAM_5
+        
+        if (tim_enabled && dma_enabled) {
+            LED_ON();
+        } else {
+            LED_OFF();
+        }
+        
+        LL_mDelay(100);
     
 
-  while (1)
-  {
     // SPI1_Transmit16_Time(0xA55A, 1);
     // DAC80004_Channel_Config(&DAC80004_Module1, DAC_CH_A);
     // DAC80004_Data_Set(&DAC80004_Module1, 0);
     // DAC80004_WriteData(&DAC80004_Module1);
-    LL_mDelay(100);
-
+    // LL_mDelay(100);
   }
 }
 
@@ -45,31 +68,39 @@ int main(void)
 void SystemClock_Config(void)
 {
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_3);
-  while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_3){}
+  while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_3)
+  {
+  }
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
   LL_RCC_HSE_Enable();
 
   /* Wait till HSE is ready */
-  while (LL_RCC_HSE_IsReady() != 1){}
+  while (LL_RCC_HSE_IsReady() != 1)
+  {
+  }
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_12, 96, LL_RCC_PLLP_DIV_2);
   LL_RCC_PLL_Enable();
 
   /* Wait till PLL is ready */
-  while (LL_RCC_PLL_IsReady() != 1){}
-  while (LL_PWR_IsActiveFlag_VOS() == 0){}
+  while (LL_RCC_PLL_IsReady() != 1)
+  {
+  }
+  while (LL_PWR_IsActiveFlag_VOS() == 0)
+  {
+  }
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
   /* Wait till System clock is ready */
-  while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL){}
+  while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
+  {
+  }
   LL_Init1msTick(100000000);
   LL_SetSystemCoreClock(100000000);
   LL_RCC_SetTIMPrescaler(LL_RCC_TIM_PRESCALER_TWICE);
 }
-
-
 
 /**
  * @brief  This function is executed in case of error occurrence.

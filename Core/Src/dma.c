@@ -36,6 +36,7 @@
 /**
   * Enable DMA controller clock
   */
+
 void MX_DMA_Init(void)
 {
 
@@ -45,11 +46,27 @@ void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA2_Stream2_IRQn interrupt configuration */
-  NVIC_SetPriority(DMA2_Stream2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
-  NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+  // NVIC_SetPriority(DMA2_Stream2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  // NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+  /* DMA2_Stream5_IRQn interrupt configuration */
+  NVIC_SetPriority(DMA2_Stream5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(DMA2_Stream5_IRQn);
 
 }
-
+// void DMA1_Stream2_IRQHandler(void)
+// {
+//     if(LL_DMA_IsActiveFlag_TC2(DMA1))
+//     {
+//         // 传输完成，清除标志
+//         LL_DMA_ClearFlag_TC2(DMA1);
+        
+//         // 如果需要继续传输，重新配置并启动 DMA
+//         // LL_DMA_DisableStream(DMA1, LL_DMA_STREAM_2);
+//         // LL_DMA_SetDataLength(DMA1, LL_DMA_STREAM_2, data_size);
+//         // LL_DMA_SetMemoryAddress(DMA1, LL_DMA_STREAM_2, (uint32_t)wave_data);
+//         // LL_DMA_EnableStream(DMA1, LL_DMA_STREAM_2);
+//     }
+// }
 /* USER CODE BEGIN 2 */
 
 /* USER CODE END 2 */
