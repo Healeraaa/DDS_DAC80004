@@ -7,9 +7,8 @@
 #include "DDS_DAC80004.h"
 #include "main_init.h"
 
-uint16_t wave_data[4] = {0xaaaa, 0x5555, 0xaaaa, 0x5555};
-uint16_t initial_dma_count = 0;
-uint16_t current_dma_count = 0;
+uint16_t wave_data[4] = {0x1111, 0x5555, 0x7777, 0xaaaa};
+
 
 void SystemClock_Config(void);
 uint32_t data32 = 0;
@@ -25,31 +24,18 @@ int main(void)
   SystemClock_Config();
 
   System_GPIO_Init();
-  // MX_DMA_Init();
-  // DAC80004_Init(&DAC80004_Module1);
-  // SPI1_Init();
+
   LED_Init();
   LED_ON();
 
   DDS_Init(&DAC80004_Module1);
   
-  DDS_Start(wave_data, 4, 1000); // 1kHz
-  initial_dma_count = LL_DMA_GetDataLength(DMA2, LL_DMA_STREAM_5);  // 改为DMA2_STREAM_5
+  DDS_Start_Precise(wave_data, 4, 10);
+  DDS_Start_Repeat(wave_data, 4, 10, 3);
     
     while (1)
     {
-        current_dma_count = LL_DMA_GetDataLength(DMA2, LL_DMA_STREAM_5);  // 改为DMA2_STREAM_5
-        
-        // 检查各种状态
-        uint8_t tim_enabled = LL_TIM_IsEnabledCounter(TIM1);             // 改为TIM1
-        uint8_t dma_enabled = LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5); // 改为DMA2_STREAM_5
-        
-        if (tim_enabled && dma_enabled) {
-            LED_ON();
-        } else {
-            LED_OFF();
-        }
-        
+
         LL_mDelay(100);
     
 

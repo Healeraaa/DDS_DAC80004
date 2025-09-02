@@ -27,7 +27,7 @@ Project File Date:  09/01/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling DAC80004.c...
+compiling DDS_DAC80004.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
 ../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
@@ -36,13 +36,17 @@ compiling DAC80004.c...
   #define  INSTRUCTION_CACHE_ENABLE     1U
 ../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
   #define  DATA_CACHE_ENABLE            1U
-..\BSP\DAC80004.c(76): warning:  #61-D: integer operation result is out of range
-      module->TX_Data &= ~(0x0F << 28);        // æ¸?é™?D31-D28
-..\BSP\DAC80004.c: 5 warnings, 0 errors
+..\BSP\DDS_DAC80004.c(161): warning:  #223-D: function "LED_ON" declared implicitly
+              LED_ON();  // ç‚?äº?LEDè¡?ç¤?å…?éƒ?ä¼?è¾?å®?æˆ?
+..\BSP\DDS_DAC80004.c(169): warning:  #223-D: function "LED_OFF" declared implicitly
+          LED_OFF();
+..\BSP\DDS_DAC80004.c(218): warning:  #1-D: last line of file ends without a newline
+  // }
+..\BSP\DDS_DAC80004.c: 7 warnings, 0 errors
 linking...
-Program Size: Code=2830 RO-data=474 RW-data=60 ZI-data=1636  
+Program Size: Code=6770 RO-data=466 RW-data=72 ZI-data=1632  
 FromELF: creating hex file...
-"Project\Project.axf" - 0 Error(s), 5 Warning(s).
+"Project\Project.axf" - 0 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -64,7 +68,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

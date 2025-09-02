@@ -56,7 +56,7 @@ void SPI1_Init(void)
   LL_SPI_SetStandard(SPI1, LL_SPI_PROTOCOL_MOTOROLA);            // 使用Motorola SPI协议
 
   // /* 使能SPI1的DMA发送请求 */
-  LL_SPI_EnableDMAReq_TX(SPI1);
+  // LL_SPI_EnableDMAReq_TX(SPI1);
 
   /* 使能SPI1 */
   LL_SPI_Enable(SPI1);

@@ -10,7 +10,8 @@
             "dac80004.h": "c",
             "main_init.h": "c",
             "dds_dac80004.h": "c",
-            "dma.h": "c"
+            "dma.h": "c",
+            "random": "c"
         }
     },
     "extensions": {}
