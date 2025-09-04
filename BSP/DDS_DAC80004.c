@@ -2,7 +2,10 @@
 #include "spi.h"
 #include "tim.h"
 #include "dma.h"
-// #include "main_init.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // 全局变量定义
 volatile uint32_t g_dds_repeat_count = 0;     // 目标循环次数
@@ -185,34 +188,88 @@ void DDS_Stop(void)
     LL_SPI_DisableDMAReq_TX(SPI1);              // 禁用SPI DMA请求
 }
 
-
-
-// /**
-//  * @brief  DMA2 Stream5 中断处理函数
-//  */
-// void DMA2_Stream5_IRQHandler(void)
-// {
-//     /* 检查传输完成中断 */
-//     if (LL_DMA_IsActiveFlag_TC5(DMA2)) {
-//         LL_DMA_ClearFlag_TC5(DMA2);  // 清除传输完成标志
-        
-//         /* 传输完成处理 */
-//         LL_TIM_DisableCounter(TIM1);                // 停止定时器
-//         LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5); // 停止DMA
-//         LL_SPI_DisableDMAReq_TX(SPI1);              // 禁用SPI DMA请求
-        
-//         g_dds_transfer_complete = 1;  // 设置完成标志
-        
-//         // 可选：LED指示或其他完成动作
-//         LED_ON();  // 点亮LED表示传输完成
-//     }
+/**
+ * @brief  智能正弦波生成 - 通过参数返回结果
+ * @param  wave_buffer: 输出缓冲区
+ * @param  target_freq: 目标频率 (Hz)
+ * @param  max_sample_rate: 最大允许采样率
+ * @param  min_points: 最小点数要求
+ * @param  max_points: 最大点数限制
+ * @param  amplitude: 幅值 (0-32767)
+ * @param  offset: 直流偏移 (0-65535)
+ * @param  result: 输出结果结构体指针
+ * @retval None
+ */
+void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
+                              double target_freq, double max_sample_rate,
+                              uint32_t min_points, uint32_t max_points,
+                              uint16_t amplitude, uint16_t offset,
+                              SineWaveResult_t *result)
+{
+    // 初始化结果结构体
+    if (result != NULL) {
+        result->points = 0;
+        result->actual_freq = 0.0;
+        result->actual_sample_rate = 0.0;
+        result->frequency_error = 0.0;
+        result->error_percent = 0.0;
+        result->success = false;
+    }
     
-//     /* 检查传输错误中断 */
-//     if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
-//         LL_DMA_ClearFlag_TE5(DMA2);  // 清除传输错误标志
+    // 参数验证
+    if (wave_buffer == NULL || result == NULL || target_freq <= 0 || max_sample_rate <= 0 || 
+        min_points == 0 || max_points < min_points) {
+        return;  // result->success 已经是 false
+    }
+    
+    double best_sample_rate = max_sample_rate;
+    uint32_t best_points = 0;
+    double min_error = 1e9;
+    
+    // 遍历寻找最优采样率和点数组合
+    for (double sr = max_sample_rate; sr >= target_freq * min_points; sr -= target_freq * 0.1) {
+        uint32_t points = (uint32_t)round(sr / target_freq);
         
-//         /* 错误处理 */
-//         DDS_Stop();  // 停止传输
-//         LED_OFF();   // 关闭LED表示错误
-//     }
-// }
+        if (points >= min_points && points <= max_points) {
+            double actual_f = sr / points;
+            double error = fabs(actual_f - target_freq);
+            
+            if (error < min_error) {
+                min_error = error;
+                best_sample_rate = sr;
+                best_points = points;
+                
+                // 如果误差足够小，提前退出
+                if (error < target_freq * 1e-6) break;
+            }
+        }
+    }
+    
+    // 如果没找到合适的，使用默认值
+    if (best_points == 0) {
+        best_points = (uint32_t)round(max_sample_rate / target_freq);
+        if (best_points < min_points) best_points = min_points;
+        if (best_points > max_points) best_points = max_points;
+        best_sample_rate = target_freq * best_points;
+    }
+    
+    // 生成正弦波数据
+    for (uint32_t i = 0; i < best_points; i++) {
+        double phase = (2.0 * M_PI * i) / best_points;
+        double sine_value = sin(phase);
+        
+        int32_t dac_value = offset + (int32_t)(amplitude * sine_value);
+        if (dac_value < 0) dac_value = 0;
+        if (dac_value > 65535) dac_value = 65535;
+        
+        wave_buffer[i] = (uint16_t)dac_value;
+    }
+    
+    // 填充结果结构体
+    result->points = best_points;
+    result->actual_freq = best_sample_rate / best_points;
+    result->actual_sample_rate = best_sample_rate;
+    result->frequency_error = fabs(result->actual_freq - target_freq);
+    result->error_percent = (result->frequency_error / target_freq) * 100.0;
+    result->success = true;  // 成功生成
+}

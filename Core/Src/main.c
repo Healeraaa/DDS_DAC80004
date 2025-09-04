@@ -7,7 +7,7 @@
 #include "DDS_DAC80004.h"
 #include "main_init.h"
 
-uint16_t wave_data[4] = {0x1111, 0x5555, 0x7777, 0xaaaa};
+uint16_t wave_data[8] = {0x1111, 0x5555, 0x7777, 0xaaaa};
 
 
 void SystemClock_Config(void);
