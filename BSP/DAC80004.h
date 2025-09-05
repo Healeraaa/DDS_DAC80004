@@ -52,6 +52,7 @@ void DAC80004_Mode_Config(DAC80004_InitStruct *module, uint8_t Mode);
 void DAC80004_GPIO_init(dac80004_bus_t *dev);
 void DAC80004_Init(DAC80004_InitStruct *module);
 void DAC80004_WriteData(DAC80004_InitStruct *module);
+void DAC8004_CSL_Config(DAC80004_InitStruct *module, uint8_t state);
 
 
 #endif 

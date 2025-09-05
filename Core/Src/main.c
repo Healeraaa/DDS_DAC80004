@@ -7,7 +7,8 @@
 #include "DDS_DAC80004.h"
 #include "main_init.h"
 
-uint16_t wave_data[8] = {0x1111, 0x5555, 0x7777, 0xaaaa};
+uint16_t wave_data[9192];
+uint16_t wave_buffer[4096];
 
 
 void SystemClock_Config(void);
@@ -30,8 +31,13 @@ int main(void)
 
   DDS_Init(&DAC80004_Module1);
   
-  DDS_Start_Precise(wave_data, 4, 10);
-  DDS_Start_Repeat(wave_data, 4, 10, 3);
+  // DDS_Start_Precise(wave_data, 4, 10);
+  // DDS_Start_Repeat(wave_data, 4, 10, 3);
+  SineWaveResult_t result;
+  Generate_Smart_Sine_Wave(wave_buffer, 50.0, 5000.0, 20, 4096, 20000, 32768, &result);
+  Encode_Wave(&DAC80004_Module1, wave_buffer,wave_data, result.points);
+  DDS_Start_Repeat(&DAC80004_Module1,wave_data, result.points*2, result.actual_sample_rate, 0);
+  
     
     while (1)
     {

@@ -2,6 +2,8 @@
 #include "spi.h"
 #include "tim.h"
 #include "dma.h"
+#include <math.h>       
+
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -73,7 +75,7 @@ bool DDS_Start_Precise(uint16_t *wave_data, uint16_t data_size, double sample_ra
     return true; 
 }
 
-bool DDS_Start_Repeat(uint16_t *wave_data, uint16_t data_size, double sample_rate, uint32_t repeat_count)
+bool DDS_Start_Repeat(DAC80004_InitStruct *module,uint16_t *wave_data, uint16_t data_size, double sample_rate, uint32_t repeat_count)
 {
     // 等待SPI空闲
     while(!LL_SPI_IsActiveFlag_TXE(SPI1)) {}
@@ -89,7 +91,8 @@ bool DDS_Start_Repeat(uint16_t *wave_data, uint16_t data_size, double sample_rat
     LL_DMA_ClearFlag_DME5(DMA2);
     LL_DMA_ClearFlag_FE5(DMA2);
     LL_DMA_ClearFlag_HT5(DMA2);
-    
+
+
     /* 3. 设置循环参数 */
     g_dds_repeat_count = repeat_count;
     g_dds_current_count = 0;
@@ -126,6 +129,7 @@ bool DDS_Start_Repeat(uint16_t *wave_data, uint16_t data_size, double sample_rat
     TIM_ApplyFreqConfig(TIM1, &freq_config);
     
     /* 6. 启动传输 */
+    DAC8004_CSL_Config(module, 0); // 使能片选
     LL_SPI_EnableDMAReq_TX(SPI1);
     LL_TIM_EnableDMAReq_UPDATE(TIM1);
     LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
@@ -161,7 +165,8 @@ void DMA2_Stream5_IRQHandler(void)
             LL_SPI_DisableDMAReq_TX(SPI1);
             
             g_dds_transfer_complete = 1;  // 设置完成标志
-            LED_ON();  // 点亮LED表示全部传输完成
+            
+
         }
     }
     
@@ -227,8 +232,10 @@ void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
     double min_error = 1e9;
     
     // 遍历寻找最优采样率和点数组合
-    for (double sr = max_sample_rate; sr >= target_freq * min_points; sr -= target_freq * 0.1) {
-        uint32_t points = (uint32_t)round(sr / target_freq);
+    for (double sr = max_sample_rate; sr >= target_freq * min_points; sr -= target_freq * 0.01) {
+        volatile uint32_t points = (uint32_t)round(sr / target_freq);
+        // volatile double points_double = sr / target_freq;  // 先计算double值
+        // volatile uint32_t points = (uint32_t)round(points_double); 
         
         if (points >= min_points && points <= max_points) {
             double actual_f = sr / points;
@@ -272,4 +279,35 @@ void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
     result->frequency_error = fabs(result->actual_freq - target_freq);
     result->error_percent = (result->frequency_error / target_freq) * 100.0;
     result->success = true;  // 成功生成
+}
+
+
+/**
+ * @brief  波形数据编码 - 将DAC数据编码为DAC80004传输格式
+ * @param  module: DAC80004模块结构体指针
+ * @param  wave_buffer_in: 输入波形数据缓冲区 (16位DAC值)
+ * @param  wave_buffer_out: 输出编码后的数据缓冲区 (16位SPI传输格式)
+ * @param  points: 数据点数
+ * @retval None
+ */
+void Encode_Wave(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
+                 uint16_t *wave_buffer_out, uint32_t points)
+{
+    // 参数验证
+    if (module == NULL || wave_buffer_in == NULL || wave_buffer_out == NULL || points == 0) {
+        return;
+    }
+    
+    // 生成DAC80004发送控制位掩码（不包含数据位）
+    uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);
+    
+    // 编码波形数据
+    for (uint32_t i = 0; i < points; i++) {
+        // 将16位DAC数据与控制位组合成32位传输数据
+        uint32_t encoded_data = control_mask | ((uint32_t)wave_buffer_in[i] << 4);
+        
+        // 分离为两个16位数据用于SPI传输
+        wave_buffer_out[2*i]     = (uint16_t)(encoded_data >> 16);  // 高16位
+        wave_buffer_out[2*i + 1] = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+    }
 }

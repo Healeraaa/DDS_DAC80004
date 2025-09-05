@@ -19,7 +19,13 @@ typedef struct {
 
 void DDS_Init(DAC80004_InitStruct *module);
 bool DDS_Start_Precise(uint16_t *wave_data, uint16_t data_size, double sample_rate);
-bool DDS_Start_Repeat(uint16_t *wave_data, uint16_t data_size, double sample_rate, uint32_t repeat_count);
+bool DDS_Start_Repeat(DAC80004_InitStruct *module,uint16_t *wave_data, uint16_t data_size, double sample_rate, uint32_t repeat_count);
 void DDS_Stop(void);
-
+void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
+                              double target_freq, double max_sample_rate,
+                              uint32_t min_points, uint32_t max_points,
+                              uint16_t amplitude, uint16_t offset,
+                              SineWaveResult_t *result);
+void Encode_Wave(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
+                 uint16_t *wave_buffer_out, uint32_t points);
 #endif 
