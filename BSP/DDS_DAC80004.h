@@ -28,4 +28,9 @@ void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
                               SineWaveResult_t *result);
 void Encode_Wave(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
                  uint16_t *wave_buffer_out, uint32_t points);
+
+bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint16_t *wave_data_low, 
+                        uint16_t data_high_size,uint16_t data_low_size,
+                        double sample_rate, uint32_t repeat_count);
+void DDS_Stop_DualDMA(void);
 #endif 

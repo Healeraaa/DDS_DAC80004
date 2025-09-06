@@ -15,6 +15,7 @@ typedef struct {
 void TIM1_DMA_SPI1_Init(void);
 uint8_t TIM_CalculateFreqDivision_Precise(uint32_t timer_clock, double target_freq, TIM_FreqConfig_t *config);
 void TIM_ApplyFreqConfig(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config);
+void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config);
 
 
 #endif /* __TIM_H__ */

@@ -16,6 +16,18 @@ volatile uint16_t *g_wave_data = NULL;        // 波形数据指针
 volatile uint16_t g_data_size = 0;            // 单次传输的数据大小
 volatile uint8_t g_dds_transfer_complete = 0; // 传输完成标志
 
+
+// 添加全局变量用于双DMA重复传输管理
+volatile uint32_t g_dual_dma_repeat_count = 0;     // 目标循环次数
+volatile uint32_t g_dual_dma_current_count = 0;    // 当前已完成的循环次数
+volatile uint8_t g_dual_dma_transfer_complete = 0; // 双DMA传输完成标志
+volatile uint16_t *g_high_16bit_data = NULL;       // 高16位数据指针
+volatile uint16_t *g_low_16bit_data = NULL;        // 低16位数据指针
+volatile uint16_t g_dual_dma_high_points = 0;           // 高16位数据点数
+volatile uint16_t g_dual_dma_low_points = 0;            // 低16位数据点数
+
+
+
 void DDS_Init(DAC80004_InitStruct *module)
 {
     DAC80004_Init(module);// 初始化GPIO
@@ -91,8 +103,9 @@ bool DDS_Start_Repeat(DAC80004_InitStruct *module,uint16_t *wave_data, uint16_t 
     LL_DMA_ClearFlag_DME5(DMA2);
     LL_DMA_ClearFlag_FE5(DMA2);
     LL_DMA_ClearFlag_HT5(DMA2);
-
-
+    
+    
+    
     /* 3. 设置循环参数 */
     g_dds_repeat_count = repeat_count;
     g_dds_current_count = 0;
@@ -138,45 +151,221 @@ bool DDS_Start_Repeat(DAC80004_InitStruct *module,uint16_t *wave_data, uint16_t 
     return true;
 }
 
+
+/**
+ * @brief  DDS启动（双DMA模式）- 一个定时器周期传输4个数据
+ * @param  wave_data: 波形数据缓冲区（交替存储两个DMA流的数据）
+ * @param  data_pairs: 数据对数（每对包含4个16位数据）
+ * @param  sample_rate: 采样率 (Hz)
+ * @retval true: 成功, false: 失败
+ */
+bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint16_t *wave_data_low, 
+                        uint16_t data_high_size,uint16_t data_low_size,
+                        double sample_rate, uint32_t repeat_count)
+{
+    if (wave_data_high == NULL || wave_data_low == NULL || data_high_size == 0 || data_low_size == 0) {
+        return false;
+    }
+        // 等待SPI空闲
+    while(!LL_SPI_IsActiveFlag_TXE(SPI1)) {}
+    while(LL_SPI_IsActiveFlag_BSY(SPI1)) {}
+    
+    /* 1. 停止当前DMA传输 */
+    LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
+    while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+    while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
+    
+    /* 2. 清除DMA标志位 */
+    LL_DMA_ClearFlag_TE5(DMA2);
+    LL_DMA_ClearFlag_TC5(DMA2);
+    LL_DMA_ClearFlag_DME5(DMA2);
+    LL_DMA_ClearFlag_FE5(DMA2);
+    LL_DMA_ClearFlag_HT5(DMA2);
+
+    LL_DMA_ClearFlag_TE4(DMA2);
+    LL_DMA_ClearFlag_TC4(DMA2);
+    LL_DMA_ClearFlag_DME4(DMA2);
+    LL_DMA_ClearFlag_FE4(DMA2);
+    LL_DMA_ClearFlag_HT4(DMA2);
+    
+    
+    
+    /* 3. 设置循环参数 */
+    g_dual_dma_repeat_count = repeat_count;
+    g_dual_dma_current_count = 0;
+    g_high_16bit_data = wave_data_high;
+    g_low_16bit_data = wave_data_low;
+    g_dual_dma_high_points = data_high_size;
+    g_dual_dma_low_points = data_low_size;
+    g_dual_dma_transfer_complete = 0;
+    
+    /* 4. 配置DMA */
+    if (repeat_count == 0) {
+        // 无限循环模式
+        // 配置Stream5（UPDATE事件触发）- 传输高16位数据
+        LL_DMA_SetMode(DMA2, LL_DMA_STREAM_5, LL_DMA_MODE_CIRCULAR);
+        LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)wave_data_high);
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, data_high_size);
+        
+        // 配置Stream4（CC1事件触发）- 传输低16位数据
+        LL_DMA_SetMode(DMA2, LL_DMA_STREAM_4, LL_DMA_MODE_CIRCULAR);
+        LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)wave_data_low);
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, data_low_size);
+    } 
+    else {
+        // 有限次数模式 - 使用普通模式，每次传输完成后重新启动
+        // 配置Stream5（UPDATE事件触发）- 传输高16位数据
+        LL_DMA_SetMode(DMA2, LL_DMA_STREAM_5, LL_DMA_MODE_NORMAL);
+        LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)wave_data_high);
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, data_high_size);
+        
+        // 配置Stream4（CC1事件触发）- 传输低16位数据
+        LL_DMA_SetMode(DMA2, LL_DMA_STREAM_4, LL_DMA_MODE_NORMAL);
+        LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)wave_data_low);
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, data_low_size);
+        
+        // 使能DMA传输完成中断（只需要监控一个流完成即可）
+        LL_DMA_EnableIT_TC(DMA2, LL_DMA_STREAM_5);
+        LL_DMA_EnableIT_TE(DMA2, LL_DMA_STREAM_5);
+        LL_DMA_EnableIT_TE(DMA2, LL_DMA_STREAM_4);  // 也监控Stream4的错误
+        NVIC_EnableIRQ(DMA2_Stream5_IRQn);
+        NVIC_EnableIRQ(DMA2_Stream4_IRQn);
+    }
+    
+    /* 5. 配置定时器频率 */
+    TIM_FreqConfig_t freq_config;
+    uint32_t timer_clock = 100000000;
+    
+    if (TIM_CalculateFreqDivision_Precise(timer_clock, sample_rate, &freq_config) != 0) {
+        return false;
+    }
+    
+    // TIM_ApplyFreqConfig(TIM1, &freq_config);
+    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config);
+    
+    /* 6. 启动传输 */
+    DAC8004_CSL_Config(module, 0); // 使能片选
+    LL_SPI_EnableDMAReq_TX(SPI1);
+    LL_TIM_EnableDMAReq_UPDATE(TIM1);  // 使能UPDATE事件DMA请求
+    LL_TIM_EnableDMAReq_CC4(TIM1);     // 使能CC1事件DMA请求
+    // 启动两个DMA流
+    LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);  // Stream5由UPDATE触发
+    LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);  // Stream4由CC1触发
+    // 启动定时器
+    LL_TIM_EnableCounter(TIM1);
+    
+    return true;
+}
+/**
+ * @brief  DMA2 Stream5中断处理函数 - 双DMA模式
+ */
 void DMA2_Stream5_IRQHandler(void)
 {
     /* 检查传输完成中断 */
     if (LL_DMA_IsActiveFlag_TC5(DMA2)) {
         LL_DMA_ClearFlag_TC5(DMA2);
         
-        g_dds_current_count++;  // 增加已完成次数
-        
-        /* 检查是否需要继续 */
-        if (g_dds_current_count < g_dds_repeat_count) {
-            // 还需要继续传输，重新启动DMA
-            LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
-            while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+        // 只有在有限次数模式下才处理重复逻辑
+        if (g_dual_dma_repeat_count > 0) {
+            g_dual_dma_current_count++;  // 增加已完成次数
             
-            // 重新设置DMA参数
-            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_wave_data);
-            LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, g_data_size);
-            
-            // 重新启动DMA
-            LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
-        } else {
-            // 所有循环完成，停止传输
-            LL_TIM_DisableCounter(TIM1);
-            LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
-            LL_SPI_DisableDMAReq_TX(SPI1);
-            
-            g_dds_transfer_complete = 1;  // 设置完成标志
-            
-
+            /* 检查是否需要继续 */
+            if (g_dual_dma_current_count < g_dual_dma_repeat_count) {
+                // 还需要继续传输，重新启动两个DMA流
+                LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+                LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
+                while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+                while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
+                
+                // 重新设置Stream5参数
+                LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_high_16bit_data);
+                LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, g_dual_dma_high_points);
+                
+                // 重新设置Stream4参数
+                LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)g_low_16bit_data);
+                LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, g_dual_dma_low_points);
+                
+                // 重新启动两个DMA流
+                LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
+                LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);
+            } else {
+                // 所有循环完成，停止传输
+                DDS_Stop_DualDMA();
+                g_dual_dma_transfer_complete = 1;  // 设置完成标志
+            }
         }
     }
     
     /* 检查传输错误中断 */
     if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
         LL_DMA_ClearFlag_TE5(DMA2);
-        DDS_Stop();
+        DDS_Stop_DualDMA();
         LED_OFF();
     }
 }
+
+/**
+ * @brief  DMA2 Stream4中断处理函数 - 双DMA模式错误处理
+ */
+void DMA2_Stream4_IRQHandler(void)
+{
+    /* 检查传输错误中断 */
+    if (LL_DMA_IsActiveFlag_TE4(DMA2)) {
+        LL_DMA_ClearFlag_TE4(DMA2);
+        DDS_Stop_DualDMA();
+        LED_OFF();
+    }
+    
+    /* 清除其他标志位 */
+    if (LL_DMA_IsActiveFlag_TC4(DMA2)) {
+        LL_DMA_ClearFlag_TC4(DMA2);
+        // Stream4传输完成，但我们只关心Stream5的完成状态
+    }
+}
+
+
+
+
+// void DMA2_Stream5_IRQHandler(void)
+// {
+//     /* 检查传输完成中断 */
+//     if (LL_DMA_IsActiveFlag_TC5(DMA2)) {
+//         LL_DMA_ClearFlag_TC5(DMA2);
+        
+//         g_dds_current_count++;  // 增加已完成次数
+        
+//         /* 检查是否需要继续 */
+//         if (g_dds_current_count < g_dds_repeat_count) {
+//             // 还需要继续传输，重新启动DMA
+//             LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+//             while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+            
+//             // 重新设置DMA参数
+//             LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_wave_data);
+//             LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, g_data_size);
+            
+//             // 重新启动DMA
+//             LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
+//         } else {
+//             // 所有循环完成，停止传输
+//             LL_TIM_DisableCounter(TIM1);
+//             LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+//             LL_SPI_DisableDMAReq_TX(SPI1);
+            
+//             g_dds_transfer_complete = 1;  // 设置完成标志
+            
+
+//         }
+//     }
+    
+//     /* 检查传输错误中断 */
+//     if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
+//         LL_DMA_ClearFlag_TE5(DMA2);
+//         DDS_Stop();
+//         LED_OFF();
+//     }
+// }
 
 
 
@@ -192,6 +381,27 @@ void DDS_Stop(void)
     LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5); // 改为DMA2_STREAM_5
     LL_SPI_DisableDMAReq_TX(SPI1);              // 禁用SPI DMA请求
 }
+
+
+/**
+ * @brief  停止双DMA DDS输出
+ */
+void DDS_Stop_DualDMA(void)
+{
+    LL_TIM_DisableCounter(TIM1);
+    LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
+    LL_SPI_DisableDMAReq_TX(SPI1);
+    LL_TIM_DisableDMAReq_UPDATE(TIM1);
+    LL_TIM_DisableDMAReq_CC1(TIM1);
+    
+    // 禁用中断
+    LL_DMA_DisableIT_TC(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_DisableIT_TE(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_DisableIT_TE(DMA2, LL_DMA_STREAM_4);
+}
+
+
 
 /**
  * @brief  智能正弦波生成 - 通过参数返回结果
