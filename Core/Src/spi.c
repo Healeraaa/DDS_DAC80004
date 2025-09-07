@@ -48,7 +48,7 @@ void SPI1_Init(void)
   SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;             // 时钟空闲时为低电平
   SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;                 // 第一个边沿采样
   SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;                           // 软件控制NSS
-  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV128;      // 波特率分频128
+  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;      // 波特率分频128
   SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;                     // MSB先发送
   SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;  // 禁用CRC校验
   SPI_InitStruct.CRCPoly = 10;                                    // CRC多项式(未使用)

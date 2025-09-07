@@ -242,7 +242,8 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint
     }
     
     // TIM_ApplyFreqConfig(TIM1, &freq_config);
-    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config);
+    // TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config);
+    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config,100000000,100000000/32);
     
     /* 6. 启动传输 */
     DAC8004_CSL_Config(module, 0); // 使能片选
@@ -519,5 +520,37 @@ void Encode_Wave(DAC80004_InitStruct *module, uint16_t *wave_buffer_in,
         // 分离为两个16位数据用于SPI传输
         wave_buffer_out[2*i]     = (uint16_t)(encoded_data >> 16);  // 高16位
         wave_buffer_out[2*i + 1] = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+    }
+}
+
+/**
+ * @brief  波形数据编码 - 双DMA版本，输出分离的数组
+ * @param  module: DAC80004模块结构体指针
+ * @param  wave_buffer_in: 输入波形数据缓冲区 (16位DAC值)
+ * @param  wave_buffer_high_out: 输出高16位数据缓冲区
+ * @param  wave_buffer_low_out: 输出低16位数据缓冲区
+ * @param  points: 数据点数
+ * @retval None
+ */
+void Encode_Wave_DualDMA(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
+                        uint16_t *wave_buffer_high_out, uint16_t *wave_buffer_low_out, uint32_t points)
+{
+    // 参数验证
+    if (module == NULL || wave_buffer_in == NULL || wave_buffer_high_out == NULL || 
+        wave_buffer_low_out == NULL || points == 0) {
+        return;
+    }
+    
+    // 生成DAC80004发送控制位掩码（不包含数据位）
+    uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);
+    
+    // 编码波形数据为分离数组格式
+    for (uint32_t i = 0; i < points; i++) {
+        // 将16位DAC数据与控制位组合成32位传输数据
+        uint32_t encoded_data = control_mask | ((uint32_t)wave_buffer_in[i] << 4);
+        
+        // 分离存储到两个独立数组
+        wave_buffer_high_out[i] = (uint16_t)(encoded_data >> 16);  // 高16位
+        wave_buffer_low_out[i]  = (uint16_t)(encoded_data & 0xFFFF); // 低16位
     }
 }

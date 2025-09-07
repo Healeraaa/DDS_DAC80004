@@ -399,24 +399,79 @@ void TIM_ApplyFreqConfig(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config)
   LL_TIM_SetAutoReload(TIMx, config->period);   // 设置自动重装载值
 }
 
+// /**
+//  * @brief  应用定时器频率配置到指定定时器（双DMA版本）
+//  * @param  TIMx: 定时器实例
+//  * @param  config: 频率配置结构体指针
+//  * @retval None
+//  */
+// void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config)
+// {
+//   if (config == NULL)
+//     return;
+
+//   LL_TIM_DisableCounter(TIMx);
+//   LL_TIM_SetPrescaler(TIMx, config->prescaler);
+//   LL_TIM_SetAutoReload(TIMx, config->period);
+  
+//   /* 设置CC1比较值为周期的一半，确保在UPDATE和下次UPDATE之间触发 */
+//   uint32_t cc1_value = (config->period + 1) / 2;  // 周期中点
+//   LL_TIM_OC_SetCompareCH4(TIMx, cc1_value);
+  
+//   /* 关键：重新使能比较通道 */
+//   LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH4);
+// }
+
+
 /**
  * @brief  应用定时器频率配置到指定定时器（双DMA版本）
  * @param  TIMx: 定时器实例
  * @param  config: 频率配置结构体指针
+ * @param  timer_clock: 定时器时钟频率 (Hz)
+ * @param  spi_baudrate: SPI波特率 (Hz)，支持精确的浮点波特率
  * @retval None
  */
-void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config)
+void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate)
 {
-  if (config == NULL)
+  if (config == NULL || spi_baudrate <= 0.0 || timer_clock <= 0.0)
     return;
 
   LL_TIM_DisableCounter(TIMx);
   LL_TIM_SetPrescaler(TIMx, config->prescaler);
   LL_TIM_SetAutoReload(TIMx, config->period);
   
-  /* 设置CC1比较值为周期的一半，确保在UPDATE和下次UPDATE之间触发 */
-  uint32_t cc1_value = (config->period + 1) / 2;  // 周期中点
-  LL_TIM_OC_SetCompareCH4(TIMx, cc1_value);
+  /* 计算16.5个SPI时钟周期的时间对应的定时器计数值 */
+  // UPDATE事件发生在定时器计数器从ARR归零时（计数值 = 0）
+  // CC4事件需要在UPDATE事件后16.5个SPI时钟周期触发
+  // SPI时钟周期 = 1 / spi_baudrate (秒)
+  // 16.5个SPI时钟周期的时间 = 16.5 / spi_baudrate (秒)
+  // 定时器有效时钟频率 = timer_clock / (prescaler + 1)
+  // 16.5个SPI时钟周期对应的定时器计数值 = (16.5 / spi_baudrate) * effective_timer_clock
+  
+  double effective_timer_clock = timer_clock / (double)(config->prescaler + 1);
+  
+  // 使用double精度计算16.5个SPI时钟周期对应的定时器计数值
+  // 精确计算：(16.5 * effective_timer_clock) / spi_baudrate
+  double spi_16_5_clk_timer_counts_double = (16.5 * effective_timer_clock) / spi_baudrate;
+  
+  // 四舍五入到最接近的整数
+  uint32_t spi_16_5_clk_timer_counts = (uint32_t)round(spi_16_5_clk_timer_counts_double);
+  
+  // 确保计数值在合理范围内
+  if (spi_16_5_clk_timer_counts > config->period) {
+    // 如果16.5个SPI时钟周期超过了定时器周期，则设为周期的一半
+    spi_16_5_clk_timer_counts = (config->period + 1) / 2;
+  }
+  
+  // 确保至少有1个计数值的延迟
+  if (spi_16_5_clk_timer_counts == 0) {
+    spi_16_5_clk_timer_counts = 1;
+  }
+  
+  uint32_t cc4_value = spi_16_5_clk_timer_counts;
+  
+  /* 设置CC4比较值为16.5个SPI时钟周期后触发 */
+  LL_TIM_OC_SetCompareCH4(TIMx, cc4_value);
   
   /* 关键：重新使能比较通道 */
   LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH4);

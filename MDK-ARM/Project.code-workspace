@@ -12,7 +12,8 @@
             "dds_dac80004.h": "c",
             "dma.h": "c",
             "random": "c",
-            "math.h": "c"
+            "math.h": "c",
+            "spi.h": "c"
         }
     },
     "extensions": {}
