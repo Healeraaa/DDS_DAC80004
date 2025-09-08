@@ -405,7 +405,7 @@ void TIM_ApplyFreqConfig(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config)
 //  * @param  config: 频率配置结构体指针
 //  * @retval None
 //  */
-// void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config)
+// void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig‘；_t *config)
 // {
 //   if (config == NULL)
 //     return;
@@ -468,13 +468,16 @@ void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *conf
     spi_16_5_clk_timer_counts = 1;
   }
   
-  uint32_t cc4_value = spi_16_5_clk_timer_counts;
+  volatile uint32_t cc4_value = spi_16_5_clk_timer_counts;
   
   /* 设置CC4比较值为16.5个SPI时钟周期后触发 */
   LL_TIM_OC_SetCompareCH4(TIMx, cc4_value);
   
   /* 关键：重新使能比较通道 */
   LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH4);
+  LL_TIM_SetCounter(TIMx, 0);  
+
+  
 }
 
 
@@ -560,7 +563,7 @@ void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, dou
   
   // 使用double精度计算35个SPI时钟周期对应的定时器计数值
   // 精确计算：(35.0 * effective_timer_clock) / spi_baudrate
-  double spi_35_clk_timer_counts_double = (35.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
+  double spi_35_clk_timer_counts_double = (42.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
   
   uint32_t spi_35_clk_timer_counts = (uint32_t)round(spi_35_clk_timer_counts_double); // 四舍五入到最接近的整数
   
@@ -581,6 +584,7 @@ void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, dou
   
   /* 重新使能比较通道 */
   LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH3);   // 重新使能通道3输出
+  LL_TIM_SetCounter(TIM3, 0);  
 }
 
 /**

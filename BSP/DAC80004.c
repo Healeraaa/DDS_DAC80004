@@ -136,7 +136,7 @@ void DAC80004_Init(DAC80004_InitStruct *module)
     DAC80004_Data_Set(module, 0xFFFF);// 默认中间电压输出
     DAC80004_Mode_Config(module, DAC_MODE_NO);
 
-    DAC80004_WriteData(module);
+    // DAC80004_WriteData(module);
     
 }
 void DAC8004_CSL_Config(DAC80004_InitStruct *module, uint8_t state)
