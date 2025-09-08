@@ -16,6 +16,10 @@ void TIM1_DMA_SPI1_Init(void);
 uint8_t TIM_CalculateFreqDivision_Precise(uint32_t timer_clock, double target_freq, TIM_FreqConfig_t *config);
 void TIM_ApplyFreqConfig(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config);
 void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate);
+void TIM3_PWM_Init(void);
+void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate);
+void TIM3_PWM_Start(void);
+void TIM3_PWM_Stop(void);
 
 
 #endif /* __TIM_H__ */

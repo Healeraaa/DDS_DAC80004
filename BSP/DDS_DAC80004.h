@@ -4,6 +4,7 @@
 #include "main.h"
 #include "stdbool.h"
 #include "DAC80004.h"
+#include "tim.h"
 
 /**
  * @brief  正弦波生成结果结构体
@@ -16,6 +17,11 @@ typedef struct {
     double error_percent;         // 频率误差百分比 (%)
     bool success;                 // 生成是否成功 (false:失败, true:成功)
 } SineWaveResult_t;
+
+void SYNC_Cycle_Init(void);
+void SYNC_Cycle_SetPara(const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate);
+void SYNC_Cycle_Start(void);
+void SYNC_Cycle_Stop(void);
 
 void DDS_Init(DAC80004_InitStruct *module);
 bool DDS_Start_Precise(uint16_t *wave_data, uint16_t data_size, double sample_rate);

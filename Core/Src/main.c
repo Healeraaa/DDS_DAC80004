@@ -38,8 +38,14 @@ int main(void)
   Generate_Smart_Sine_Wave(wave_buffer, 50.0, 2000.0, 20, 4096, 20000, 32768, &result);
   Encode_Wave_DualDMA(&DAC80004_Module1, wave_buffer,wave_high_data,wave_low_data, result.points);
   // DDS_Start_Repeat(&DAC80004_Module1,wave_data, result.points*2, result.actual_sample_rate, 0);
-  DDS_Start_DualDMA(&DAC80004_Module1,wave_high_data, wave_low_data, result.points, result.points, result.actual_sample_rate, 0);
-    
+  DDS_Start_DualDMA(&DAC80004_Module1,wave_high_data, wave_low_data, result.points, result.points, result.actual_sample_rate, 2);
+
+  // for(uint16_t i=0;i<10;i++)
+  //   {
+  //     DAC80004_Data_Set(&DAC80004_Module1, 0xFFFF>>1);
+  //     DAC80004_WriteData(&DAC80004_Module1);
+        
+  //   }
     while (1)
     {
 			

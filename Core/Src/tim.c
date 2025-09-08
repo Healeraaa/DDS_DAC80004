@@ -476,3 +476,131 @@ void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *conf
   /* 关键：重新使能比较通道 */
   LL_TIM_CC_EnableChannel(TIMx, LL_TIM_CHANNEL_CH4);
 }
+
+
+
+
+/**
+ * @brief  初始化TIM3 PWM输出，用于产生CS信号
+ * @param  void
+ * @retval None
+ */
+void TIM3_PWM_Init(void)
+{
+  LL_TIM_InitTypeDef TIM_InitStruct = {0};           // 定义并初始化TIM结构体
+  LL_TIM_OC_InitTypeDef TIM_OC_InitStruct = {0};     // 定义并初始化OC（Output Compare）结构体
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};         // 定义并初始化GPIO结构体
+
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM3); // 使能TIM3时钟，TIM3挂载在APB1总线上
+
+  // 配置TIM3的基本参数
+  TIM_InitStruct.Prescaler = 0;                         // 分频器初始值（运行时动态设置）
+  TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;   // 向上计数模式
+  TIM_InitStruct.Autoreload = 65535;                    // 自动重装载值初始值（运行时动态设置）
+  TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1; // 时钟分频为1
+  LL_TIM_Init(TIM3, &TIM_InitStruct);                   // 初始化TIM3
+
+  LL_TIM_DisableARRPreload(TIM3);                       // 禁用TIM3的自动重装载预装载功能
+  LL_TIM_OC_EnablePreload(TIM3, LL_TIM_CHANNEL_CH3);   // 使能TIM3通道3的输出比较预装载功能
+
+  // 配置TIM3通道3的输出比较模式 - 产生CS信号
+  TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_PWM1;        // PWM模式1
+  TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_ENABLE;    // 使能输出比较
+  TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;  // 禁用互补输出
+  TIM_OC_InitStruct.CompareValue = 32767;               // 比较值初始值（运行时动态设置）
+  TIM_OC_InitStruct.OCIdleState = LL_TIM_OCIDLESTATE_HIGH; // 空闲状态下输出高电平
+  TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_LOW; // 低电平有效（CS信号特性）
+  LL_TIM_OC_Init(TIM3, LL_TIM_CHANNEL_CH3, &TIM_OC_InitStruct); // 初始化TIM3通道3
+
+  LL_TIM_OC_DisableFast(TIM3, LL_TIM_CHANNEL_CH3);     // 禁用TIM3通道3的快速输出比较模式
+  LL_TIM_SetTriggerOutput(TIM3, LL_TIM_TRGO_UPDATE);   // 设置TIM3的触发输出为更新事件
+  LL_TIM_DisableMasterSlaveMode(TIM3);                  // 禁用TIM3的主从模式
+
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB); // 使能GPIOB时钟，GPIOB挂载在AHB1总线上
+
+  // 配置GPIOB的Pin 0为复用功能 - 输出CS信号
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_0;                  // 选择Pin 0 (TIM3_CH3)
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;        // 复用模式
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;      // 高速模式（CS信号需要快速切换）
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL; // 推挽输出
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;               // 上拉电阻（CS信号默认高电平）
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_2;             // 复用功能选择AF2（TIM3）
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);                // 初始化GPIOB
+
+  LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH3);   // 使能TIM3通道3的输出
+  
+  // 注意：初始化完成后不立即启动定时器，等待外部调用启动函数
+}
+
+/**
+ * @brief  配置TIM3 PWM参数，设置CS信号时序
+ * @param  config: 频率配置结构体指针
+ * @param  timer_clock: 定时器时钟频率 (Hz)
+ * @param  spi_baudrate: SPI波特率 (Hz)，用于计算CS低电平持续时间
+ * @retval None
+ */
+void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate)
+{
+  if (config == NULL || spi_baudrate <= 0.0 || timer_clock <= 0.0)
+    return;
+
+  LL_TIM_DisableCounter(TIM3);                          // 停止定时器以安全更改配置
+  LL_TIM_SetPrescaler(TIM3, config->prescaler);         // 设置预分频器
+  LL_TIM_SetAutoReload(TIM3, config->period);           // 设置自动重装载值
+  
+  /* 计算35个SPI时钟周期的时间对应的定时器计数值 */
+  // CS信号周期由config->period + 1决定
+  // CS低电平持续时间需要为35个SPI时钟周期
+  // SPI时钟周期 = 1 / spi_baudrate (秒)
+  // 35个SPI时钟周期的时间 = 35.0 / spi_baudrate (秒)
+  // 定时器有效时钟频率 = timer_clock / (prescaler + 1)
+  // 35个SPI时钟周期对应的定时器计数值 = (35.0 / spi_baudrate) * effective_timer_clock
+  
+  double effective_timer_clock = timer_clock / (double)(config->prescaler + 1); // 计算定时器有效时钟频率
+  
+  // 使用double精度计算35个SPI时钟周期对应的定时器计数值
+  // 精确计算：(35.0 * effective_timer_clock) / spi_baudrate
+  double spi_35_clk_timer_counts_double = (35.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
+  
+  uint32_t spi_35_clk_timer_counts = (uint32_t)round(spi_35_clk_timer_counts_double); // 四舍五入到最接近的整数
+  
+  // 确保计数值在合理范围内
+  if (spi_35_clk_timer_counts > config->period) {      // 如果35个SPI时钟周期超过了定时器周期
+    spi_35_clk_timer_counts = (config->period + 1) / 2; // 则设为周期的一半
+  }
+  
+  // 确保至少有1个计数值的低电平时间
+  if (spi_35_clk_timer_counts == 0) {                  // 如果计算结果为0
+    spi_35_clk_timer_counts = 1;                        // 设为最小值1
+  }
+  
+  uint32_t cc3_value = spi_35_clk_timer_counts;        // CS低电平持续时间对应的比较值
+  
+  /* 设置CC3比较值为35个SPI时钟周期的低电平持续时间 */
+  LL_TIM_OC_SetCompareCH3(TIM3, cc3_value);            // 设置比较值，决定CS低电平持续时间
+  
+  /* 重新使能比较通道 */
+  LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH3);   // 重新使能通道3输出
+}
+
+/**
+ * @brief  启动TIM3 PWM输出
+ * @param  void
+ * @retval None
+ */
+void TIM3_PWM_Start(void)
+{
+  LL_TIM_EnableCounter(TIM3);                           // 启动TIM3计数器
+}
+
+/**
+ * @brief  停止TIM3 PWM输出
+ * @param  void
+ * @retval None
+ */
+void TIM3_PWM_Stop(void)
+{
+  LL_TIM_DisableCounter(TIM3);                          // 停止TIM3计数器
+  LL_TIM_SetCounter(TIM3, 0);                          // 清除定时器计数值，确保下次启动从0开始
+  LL_GPIO_SetOutputPin(GPIOB, LL_GPIO_PIN_0);          // CS信号保持高电平（非选中状态）
+}

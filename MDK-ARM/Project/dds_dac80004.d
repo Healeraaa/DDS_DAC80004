@@ -41,7 +41,7 @@ project\dds_dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
 project\dds_dac80004.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h
 project\dds_dac80004.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 project\dds_dac80004.o: ..\BSP\DAC80004.h
-project\dds_dac80004.o: ../Core/Inc/spi.h
 project\dds_dac80004.o: ../Core/Inc/tim.h
+project\dds_dac80004.o: ../Core/Inc/spi.h
 project\dds_dac80004.o: ../Core/Inc/dma.h
 project\dds_dac80004.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

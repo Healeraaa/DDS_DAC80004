@@ -1,6 +1,6 @@
 #include "DDS_DAC80004.h"
 #include "spi.h"
-#include "tim.h"
+// #include "tim.h"
 #include "dma.h"
 #include <math.h>       
 
@@ -28,11 +28,34 @@ volatile uint16_t g_dual_dma_low_points = 0;            // 低16位数据点数
 
 
 
+void SYNC_Cycle_Init(void)                                                      // 初始化SYNC周期信号，内部调用TIM3 PWM初始化
+{
+    TIM3_PWM_Init();                                                           // 调用TIM3 PWM初始化函数，配置硬件但不启动
+}
+
+void SYNC_Cycle_SetPara(const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate)  // 设置SYNC信号参数
+{
+    TIM3_ApplyPWMConfig(config, timer_clock, spi_baudrate);                    // 应用频率配置，设置CS信号低电平持续35个SPI时钟周期
+}
+void SYNC_Cycle_Start(void)                                                    // 启动SYNC周期信号输出
+{
+    TIM3_PWM_Start();                                                          // 启动TIM3计数器，开始产生CS信号
+}
+void SYNC_Cycle_Stop(void)                                                     // 停止SYNC周期信号输出
+{
+    TIM3_PWM_Stop();                                                           // 停止TIM3计数器，清零计数值，CS保持高电平
+}
+
+
+
+
+
 void DDS_Init(DAC80004_InitStruct *module)
 {
     DAC80004_Init(module);// 初始化GPIO
     MX_DMA_Init();
     TIM1_DMA_SPI1_Init();
+    SYNC_Cycle_Init(); // 初始化SYNC周期信号
 }
 
 /**
@@ -244,9 +267,9 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint
     // TIM_ApplyFreqConfig(TIM1, &freq_config);
     // TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config);
     TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config,100000000,100000000/32);
+    SYNC_Cycle_SetPara(&freq_config,100000000,100000000/32); // 设置SYNC信号参数
     
     /* 6. 启动传输 */
-    DAC8004_CSL_Config(module, 0); // 使能片选
     LL_SPI_EnableDMAReq_TX(SPI1);
     LL_TIM_EnableDMAReq_UPDATE(TIM1);  // 使能UPDATE事件DMA请求
     LL_TIM_EnableDMAReq_CC4(TIM1);     // 使能CC1事件DMA请求
@@ -254,6 +277,7 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint
     LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);  // Stream5由UPDATE触发
     LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);  // Stream4由CC1触发
     // 启动定时器
+    SYNC_Cycle_Start();               // 启动SYNC信号
     LL_TIM_EnableCounter(TIM1);
     
     return true;
@@ -288,11 +312,14 @@ void DMA2_Stream5_IRQHandler(void)
                 LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, g_dual_dma_low_points);
                 
                 // 重新启动两个DMA流
+                // SYNC_Cycle_Stop();
+                // SYNC_Cycle_Start();
                 LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
                 LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);
             } else {
                 // 所有循环完成，停止传输
                 DDS_Stop_DualDMA();
+                SYNC_Cycle_Stop();
                 g_dual_dma_transfer_complete = 1;  // 设置完成标志
             }
         }
@@ -394,7 +421,7 @@ void DDS_Stop_DualDMA(void)
     LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
     LL_SPI_DisableDMAReq_TX(SPI1);
     LL_TIM_DisableDMAReq_UPDATE(TIM1);
-    LL_TIM_DisableDMAReq_CC1(TIM1);
+    LL_TIM_DisableDMAReq_CC4(TIM1);
     
     // 禁用中断
     LL_DMA_DisableIT_TC(DMA2, LL_DMA_STREAM_5);
