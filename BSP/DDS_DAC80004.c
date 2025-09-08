@@ -476,11 +476,100 @@ void DDS_Stop_DualDMA(void)
 
 
 
+// /**
+//  * @brief  智能正弦波生成 - 通过参数返回结果
+//  * @param  wave_buffer: 输出缓冲区
+//  * @param  target_freq: 目标频率 (Hz)
+//  * @param  max_sample_rate: 最大允许采样率
+//  * @param  min_points: 最小点数要求
+//  * @param  max_points: 最大点数限制
+//  * @param  amplitude: 幅值 (0-32767)
+//  * @param  offset: 直流偏移 (0-65535)
+//  * @param  result: 输出结果结构体指针
+//  * @retval None
+//  */
+// void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
+//                               double target_freq, double max_sample_rate,
+//                               uint32_t min_points, uint32_t max_points,
+//                               uint16_t amplitude, uint16_t offset,
+//                               SineWaveResult_t *result)
+// {
+//     // 初始化结果结构体
+//     if (result != NULL) {
+//         result->points = 0;
+//         result->actual_freq = 0.0;
+//         result->actual_sample_rate = 0.0;
+//         result->frequency_error = 0.0;
+//         result->error_percent = 0.0;
+//         result->success = false;
+//     }
+    
+//     // 参数验证
+//     if (wave_buffer == NULL || result == NULL || target_freq <= 0 || max_sample_rate <= 0 || 
+//         min_points == 0 || max_points < min_points) {
+//         return;  // result->success 已经是 false
+//     }
+    
+//     double best_sample_rate = max_sample_rate;
+//     uint32_t best_points = 0;
+//     double min_error = 1e9;
+    
+//     // 遍历寻找最优采样率和点数组合
+//     for (double sr = max_sample_rate; sr >= target_freq * min_points; sr -= target_freq * 0.01) {
+//         volatile uint32_t points = (uint32_t)round(sr / target_freq);
+//         // volatile double points_double = sr / target_freq;  // 先计算double值
+//         // volatile uint32_t points = (uint32_t)round(points_double); 
+        
+//         if (points >= min_points && points <= max_points) {
+//             double actual_f = sr / points;
+//             double error = fabs(actual_f - target_freq);
+            
+//             if (error < min_error) {
+//                 min_error = error;
+//                 best_sample_rate = sr;
+//                 best_points = points;
+                
+//                 // 如果误差足够小，提前退出
+//                 if (error < target_freq * 1e-6) break;
+//             }
+//         }
+//     }
+    
+//     // 如果没找到合适的，使用默认值
+//     if (best_points == 0) {
+//         best_points = (uint32_t)round(max_sample_rate / target_freq);
+//         if (best_points < min_points) best_points = min_points;
+//         if (best_points > max_points) best_points = max_points;
+//         best_sample_rate = target_freq * best_points;
+//     }
+    
+//     // 生成正弦波数据
+//     for (uint32_t i = 0; i < best_points; i++) {
+//         double phase = (2.0 * M_PI * i) / best_points;
+//         double sine_value = sin(phase);
+        
+//         int32_t dac_value = offset + (int32_t)(amplitude * sine_value);
+//         if (dac_value < 0) dac_value = 0;
+//         if (dac_value > 65535) dac_value = 65535;
+        
+//         wave_buffer[i] = (uint16_t)dac_value;
+//     }
+    
+//     // 填充结果结构体
+//     result->points = best_points;
+//     result->actual_freq = best_sample_rate / best_points;
+//     result->actual_sample_rate = best_sample_rate;
+//     result->frequency_error = fabs(result->actual_freq - target_freq);
+//     result->error_percent = (result->frequency_error / target_freq) * 100.0;
+//     result->success = true;  // 成功生成
+// }
+
+
 /**
- * @brief  智能正弦波生成 - 通过参数返回结果
+ * @brief  智能正弦波生成 - 优化版，减少计算量
  * @param  wave_buffer: 输出缓冲区
  * @param  target_freq: 目标频率 (Hz)
- * @param  max_sample_rate: 最大允许采样率
+ * @param  max_sample_rate: 系统最大允许采样率
  * @param  min_points: 最小点数要求
  * @param  max_points: 最大点数限制
  * @param  amplitude: 幅值 (0-32767)
@@ -510,52 +599,96 @@ void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
         return;  // result->success 已经是 false
     }
     
-    double best_sample_rate = max_sample_rate;
+    /* 1. 计算理论最大采样率 - 基于目标频率和最大点数 */
+    double theoretical_max_sample_rate = target_freq * max_points;  // 理论最大采样率
+    
+    /* 2. 选择实际使用的最大采样率 - 取较小值，避免过度计算 */
+    double effective_max_sample_rate = (theoretical_max_sample_rate < max_sample_rate) ? 
+                                       theoretical_max_sample_rate : max_sample_rate;
+    
+    /* 3. 计算搜索的下限采样率 */
+    double min_sample_rate = target_freq * min_points;  // 最小采样率
+    
+    /* 4. 计算搜索步长 - 基于目标频率，避免过小的步长 */
+    double search_step = target_freq * 0.1;  // 步长为目标频率的10%，减少计算量
+    if (search_step < 1.0) search_step = 1.0;  // 最小步长为1Hz
+    
+    double best_sample_rate = effective_max_sample_rate;
     uint32_t best_points = 0;
     double min_error = 1e9;
     
-    // 遍历寻找最优采样率和点数组合
-    for (double sr = max_sample_rate; sr >= target_freq * min_points; sr -= target_freq * 0.01) {
-        volatile uint32_t points = (uint32_t)round(sr / target_freq);
-        // volatile double points_double = sr / target_freq;  // 先计算double值
-        // volatile uint32_t points = (uint32_t)round(points_double); 
+    /* 5. 优化的搜索循环 - 从有效最大采样率向下搜索 */
+    for (double sr = effective_max_sample_rate; sr >= min_sample_rate; sr -= search_step) {
+        uint32_t points = (uint32_t)round(sr / target_freq);  // 计算点数
         
+        // 检查点数是否在合理范围内
         if (points >= min_points && points <= max_points) {
-            double actual_f = sr / points;
-            double error = fabs(actual_f - target_freq);
+            double actual_f = sr / points;                    // 实际频率
+            double error = fabs(actual_f - target_freq);      // 频率误差
             
             if (error < min_error) {
                 min_error = error;
                 best_sample_rate = sr;
                 best_points = points;
                 
-                // 如果误差足够小，提前退出
+                // 如果误差足够小（精度达到0.0001%），提前退出
                 if (error < target_freq * 1e-6) break;
             }
         }
     }
     
-    // 如果没找到合适的，使用默认值
+    /* 6. 如果粗搜索没找到合适的，进行精细搜索 */
     if (best_points == 0) {
-        best_points = (uint32_t)round(max_sample_rate / target_freq);
+        // 在最优采样率附近进行精细搜索
+        double center_sr = target_freq * ((min_points + max_points) / 2);  // 中心采样率
+        double fine_search_range = target_freq * 100;  // 精细搜索范围
+        double fine_step = target_freq * 0.01;          // 精细搜索步长
+        
+        for (double sr = center_sr - fine_search_range; 
+             sr <= center_sr + fine_search_range && sr <= max_sample_rate; 
+             sr += fine_step) {
+            
+            if (sr < min_sample_rate) continue;  // 跳过过小的采样率
+            
+            uint32_t points = (uint32_t)round(sr / target_freq);
+            
+            if (points >= min_points && points <= max_points) {
+                double actual_f = sr / points;
+                double error = fabs(actual_f - target_freq);
+                
+                if (error < min_error) {
+                    min_error = error;
+                    best_sample_rate = sr;
+                    best_points = points;
+                }
+            }
+        }
+    }
+    
+    /* 7. 如果还是没找到合适的，使用备用方案 */
+    if (best_points == 0) {
+        best_points = (uint32_t)round(effective_max_sample_rate / target_freq);
         if (best_points < min_points) best_points = min_points;
         if (best_points > max_points) best_points = max_points;
         best_sample_rate = target_freq * best_points;
     }
     
-    // 生成正弦波数据
+    /* 8. 生成正弦波数据 */
     for (uint32_t i = 0; i < best_points; i++) {
-        double phase = (2.0 * M_PI * i) / best_points;
-        double sine_value = sin(phase);
+        double phase = (2.0 * M_PI * i) / best_points;        // 计算相位
+        double sine_value = sin(phase);                       // 计算正弦值
         
+        // 转换为DAC值：偏移 + 幅值 * 正弦值
         int32_t dac_value = offset + (int32_t)(amplitude * sine_value);
+        
+        // 限幅处理
         if (dac_value < 0) dac_value = 0;
         if (dac_value > 65535) dac_value = 65535;
         
         wave_buffer[i] = (uint16_t)dac_value;
     }
     
-    // 填充结果结构体
+    /* 9. 填充结果结构体 */
     result->points = best_points;
     result->actual_freq = best_sample_rate / best_points;
     result->actual_sample_rate = best_sample_rate;
@@ -563,6 +696,10 @@ void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
     result->error_percent = (result->frequency_error / target_freq) * 100.0;
     result->success = true;  // 成功生成
 }
+
+
+
+
 
 
 /**
