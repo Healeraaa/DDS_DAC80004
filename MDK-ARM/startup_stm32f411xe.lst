@@ -745,7 +745,7 @@ ARM Macro Assembler    Page 12
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
 interwork --depend=project\startup_stm32f411xe.d -oproject\startup_stm32f411xe.
 o -I.\RTE\_Project -ID:\Keil\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include --predefi
-ne="__UVISION_VERSION SETA 541" --predefine="STM32F411xE SETA 1" --predefine="_
+ne="__UVISION_VERSION SETA 540" --predefine="STM32F411xE SETA 1" --predefine="_
 RTE_ SETA 1" --list=startup_stm32f411xe.lst startup_stm32f411xe.s
 
 

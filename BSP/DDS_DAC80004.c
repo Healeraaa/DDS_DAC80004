@@ -291,7 +291,9 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint
     LL_TIM_ClearFlag_UPDATE(TIM1);
     LL_TIM_ClearFlag_CC4(TIM1);
     
+    LL_TIM_GenerateEvent_UPDATE(TIM3);
     LL_TIM_GenerateEvent_UPDATE(TIM1);  // 触发一次UPDATE事件，确保第一个数据及时传输
+    
 
     SYNC_Cycle_Start();               // 启动SYNC信号
     LL_TIM_EnableCounter(TIM1);

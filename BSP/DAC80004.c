@@ -133,10 +133,10 @@ void DAC80004_Init(DAC80004_InitStruct *module)
     DAC80004_WR_Config(module, DAC_W);
     DAC80004_Command_Config(module, DAC_CMD_WRITE_UPDATE_N);
     DAC80004_Channel_Config(module, DAC_CH_ALL);
-    DAC80004_Data_Set(module, 0xFFFF);// 默认中间电压输出
+    DAC80004_Data_Set(module, 0xFFFF>>1);// 默认中间电压输出
     DAC80004_Mode_Config(module, DAC_MODE_NO);
 
-    // DAC80004_WriteData(module);
+    DAC80004_WriteData(module);
     
 }
 void DAC8004_CSL_Config(DAC80004_InitStruct *module, uint8_t state)
