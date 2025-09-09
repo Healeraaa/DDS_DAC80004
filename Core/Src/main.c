@@ -7,9 +7,9 @@
 #include "DDS_DAC80004.h"
 #include "main_init.h"
 
-uint16_t wave_high_data[8192];
-uint16_t wave_low_data[8192];
-uint16_t wave_buffer[8192];
+uint16_t wave_high_data[1024*10];
+uint16_t wave_low_data[1024*10];
+uint16_t wave_buffer[1024*10];
 
 
 void SystemClock_Config(void);
@@ -35,10 +35,10 @@ int main(void)
   // DDS_Start_Precise(wave_data, 4, 10);
   // DDS_Start_Repeat(wave_data, 4, 10, 3);
   SineWaveResult_t result;
-  Generate_Smart_Sine_Wave(wave_buffer, 1000.0, 1000000.0, 20, 8192, 20000, 32768, &result);
+  Generate_Smart_Sine_Wave(wave_buffer, 10000.0, 1000000.0, 20, 1024*10, 20000, 32768, &result);
   Encode_Wave_DualDMA(&DAC80004_Module1, wave_buffer,wave_high_data,wave_low_data, result.points);
   // DDS_Start_Repeat(&DAC80004_Module1,wave_data, result.points*2, result.actual_sample_rate, 0);
-  DDS_Start_DualDMA(&DAC80004_Module1,wave_high_data, wave_low_data, result.points, result.points, result.actual_sample_rate, 0);
+  DDS_Start_DualDMA(&DAC80004_Module1,WAVE_MODE_SINE,wave_high_data, wave_low_data, result.points, result.points, result.actual_sample_rate, 0);
 
   // for(uint16_t i=0;i<10;i++)
   //   {

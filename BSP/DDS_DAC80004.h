@@ -7,6 +7,59 @@
 #include "tim.h"
 
 /**
+ * @brief  波形模式枚举
+ */
+typedef enum {
+    WAVE_MODE_NONE = 0,      // 无波形模式
+    WAVE_MODE_SINE ,           // 正弦波模式
+    WAVE_MODE_CV,                 // 循环伏安法模式
+    WAVE_MODE_DPV               // 差分脉冲伏安法模式
+} WaveMode_t;
+
+/**
+ * @brief  波形状态/阶段枚举
+ */
+typedef enum {
+    WAVE_STAGE_STAGE1 = 0,            // 阶段1 - 第一个波形段
+    WAVE_STAGE_STAGE2,            // 阶段2 - 第二个波形段  
+    WAVE_STAGE_STAGE3,            // 阶段3 - 第三个波形段
+    WAVE_STAGE_STAGE4            // 阶段4 - 第四个波形段
+} WaveStage_t;
+/**
+ * @brief  DMA状态枚举
+ */
+typedef enum {
+    DMA_STATE_IDLE = 0,           // 空闲状态
+    DMA_STATE_RUNNING,            // 运行状态
+    DMA_STATE_PAUSED,             // 暂停状态
+    DMA_STATE_COMPLETED,          // 完成状态
+    DMA_STATE_ERROR               // 错误状态
+} DMAState_t;
+
+
+typedef struct {
+        uint16_t *data_ptr;       // 数据指针
+        uint32_t data_points;     // 数据点数
+        uint32_t current_count;   // 当前完成次数
+        uint8_t transfer_complete; // 传输完成标志
+}StreamData_t;
+
+/**
+ * @brief  DMA处理统一管理结构体
+ */
+typedef struct {
+    // 基本状态
+    WaveMode_t current_mode;      // 当前波形模式
+    DMAState_t state;             // DMA状态    
+    uint32_t repeat_count;      // DMA重复次数 (0=无限循环)
+    StreamData_t stream5; // Stream5 (高16位) 管理
+    StreamData_t stream4; // Stream4 (低16位) 管理
+    WaveStage_t wave_stage;      // 当前波形阶段
+} DMAHandler_t;
+
+
+
+/**
  * @brief  正弦波生成结果结构体
  */
 typedef struct {
@@ -24,21 +77,16 @@ void SYNC_Cycle_Start(void);
 void SYNC_Cycle_Stop(void);
 
 void DDS_Init(DAC80004_InitStruct *module);
-bool DDS_Start_Precise(uint16_t *wave_data, uint16_t data_size, double sample_rate);
-bool DDS_Start_Repeat(DAC80004_InitStruct *module,uint16_t *wave_data, uint16_t data_size, double sample_rate, uint32_t repeat_count);
-void DDS_Stop(void);
 void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
                               double target_freq, double max_sample_rate,
                               uint32_t min_points, uint32_t max_points,
                               uint16_t amplitude, uint16_t offset,
                               SineWaveResult_t *result);
-void Encode_Wave(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
-                 uint16_t *wave_buffer_out, uint32_t points);
 void Encode_Wave_DualDMA(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
                         uint16_t *wave_buffer_high_out, uint16_t *wave_buffer_low_out, uint32_t points);
 
-bool DDS_Start_DualDMA(DAC80004_InitStruct *module,uint16_t *wave_data_high,uint16_t *wave_data_low, 
-                        uint16_t data_high_size,uint16_t data_low_size,
+bool DDS_Start_DualDMA(DAC80004_InitStruct *module,WaveMode_t wavemode ,uint16_t *wave_data_high,
+                        uint16_t *wave_data_low, uint16_t data_high_size,uint16_t data_low_size,
                         double sample_rate, uint32_t repeat_count);
 void DDS_Stop_DualDMA(void);
 
