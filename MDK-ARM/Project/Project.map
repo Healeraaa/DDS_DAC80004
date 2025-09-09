@@ -1097,13 +1097,13 @@ Image Symbol Table
     .data                                    0x2000002c   Section       12  stm32f4xx_hal.o(.data)
     .data                                    0x20000038   Section        4  system_stm32f4xx.o(.data)
     .data                                    0x2000003c   Section       44  dds_dac80004.o(.data)
-    .bss                                     0x20000068   Section    24576  main.o(.bss)
-    .bss                                     0x20006068   Section       96  libspace.o(.bss)
-    HEAP                                     0x200060c8   Section      512  startup_stm32f411xe.o(HEAP)
-    Heap_Mem                                 0x200060c8   Data         512  startup_stm32f411xe.o(HEAP)
-    STACK                                    0x200062c8   Section     1024  startup_stm32f411xe.o(STACK)
-    Stack_Mem                                0x200062c8   Data        1024  startup_stm32f411xe.o(STACK)
-    __initial_sp                             0x200066c8   Data           0  startup_stm32f411xe.o(STACK)
+    .bss                                     0x20000068   Section    49152  main.o(.bss)
+    .bss                                     0x2000c068   Section       96  libspace.o(.bss)
+    HEAP                                     0x2000c0c8   Section      512  startup_stm32f411xe.o(HEAP)
+    Heap_Mem                                 0x2000c0c8   Data         512  startup_stm32f411xe.o(HEAP)
+    STACK                                    0x2000c2c8   Section     1024  startup_stm32f411xe.o(STACK)
+    Stack_Mem                                0x2000c2c8   Data        1024  startup_stm32f411xe.o(STACK)
+    __initial_sp                             0x2000c6c8   Data           0  startup_stm32f411xe.o(STACK)
 
     Global Symbols
 
@@ -1397,11 +1397,11 @@ Image Symbol Table
     g_dual_dma_low_current_count             0x2000005c   Data           4  dds_dac80004.o(.data)
     g_high_16bit_data                        0x20000060   Data           4  dds_dac80004.o(.data)
     g_low_16bit_data                         0x20000064   Data           4  dds_dac80004.o(.data)
-    wave_high_data                           0x20000068   Data        8192  main.o(.bss)
-    wave_low_data                            0x20002068   Data        8192  main.o(.bss)
-    wave_buffer                              0x20004068   Data        8192  main.o(.bss)
-    __libspace_start                         0x20006068   Data          96  libspace.o(.bss)
-    __temporary_stack_top$libspace           0x200060c8   Data           0  libspace.o(.bss)
+    wave_high_data                           0x20000068   Data       16384  main.o(.bss)
+    wave_low_data                            0x20004068   Data       16384  main.o(.bss)
+    wave_buffer                              0x20008068   Data       16384  main.o(.bss)
+    __libspace_start                         0x2000c068   Data          96  libspace.o(.bss)
+    __temporary_stack_top$libspace           0x2000c0c8   Data           0  libspace.o(.bss)
 
 
 
@@ -1612,7 +1612,7 @@ Memory Map of the image
     0x08003518   0x08003518   0x00000020   Data   RO         2116    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08003538, Size: 0x000066c8, Max: 0x00020000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08003538, Size: 0x0000c6c8, Max: 0x00020000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1623,10 +1623,10 @@ Memory Map of the image
     0x2000002c   0x08003564   0x0000000c   Data   RW         1077    .data               stm32f4xx_hal.o
     0x20000038   0x08003570   0x00000004   Data   RW         1512    .data               system_stm32f4xx.o
     0x2000003c   0x08003574   0x0000002c   Data   RW         1704    .data               dds_dac80004.o
-    0x20000068        -       0x00006000   Zero   RW           16    .bss                main.o
-    0x20006068        -       0x00000060   Zero   RW         1980    .bss                c_w.l(libspace.o)
-    0x200060c8        -       0x00000200   Zero   RW            2    HEAP                startup_stm32f411xe.o
-    0x200062c8        -       0x00000400   Zero   RW            1    STACK               startup_stm32f411xe.o
+    0x20000068        -       0x0000c000   Zero   RW           16    .bss                main.o
+    0x2000c068        -       0x00000060   Zero   RW         1980    .bss                c_w.l(libspace.o)
+    0x2000c0c8        -       0x00000200   Zero   RW            2    HEAP                startup_stm32f411xe.o
+    0x2000c2c8        -       0x00000400   Zero   RW            1    STACK               startup_stm32f411xe.o
 
 
 ==============================================================================
@@ -1641,7 +1641,7 @@ Image component sizes
        200         10          0          0          0      32329   dma.o
        108         10          0          0          0       9751   gpio.o
         36         12          0          0          0       5570   led.o
-       472         72          0         40      24576     392852   main.o
+       472         72          0         40      49152     392852   main.o
        332         38          8          1          0      33359   spi.o
         64         26        408          0       1536        852   startup_stm32f411xe.o
         12          6          0         12          0       6889   stm32f4xx_hal.o
@@ -1654,7 +1654,7 @@ Image component sizes
       1940        182         22          0          0      63490   tim.o
 
     ----------------------------------------------------------------------
-      6980        616        478        104      26112     724232   Object Totals
+      6980        616        478        104      50688     724232   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          8          0          0          3          0          0   (incl. Padding)
 
@@ -1733,14 +1733,14 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     12858       1106        766        104      26208     718280   Grand Totals
-     12858       1106        766        104      26208     718280   ELF Image Totals
+     12858       1106        766        104      50784     718280   Grand Totals
+     12858       1106        766        104      50784     718280   ELF Image Totals
      12858       1106        766        104          0          0   ROM Totals
 
 ==============================================================================
 
     Total RO  Size (Code + RO Data)                13624 (  13.30kB)
-    Total RW  Size (RW Data + ZI Data)             26312 (  25.70kB)
+    Total RW  Size (RW Data + ZI Data)             50888 (  49.70kB)
     Total ROM Size (Code + RO Data + RW Data)      13728 (  13.41kB)
 
 ==============================================================================
