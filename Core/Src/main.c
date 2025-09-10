@@ -9,7 +9,7 @@
 
 uint16_t wave_high_data[1024*20];
 uint16_t wave_low_data[1024*20];
-uint16_t wave_buffer[1024*20];
+// uint16_t wave_buffer[1024*20];
 
 
 void SystemClock_Config(void);
@@ -46,29 +46,39 @@ int main(void)
   //                                           wave_buffer,
   //                                           wave_high_data,
   //                                           wave_low_data);
-bool success = Generate_And_Start_CV_DDS(&DAC80004_Module1,
-                                            0.0,        // 初始电位 0mV
-                                            100.0,      // 终止电位 100mV
-                                            -500.0,     // 扫描极限1 -500mV
-                                            500.0,      // 扫描极限2 +500mV
-                                            100.0,      // 扫描速率 100mV/s
-                                            1000000.0,  // 最大采样率 1MHz
-                                            100,        // 最小点数
-                                            1024*20,       // 最大点数
-                                            0,          // 重复3次
-                                            wave_buffer,
-                                            wave_high_data,
-                                            wave_low_data);
+// bool success = Generate_And_Start_CV_DDS(&DAC80004_Module1,
+//                                             0.0,        // 初始电位 0mV
+//                                             0.0,      // 终止电位 100mV
+//                                             -500.0,     // 扫描极限1 -500mV
+//                                             500.0,      // 扫描极限2 +500mV
+//                                             100.0,      // 扫描速率 100mV/s
+//                                             1000000.0,  // 最大采样率 1MHz
+//                                             100,        // 最小点数
+//                                             1024*20,       // 最大点数
+//                                             0,          // 重复3次
+//                                             wave_buffer,
+//                                             wave_high_data,
+//                                             wave_low_data);
 
-  // for(uint16_t i=0;i<10;i++)
-  //   {
-  //     DAC80004_Data_Set(&DAC80004_Module1, 0xFFFF>>1);
-  //     DAC80004_WriteData(&DAC80004_Module1);
-        
-  //   }
+CV_DDS_Start(&DAC80004_Module1,
+                               500.0,        // 初始电位 0mV
+                               500.0,      // 终止电位 100mV
+                               -500.0,     // 扫描极限1 -500mV
+                               500.0,      // 扫描极限2 +500mV
+                               100.0,      // 扫描速率 100mV/s
+                               1000000.0,  // 最大采样率 1MHz
+                               100,        // 最小点数
+                               1024*20,       // 最大点数
+                               0,          // 重复
+                               wave_high_data,
+                               wave_low_data);
+
+
+
     while (1)
     {
 			
+
 
         LL_mDelay(100);
     

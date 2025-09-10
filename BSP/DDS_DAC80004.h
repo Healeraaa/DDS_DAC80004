@@ -132,5 +132,14 @@ bool Generate_And_Start_CV_DDS(DAC80004_InitStruct *module,
                                uint16_t *wave_high_data,
                                uint16_t *wave_low_data);
 
+bool CV_DDS_Start(DAC80004_InitStruct *module,
+                               double Initial_E, double Final_E,
+                               double Scan_Limit1, double Scan_Limit2,
+                               double Scan_Rate, double max_sample_rate,
+                               uint32_t min_points, uint32_t max_points,
+                               uint32_t repeat_count,
+                               uint16_t *wave_high_data,
+                               uint16_t *wave_low_data);
+
 
 #endif 
