@@ -13,7 +13,8 @@
             "dma.h": "c",
             "random": "c",
             "math.h": "c",
-            "spi.h": "c"
+            "spi.h": "c",
+            "functional": "c"
         }
     },
     "extensions": {}

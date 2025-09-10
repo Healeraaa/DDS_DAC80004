@@ -7,9 +7,9 @@
 #include "DDS_DAC80004.h"
 #include "main_init.h"
 
-uint16_t wave_high_data[1024*10];
-uint16_t wave_low_data[1024*10];
-uint16_t wave_buffer[1024*10];
+uint16_t wave_high_data[1024*20];
+uint16_t wave_low_data[1024*20];
+uint16_t wave_buffer[1024*20];
 
 
 void SystemClock_Config(void);
@@ -34,11 +34,31 @@ int main(void)
   
   // DDS_Start_Precise(wave_data, 4, 10);
   // DDS_Start_Repeat(wave_data, 4, 10, 3);
-  SineWaveResult_t result;
-  Generate_Smart_Sine_Wave(wave_buffer, 10000.0, 1000000.0, 20, 1024*10, 20000, 32768, &result);
-  Encode_Wave_DualDMA(&DAC80004_Module1, wave_buffer,wave_high_data,wave_low_data, result.points);
-  // DDS_Start_Repeat(&DAC80004_Module1,wave_data, result.points*2, result.actual_sample_rate, 0);
-  DDS_Start_DualDMA(&DAC80004_Module1,WAVE_MODE_SINE,wave_high_data, wave_low_data, result.points, result.points, result.actual_sample_rate, 0);
+ 
+  // bool success = Generate_And_Start_Sine_DDS(&DAC80004_Module1,
+  //                                           1000.0,      // 目标频率 
+  //                                           1000000.0,   // 最大采样率 
+  //                                           20,          // 最小点数
+  //                                           1024*20,     // 最大点数
+  //                                           20000,       // 幅值
+  //                                           32768,       // 偏移
+  //                                           0,           // 重复次数 (0=无限循环)
+  //                                           wave_buffer,
+  //                                           wave_high_data,
+  //                                           wave_low_data);
+bool success = Generate_And_Start_CV_DDS(&DAC80004_Module1,
+                                            0.0,        // 初始电位 0mV
+                                            100.0,      // 终止电位 100mV
+                                            -500.0,     // 扫描极限1 -500mV
+                                            500.0,      // 扫描极限2 +500mV
+                                            100.0,      // 扫描速率 100mV/s
+                                            1000000.0,  // 最大采样率 1MHz
+                                            100,        // 最小点数
+                                            1024*20,       // 最大点数
+                                            0,          // 重复3次
+                                            wave_buffer,
+                                            wave_high_data,
+                                            wave_low_data);
 
   // for(uint16_t i=0;i<10;i++)
   //   {

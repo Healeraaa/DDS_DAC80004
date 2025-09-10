@@ -27,7 +27,7 @@ Project File Date:  09/05/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling main.c...
+compiling spi.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
 ../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
@@ -36,11 +36,35 @@ compiling main.c...
   #define  INSTRUCTION_CACHE_ENABLE     1U
 ../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
   #define  DATA_CACHE_ENABLE            1U
-../Core/Src/main.c: 4 warnings, 0 errors
+../Core/Src/spi.c: 4 warnings, 0 errors
+compiling DDS_DAC80004.c...
+../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
+  #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
+../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
+  #define  PREFETCH_ENABLE              1U
+../Core/Inc/stm32f4xx_hal_conf.h(154): warning:  #47-D: incompatible redefinition of macro "INSTRUCTION_CACHE_ENABLE"
+  #define  INSTRUCTION_CACHE_ENABLE     1U
+../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
+  #define  DATA_CACHE_ENABLE            1U
+..\BSP\DDS_DAC80004.c(11): warning:  #188-D: enumerated type mixed with another type
+  volatile DMAHandler_t g_dma_handler = {0};
+..\BSP\DDS_DAC80004.c(18): warning:  #223-D: function "memset" declared implicitly
+      memset((void*)&g_dma_handler, 0, sizeof(DMAHandler_t));
+..\BSP\DDS_DAC80004.c(445): warning:  #223-D: function "LED_OFF" declared implicitly
+          LED_OFF();
+..\BSP\DDS_DAC80004.c(491): warning:  #223-D: function "LED_OFF" declared implicitly
+          LED_OFF();
+..\BSP\DDS_DAC80004.c(807): warning:  #223-D: function "LED_OFF" declared implicitly
+          LED_OFF();
+..\BSP\DDS_DAC80004.c(856): warning:  #223-D: function "LED_OFF" declared implicitly
+          LED_OFF();
+..\BSP\DDS_DAC80004.c(932): warning:  #1-D: last line of file ends without a newline
+  }
+..\BSP\DDS_DAC80004.c: 11 warnings, 0 errors
 linking...
-Program Size: Code=12966 RO-data=770 RW-data=60 ZI-data=63116  
+Program Size: Code=11730 RO-data=478 RW-data=60 ZI-data=124684  
 FromELF: creating hex file...
-"Project\Project.axf" - 0 Error(s), 4 Warning(s).
+"Project\Project.axf" - 0 Error(s), 15 Warning(s).
 
 <h2>Software Packages used:</h2>
 

@@ -71,17 +71,34 @@ typedef struct {
     bool success;                 // 生成是否成功 (false:失败, true:成功)
 } SineWaveResult_t;
 
+/**
+ * @brief  循环伏安法结果结构体
+ */
+typedef struct {
+    uint32_t points;                    // 总数据点数
+    double actual_sample_rate;          // 实际采样率 (Hz)
+    double total_duration;              // 总持续时间 (s)
+    double actual_scan_rate;            // 实际扫描速率 (mV/s)
+    double scan_rate_error;             // 扫描速率误差 (mV/s)
+    double error_percent;               // 误差百分比 (%)
+    uint32_t total_cycles;              // 实际循环次数
+    // 起始区信息
+    uint32_t initial_points;            // 起始区点数
+    // 循环区信息
+    uint32_t cycle_total_points;        // 所有循环的总点数
+    // 终止区信息
+    uint32_t final_points;              // 终止区点数
+    
+    bool success;                       // 生成是否成功
+} CvWaveResult_t;
+
+
 void SYNC_Cycle_Init(void);
 void SYNC_Cycle_SetPara(const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate);
 void SYNC_Cycle_Start(void);
 void SYNC_Cycle_Stop(void);
 
 void DDS_Init(DAC80004_InitStruct *module);
-void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
-                              double target_freq, double max_sample_rate,
-                              uint32_t min_points, uint32_t max_points,
-                              uint16_t amplitude, uint16_t offset,
-                              SineWaveResult_t *result);
 void Encode_Wave_DualDMA(DAC80004_InitStruct *module, uint16_t *wave_buffer_in, 
                         uint16_t *wave_buffer_high_out, uint16_t *wave_buffer_low_out, uint32_t points);
 
@@ -89,6 +106,31 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,WaveMode_t wavemode ,uint16_t
                         uint16_t *wave_data_low, uint16_t data_high_size,uint16_t data_low_size,
                         double sample_rate, uint32_t repeat_count);
 void DDS_Stop_DualDMA(void);
+
+void Generate_Smart_Sine_Wave(uint16_t *wave_buffer,
+                              double target_freq, double max_sample_rate,
+                              uint32_t min_points, uint32_t max_points,
+                              uint16_t amplitude, uint16_t offset,
+                              SineWaveResult_t *result);
+
+bool Generate_And_Start_Sine_DDS(DAC80004_InitStruct *module,
+                                 double target_freq, double max_sample_rate,
+                                 uint32_t min_points, uint32_t max_points,
+                                 uint16_t amplitude, uint16_t offset,
+                                 uint32_t repeat_count,
+                                 uint16_t *wave_buffer,
+                                 uint16_t *wave_high_data,
+                                 uint16_t *wave_low_data);
+
+bool Generate_And_Start_CV_DDS(DAC80004_InitStruct *module,
+                               double Initial_E, double Final_E,
+                               double Scan_Limit1, double Scan_Limit2,
+                               double Scan_Rate, double max_sample_rate,
+                               uint32_t min_points, uint32_t max_points,
+                               uint32_t repeat_count,
+                               uint16_t *wave_buffer,
+                               uint16_t *wave_high_data,
+                               uint16_t *wave_low_data);
 
 
 #endif 
