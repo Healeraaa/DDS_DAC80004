@@ -454,8 +454,10 @@ void TIM_ApplyFreqConfig_DualDMA(TIM_TypeDef *TIMx, const TIM_FreqConfig_t *conf
   // 精确计算：(16.5 * effective_timer_clock) / spi_baudrate
   double spi_16_5_clk_timer_counts_double = (16.5 * effective_timer_clock) / spi_baudrate;
   
-  // 四舍五入到最接近的整数
-  uint32_t spi_16_5_clk_timer_counts = (uint32_t)round(spi_16_5_clk_timer_counts_double);
+  // // 四舍五入到最接近的整数
+  // uint32_t spi_16_5_clk_timer_counts = (uint32_t)round(spi_16_5_clk_timer_counts_double);
+   // 直接进一（向上取整）而不是四舍五入
+  uint32_t spi_16_5_clk_timer_counts = (uint32_t)ceil(spi_16_5_clk_timer_counts_double);
   
   // 确保计数值在合理范围内
   if (spi_16_5_clk_timer_counts > config->period) {
@@ -565,8 +567,9 @@ void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, dou
   // 精确计算：(35.0 * effective_timer_clock) / spi_baudrate
   double spi_35_clk_timer_counts_double = (42.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
   
-  uint32_t spi_35_clk_timer_counts = (uint32_t)round(spi_35_clk_timer_counts_double); // 四舍五入到最接近的整数
-  
+  // uint32_t spi_35_clk_timer_counts = (uint32_t)round(spi_35_clk_timer_counts_double); // 四舍五入到最接近的整数
+    
+  uint32_t spi_35_clk_timer_counts = (uint32_t)ceil(spi_35_clk_timer_counts_double);// 直接进一（向上取整）而不是四舍五入
   // 确保计数值在合理范围内
   if (spi_35_clk_timer_counts > config->period) {      // 如果35个SPI时钟周期超过了定时器周期
     spi_35_clk_timer_counts = (config->period + 1) / 2; // 则设为周期的一半

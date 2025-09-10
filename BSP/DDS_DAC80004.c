@@ -165,8 +165,8 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,WaveMode_t wavemode ,uint16_t
     
     // TIM_ApplyFreqConfig(TIM1, &freq_config);
     // TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config);
-    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config,100000000,100000000/4);
-    SYNC_Cycle_SetPara(&freq_config,100000000,100000000/4); // 设置SYNC信号参数
+    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config,100000000,100000000/2);
+    SYNC_Cycle_SetPara(&freq_config,100000000,100000000/2); // 设置SYNC信号参数
     
     /* 6. 启动传输 */
     LL_SPI_EnableDMAReq_TX(SPI1);
