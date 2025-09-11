@@ -14,7 +14,8 @@
             "random": "c",
             "math.h": "c",
             "spi.h": "c",
-            "functional": "c"
+            "functional": "c",
+            "echem_stim.h": "c"
         }
     },
     "extensions": {}

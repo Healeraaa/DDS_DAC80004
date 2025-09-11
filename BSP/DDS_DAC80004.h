@@ -93,6 +93,10 @@ typedef struct {
 } CvWaveResult_t;
 
 
+
+
+
+
 void SYNC_Cycle_Init(void);
 void SYNC_Cycle_SetPara(const TIM_FreqConfig_t *config, double timer_clock, double spi_baudrate);
 void SYNC_Cycle_Start(void);

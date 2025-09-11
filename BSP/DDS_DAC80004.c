@@ -796,20 +796,20 @@ bool CV_DDS_Start(DAC80004_InitStruct *module,
         return false;
     }
     
-    uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);
+    uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);//数据传输控制掩码
     /* 1. 生成智能循环伏安法波形 */
     // 初始化结果结构体
-        CvWaveResult.points = 0;
-        CvWaveResult.actual_sample_rate = 0.0;
-        CvWaveResult.total_duration = 0.0;
-        CvWaveResult.actual_scan_rate = 0.0;
-        CvWaveResult.scan_rate_error = 0.0;
-        CvWaveResult.error_percent = 0.0;
-        CvWaveResult.total_cycles = 1;  // 固定为1个周期
-        CvWaveResult.initial_points = 0;
-        CvWaveResult.cycle_total_points = 0;
-        CvWaveResult.final_points = 0;
-        CvWaveResult.success = false;
+    CvWaveResult.points = 0;
+    CvWaveResult.actual_sample_rate = 0.0;
+    CvWaveResult.total_duration = 0.0;
+    CvWaveResult.actual_scan_rate = 0.0;
+    CvWaveResult.scan_rate_error = 0.0;
+    CvWaveResult.error_percent = 0.0;
+    CvWaveResult.total_cycles = 1;  // 固定为1个周期
+    CvWaveResult.initial_points = 0;
+    CvWaveResult.cycle_total_points = 0;
+    CvWaveResult.final_points = 0;
+    CvWaveResult.success = false;
 
     
     /* 1. 计算各段的电位变化和理论时间 */
@@ -1011,6 +1011,242 @@ bool CV_DDS_Start(DAC80004_InitStruct *module,
     
     return start_success;
 }
+
+// bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
+//                                double Initial_E, double Final_E,
+//                                double Scan_Limit1, double Scan_Limit2,
+//                                double Scan_Rate, double max_sample_rate,
+//                                uint32_t min_points, uint32_t max_points,
+//                                uint32_t repeat_count,
+//                                uint16_t *wave_high_data1,uint16_t *wave_high_data2,
+//                                uint16_t *wave_low_data1,uint16_t *wave_low_data2)
+// {
+//     // 参数验证
+//     if (module == NULL  || wave_high_data1 == NULL || wave_high_data2 == NULL || wave_low_data1 == NULL || wave_low_data2 == NULL|| &CvWaveResult == NULL) {
+//         return false;
+//     }
+//     // 参数验证
+//     if ( Scan_Rate <= 0 || max_sample_rate <= 0 || min_points == 0 || max_points < min_points) {
+//         return false;
+//     }
+    
+//     uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);//数据传输控制掩码
+//     /* 1. 生成智能循环伏安法波形 */
+//     // 初始化结果结构体
+//     CvWaveResult.points = 0;
+//     CvWaveResult.actual_sample_rate = 0.0;
+//     CvWaveResult.total_duration = 0.0;
+//     CvWaveResult.actual_scan_rate = 0.0;
+//     CvWaveResult.scan_rate_error = 0.0;
+//     CvWaveResult.error_percent = 0.0;
+//     CvWaveResult.total_cycles = 1;  // 固定为1个周期
+//     CvWaveResult.initial_points = 0;
+//     CvWaveResult.cycle_total_points = 0;
+//     CvWaveResult.final_points = 0;
+//     CvWaveResult.success = false;
+
+    
+//     /* 1. 计算各段的电位变化和理论时间 */
+//     // 起始段：Initial_E → Scan_Limit1
+//     double initial_voltage_change = fabs(Scan_Limit1 - Initial_E);
+//     double theoretical_initial_time = initial_voltage_change / Scan_Rate;
+    
+//     // 循环段：Scan_Limit1 → Scan_Limit2 → Scan_Limit1
+//     double cycle_voltage_change = fabs(Scan_Limit2 - Scan_Limit1);
+//     double theoretical_cycle_time = (2.0 * cycle_voltage_change) / Scan_Rate;  // 正向+反向
+    
+//     // 结束段：Scan_Limit1 → Final_E
+//     double final_voltage_change = fabs(Final_E - Scan_Limit1);
+//     double theoretical_final_time = final_voltage_change / Scan_Rate;
+    
+//     // 理论总时间
+//     double theoretical_total_time = theoretical_initial_time + theoretical_cycle_time + theoretical_final_time;
+    
+//     /* 2. 优化策略：优先使用最大点数，通过调整采样率来匹配 */
+//     uint32_t best_points = max_points;  // 从最大点数开始
+//     double best_sample_rate = 0.0;
+//     double min_error = 1e9;
+    
+//     /* 3. 从最大点数向下搜索，寻找最佳的采样率和点数组合 */
+//     for (uint32_t points = max_points; points >= min_points; points -= (max_points - min_points + 1) / 100) {
+//         // 基于点数计算对应的采样率
+//         double sample_rate = points / theoretical_total_time;
+        
+//         // 检查采样率是否在允许范围内
+//         if (sample_rate > max_sample_rate) {
+//             continue;  // 跳过超出最大采样率的点数
+//         }
+        
+//         // 计算实际的时间分配
+//         double actual_total_time = points / sample_rate;
+//         double time_scale = actual_total_time / theoretical_total_time;
+        
+//         // 计算实际各段时间
+//         double actual_initial_time = theoretical_initial_time * time_scale;
+//         double actual_cycle_time = theoretical_cycle_time * time_scale;
+//         double actual_final_time = theoretical_final_time * time_scale;
+        
+//         // 计算实际扫描速率
+//         double actual_scan_rate = cycle_voltage_change / (actual_cycle_time / 2.0);
+//         double scan_rate_error = fabs(actual_scan_rate - Scan_Rate);
+//         double error_percent = (scan_rate_error / Scan_Rate) * 100.0;
+        
+//         // 寻找误差最小的组合
+//         if (scan_rate_error < min_error) {
+//             min_error = scan_rate_error;
+//             best_points = points;
+//             best_sample_rate = sample_rate;
+            
+//             // 如果误差小于1%，可以接受
+//             if (error_percent < 1.0) break;
+//         }
+//     }
+    
+//     /* 4. 如果没有找到合适的组合，使用备用策略 */
+//     if (best_sample_rate == 0.0) {
+//         // 使用理论计算的采样率，限制在允许范围内
+//         best_sample_rate = best_points / theoretical_total_time;
+//         if (best_sample_rate > max_sample_rate) {
+//             best_sample_rate = max_sample_rate;
+//             best_points = (uint32_t)round(best_sample_rate * theoretical_total_time);
+//         }
+//         if (best_points < min_points) {
+//             best_points = min_points;
+//             best_sample_rate = best_points / theoretical_total_time;
+//         }
+//     }
+    
+//     /* 5. 基于最终确定的参数计算各段点数分配 */
+//     double actual_total_time = best_points / best_sample_rate;
+//     double time_scale = actual_total_time / theoretical_total_time;
+    
+//     // 计算各段实际时间
+//     double actual_initial_time = theoretical_initial_time * time_scale;
+//     double actual_cycle_time = theoretical_cycle_time * time_scale;
+//     double actual_final_time = theoretical_final_time * time_scale;
+    
+//     // 计算各段点数
+//     uint32_t initial_points = (uint32_t)round(best_sample_rate * actual_initial_time);
+//     uint32_t cycle_points = (uint32_t)round(best_sample_rate * actual_cycle_time);
+//     uint32_t final_points = (uint32_t)round(best_sample_rate * actual_final_time);
+    
+//     // 确保总点数准确
+//     uint32_t calculated_total = initial_points + cycle_points + final_points;
+//     if (calculated_total != best_points) {
+//         int32_t diff = best_points - calculated_total;
+//         // 优先调整循环部分的点数，因为它对精度影响最大
+//         cycle_points += diff;
+//     }
+    
+//     // 确保各段点数不为0
+//     if (initial_points == 0 && initial_voltage_change > 0) initial_points = 1;
+//     if (cycle_points < 2 && cycle_voltage_change > 0) cycle_points = 2;  // 循环至少需要2个点
+//     if (final_points == 0 && final_voltage_change > 0) final_points = 1;
+    
+//     /* 6. 设置结果结构体的点数信息 */
+//     CvWaveResult.initial_points = initial_points;
+//     CvWaveResult.cycle_total_points = cycle_points;
+//     CvWaveResult.final_points = final_points;
+    
+//     /* 7. 生成波形数据 */
+//     uint32_t encoded_data;//编码数据
+//     uint32_t index = 0;
+
+//     // 7.1 起始部分：Initial_E → Scan_Limit1
+//     for (uint32_t i = 0; i < initial_points && index < best_points; i++, index++) {
+//         double progress = (initial_points > 1) ? (double)i / (initial_points - 1) : 0.0;
+//         double voltage = Initial_E + progress * (Scan_Limit1 - Initial_E);
+        
+//         // 转换为DAC值 (电位范围-5000mV到+5000mV映射到0-65535)
+//         int32_t dac_value = (int32_t)(32768 + (voltage * 32768.0 / 5000.0));
+//         if (dac_value < 0) dac_value = 0;
+//         if (dac_value > 65535) dac_value = 65535;
+//         encoded_data = control_mask | ((uint32_t)dac_value << 4);
+//         // 分离存储到两个独立数组
+//         wave_high_data[index] = (uint16_t)(encoded_data >> 16);  // 高16位
+//         wave_low_data[index]  = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+//     }
+
+//     // 7.2 循环部分：Scan_Limit1 → Scan_Limit2 → Scan_Limit1
+//     uint32_t half_cycle_points = cycle_points / 2;
+
+
+//     // 正向扫描：Scan_Limit1 → Scan_Limit2
+//     for (uint32_t i = 0; i < half_cycle_points && index < best_points; i++, index++) {
+//         double progress = (half_cycle_points > 1) ? (double)i / (half_cycle_points - 1) : 0.0;
+//         double voltage = Scan_Limit1 + progress * (Scan_Limit2 - Scan_Limit1);
+        
+//         int32_t dac_value = (int32_t)(32768 + (voltage * 32768.0 / 5000.0));
+//         if (dac_value < 0) dac_value = 0;
+//         if (dac_value > 65535) dac_value = 65535;
+//         encoded_data = control_mask | ((uint32_t)dac_value << 4);
+//         // 分离存储到两个独立数组
+//         wave_high_data[index] = (uint16_t)(encoded_data >> 16);  // 高16位
+//         wave_low_data[index]  = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+
+
+//     }
+
+//     // 反向扫描：Scan_Limit2 → Scan_Limit1
+//     uint32_t remaining_cycle_points = cycle_points - half_cycle_points;
+//     for (uint32_t i = 0; i < remaining_cycle_points && index < best_points; i++, index++) {
+//         double progress = (remaining_cycle_points > 1) ? (double)i / (remaining_cycle_points - 1) : 0.0;
+//         double voltage = Scan_Limit2 + progress * (Scan_Limit1 - Scan_Limit2);
+        
+//         int32_t dac_value = (int32_t)(32768 + (voltage * 32768.0 / 5000.0));
+//         if (dac_value < 0) dac_value = 0;
+//         if (dac_value > 65535) dac_value = 65535;
+//         encoded_data = control_mask | ((uint32_t)dac_value << 4);
+//         // 分离存储到两个独立数组
+//         wave_high_data[index] = (uint16_t)(encoded_data >> 16);  // 高16位
+//         wave_low_data[index]  = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+//     }
+
+//     // 7.3 结束部分：Scan_Limit1 → Final_E
+//     for (uint32_t i = 0; i < final_points && index < best_points; i++, index++) {
+//         double progress = (final_points > 1) ? (double)i / (final_points - 1) : 0.0;
+//         double voltage = Scan_Limit1 + progress * (Final_E - Scan_Limit1);
+        
+//         int32_t dac_value = (int32_t)(32768 + (voltage * 32768.0 / 5000.0));
+//         if (dac_value < 0) dac_value = 0;
+//         if (dac_value > 65535) dac_value = 65535;
+//         encoded_data = control_mask | ((uint32_t)dac_value << 4);
+//         // 分离存储到两个独立数组
+//         wave_high_data[index] = (uint16_t)(encoded_data >> 16);  // 高16位
+//         wave_low_data[index]  = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+//     }
+
+//     /* 8. 填充剩余点（如果有） */
+//     while (index < best_points) {
+//         int32_t dac_value = (int32_t)(32768 + (Final_E * 32768.0 / 5000.0));
+//         if (dac_value < 0) dac_value = 0;
+//         if (dac_value > 65535) dac_value = 65535;
+//         encoded_data = control_mask | ((uint32_t)dac_value << 4);
+//         // 分离存储到两个独立数组
+//         wave_high_data[index] = (uint16_t)(encoded_data >> 16);  // 高16位
+//         wave_low_data[index]  = (uint16_t)(encoded_data & 0xFFFF); // 低16位
+//         index++;
+//     }
+    
+//     /* 9. 填充结果结构体 */
+//     CvWaveResult.points = best_points;
+//     CvWaveResult.actual_sample_rate = best_sample_rate;
+//     CvWaveResult.total_duration = best_points / best_sample_rate;
+//     CvWaveResult.actual_scan_rate = cycle_voltage_change / (cycle_points / best_sample_rate / 2.0);
+//     CvWaveResult.scan_rate_error = fabs(CvWaveResult.actual_scan_rate - Scan_Rate);
+//     CvWaveResult.error_percent = (CvWaveResult.scan_rate_error / Scan_Rate) * 100.0;
+//     CvWaveResult.success = true;
+    
+//     /* 3. 启动双DMA传输 */
+//     bool start_success = DDS_Start_DualDMA(module, WAVE_MODE_CV, 
+//                                           wave_high_data, wave_low_data, 
+//                                           CvWaveResult.points, CvWaveResult.points, 
+//                                           CvWaveResult.actual_sample_rate, repeat_count);
+    
+//     return start_success;
+// }
+
+
 
 
 
