@@ -530,6 +530,30 @@ void CV_PingPong_DMA2_Stream5_IRQHandler(void)
 {
     if (LL_DMA_IsActiveFlag_TC5(DMA2)) {
         LL_DMA_ClearFlag_TC5(DMA2);
+        // Stream5的传输完成处理在Stream4中完成（Stream4通常后完成）
+    }
+    
+    if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
+        LL_DMA_ClearFlag_TE5(DMA2);
+        g_pingpong_dma.is_running = false;
+        g_pingpong_dma.need_fill_buffer = false;
+        g_echem_result.state = ECHEM_STATE_ERROR;
+        
+        PingPong_DMA_Stop();
+        
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_DMA_FAILURE);
+        }
+    }
+}
+
+/**
+ * @brief  乒乓DMA中断处理函数 - Stream4（低16位）- 主处理逻辑
+ */
+void CV_PingPong_DMA2_Stream4_IRQHandler(void)
+{
+    if (LL_DMA_IsActiveFlag_TC4(DMA2)) {
+        LL_DMA_ClearFlag_TC4(DMA2);
         
         if (!g_pingpong_dma.is_running) {
             return; // 如果已停止运行，直接返回
@@ -547,7 +571,12 @@ void CV_PingPong_DMA2_Stream5_IRQHandler(void)
         // 检查是否传输完成
         if (g_pingpong_dma.points_sent >= g_pingpong_dma.total_points) {
             // 传输完成，停止DMA
+            g_pingpong_dma.transfer_complete = true;
+            g_pingpong_dma.is_running = false;
+            g_echem_result.state = ECHEM_STATE_COMPLETED;
+            
             PingPong_DMA_Stop();
+            
             if (g_progress_callback != NULL) {
                 g_progress_callback(100, ECHEM_STATE_COMPLETED);
             }
@@ -592,27 +621,11 @@ void CV_PingPong_DMA2_Stream5_IRQHandler(void)
         LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);
     }
     
-    if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
-        
-        PingPong_DMA_Stop();
-        
-        if (g_error_callback != NULL) {
-            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_DMA_FAILURE);
-        }
-    }
-}
-
-/**
- * @brief  乒乓DMA中断处理函数 - Stream4（低16位）
- */
-void CV_PingPong_DMA2_Stream4_IRQHandler(void)
-{
-    if (LL_DMA_IsActiveFlag_TC4(DMA2)) {
-        LL_DMA_ClearFlag_TC4(DMA2);
-        // Stream4的传输完成处理已在Stream5中完成
-    }
-    
     if (LL_DMA_IsActiveFlag_TE4(DMA2)) {
+        LL_DMA_ClearFlag_TE4(DMA2);
+        g_pingpong_dma.is_running = false;
+        g_pingpong_dma.need_fill_buffer = false;
+        g_echem_result.state = ECHEM_STATE_ERROR;
         
         PingPong_DMA_Stop();
         
@@ -621,7 +634,6 @@ void CV_PingPong_DMA2_Stream4_IRQHandler(void)
         }
     }
 }
-
 
 
 

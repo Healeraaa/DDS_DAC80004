@@ -27,16 +27,6 @@ Project File Date:  09/12/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling spi.c...
-../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
-  #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
-../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
-  #define  PREFETCH_ENABLE              1U
-../Core/Inc/stm32f4xx_hal_conf.h(154): warning:  #47-D: incompatible redefinition of macro "INSTRUCTION_CACHE_ENABLE"
-  #define  INSTRUCTION_CACHE_ENABLE     1U
-../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
-  #define  DATA_CACHE_ENABLE            1U
-../Core/Src/spi.c: 4 warnings, 0 errors
 compiling Echem_stim.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
@@ -48,15 +38,15 @@ compiling Echem_stim.c...
   #define  DATA_CACHE_ENABLE            1U
 ..\BSP\Echem_stim.c(201): warning:  #177-D: variable "current_cycle" was declared but never referenced
               uint32_t current_cycle = cycle_global_index / cycle_points;      // å½?å‰?æ˜?ç¬?å‡?ä¸?å¾?çŽ?
-..\BSP\Echem_stim.c(647): warning:  #223-D: function "memset" declared implicitly
+..\BSP\Echem_stim.c(658): warning:  #223-D: function "memset" declared implicitly
       memset(&g_cv_params, 0, sizeof(EchemCV_Params_t));
-..\BSP\Echem_stim.c(735): warning:  #1-D: last line of file ends without a newline
+..\BSP\Echem_stim.c(746): warning:  #1-D: last line of file ends without a newline
   }
 ..\BSP\Echem_stim.c: 7 warnings, 0 errors
 linking...
-Program Size: Code=11376 RO-data=600 RW-data=88 ZI-data=67336  
+Program Size: Code=11440 RO-data=600 RW-data=88 ZI-data=67336  
 FromELF: creating hex file...
-"Project\Project.axf" - 0 Error(s), 11 Warning(s).
+"Project\Project.axf" - 0 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -78,7 +68,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
