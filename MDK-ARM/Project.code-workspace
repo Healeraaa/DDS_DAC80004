@@ -6,16 +6,7 @@
     ],
     "settings": {
         "files.associations": {
-            "tim.h": "c",
-            "dac80004.h": "c",
-            "main_init.h": "c",
-            "dds_dac80004.h": "c",
-            "dma.h": "c",
-            "random": "c",
-            "math.h": "c",
-            "spi.h": "c",
-            "functional": "c",
-            "echem_stim.h": "c"
+            "dds_dac80004.h": "c"
         }
     },
     "extensions": {}

@@ -20,6 +20,7 @@
 "project\led.o"
 "project\dac80004.o"
 "project\dds_dac80004.o"
+"project\echem_stim.o"
 --strict --scatter "Project\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

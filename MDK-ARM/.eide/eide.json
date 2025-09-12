@@ -120,6 +120,12 @@
           },
           {
             "path": "../BSP/DAC80004.h"
+          },
+          {
+            "path": "../BSP/DDS_DAC80004.c"
+          },
+          {
+            "path": "../BSP/DDS_DAC80004.h"
           }
         ],
         "folders": []

@@ -15,7 +15,9 @@ typedef struct {
     uint32_t points_sent;           // 已发送的点数
     uint32_t buffer_size;           // 单个缓冲区大小
     bool transfer_complete;         // 传输完成标志
-    bool is_running;                // 运行状态标志
+    bool is_running;                // 运行状态标志 
+    volatile bool need_fill_buffer; // 需要填充缓冲区标志
+    volatile uint8_t buffer_to_fill;// 需要填充的缓冲区索引 (0 或 1)
 } PingPongDMA_t;
 
 /**
@@ -67,8 +69,14 @@ typedef struct {
     uint32_t cycles;                // 循环次数
     double equilibrium_time;        // 平衡时间 (s)
     bool auto_sensitivity;          // 自动灵敏度调节
+    
+    // 新增：计算出的段点数（由系统自动计算填充）
+    uint32_t initial_points;        // 起始段点数
+    uint32_t cycle_points;          // 循环段点数  
+    uint32_t final_points;          // 结束段点数
+    uint32_t total_points;          // 总点数
+    double actual_sample_rate;      // 实际采样率 (Hz)
 } EchemCV_Params_t;
-
 /**
  * @brief  电化学DPV参数结构体
  */
@@ -164,17 +172,45 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 
 
 
+// ==================== 通用乒乓DMA管理函数 ====================
 
+/**
+ * @brief  停止乒乓DMA传输
+ * @retval None
+ */
+void PingPong_DMA_Stop(void);
 
+/**
+ * @brief  暂停乒乓DMA传输
+ * @retval None
+ */
+void PingPong_DMA_Pause(void);
 
+/**
+ * @brief  恢复乒乓DMA传输
+ * @retval None
+ */
+void PingPong_DMA_Resume(void);
 
+/**
+ * @brief  检查乒乓DMA传输状态
+ * @retval true: 传输完成, false: 传输进行中
+ */
+bool PingPong_DMA_IsComplete(void);
 
+/**
+ * @brief  获取乒乓DMA传输进度
+ * @retval 传输进度百分比 (0-100)
+ */
+uint8_t PingPong_DMA_GetProgress(void);
 
+/**
+ * @brief  重置乒乓DMA状态
+ * @retval None
+ */
+void PingPong_DMA_Reset(void);
 
-
-
-
-// ==================== 核心功能函数 ====================
+// ==================== CV专用函数 ====================
 
 /**
  * @brief  循环伏安法DDS输出 - 乒乓DMA精确版本
@@ -182,48 +218,43 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
                          const EchemCV_Params_t *cv_params,
                          const PingPongConfig_t *config,
-                         uint32_t repeat_count,
                          uint16_t *wave_high_data1, uint16_t *wave_high_data2,
                          uint16_t *wave_low_data1, uint16_t *wave_low_data2);
 
 /**
- * @brief  填充下一个乒乓缓冲区的数据（在主循环中调用）
+ * @brief  填充下一个CV缓冲区的数据（在主循环中调用）
  */
-void CV_Fill_Next_Buffer(DAC80004_InitStruct *module,
-                        const EchemCV_Params_t *cv_params,
-                        uint32_t initial_points, uint32_t cycle_points, uint32_t final_points);
+void CV_Fill_Next_Buffer(void);
 
 /**
- * @brief  检查乒乓DMA传输状态
- * @retval true: 传输完成, false: 传输进行中
+ * @brief  检查是否需要填充CV缓冲区
+ * @retval true: 需要填充, false: 不需要填充
  */
-bool CV_PingPong_IsComplete(void);
+bool CV_NeedFillBuffer(void);
+
+// ==================== 实验结果和回调管理 ====================
+
+void Echem_stim_Init(DAC80004_InitStruct *module);
 
 /**
- * @brief  获取乒乓DMA传输进度
- * @retval 传输进度百分比 (0-100)
+ * @brief  获取实验结果
  */
-uint8_t CV_PingPong_GetProgress(void);
-
-
-
-// ==================== 中断处理函数 ====================
+const EchemResult_t* Echem_GetResult(void);
 
 /**
- * @brief  乒乓DMA中断处理函数 - Stream5（高16位）
+ * @brief  重置实验状态
  */
-void CV_PingPong_DMA2_Stream5_IRQHandler(void);
+void Echem_Reset(void);
 
 /**
- * @brief  乒乓DMA中断处理函数 - Stream4（低16位）
+ * @brief  设置进度回调函数
  */
-void CV_PingPong_DMA2_Stream4_IRQHandler(void);
+void Echem_SetProgressCallback(EchemProgressCallback_t callback);
 
-
-
-
-
-
+/**
+ * @brief  设置错误回调函数
+ */
+void Echem_SetErrorCallback(EchemErrorCallback_t callback);
 
 
 

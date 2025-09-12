@@ -42,7 +42,7 @@ project\main.o: ../Core/Inc/dma.h
 project\main.o: ../Core/Inc/gpio.h
 project\main.o: ..\BSP\LED.h
 project\main.o: ..\BSP\DAC80004.h
-project\main.o: ..\BSP\DDS_DAC80004.h
+project\main.o: ..\BSP\Echem_stim.h
 project\main.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 project\main.o: ../Core/Inc/tim.h
 project\main.o: ../Core/Inc/main_init.h

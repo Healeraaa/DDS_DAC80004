@@ -22,12 +22,12 @@ Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
 E:\MCU_Project\STM32F411Project\DAC8004_Driver\MDK-ARM\Project.uvprojx
-Project File Date:  09/05/2025
+Project File Date:  09/12/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling main.c...
+compiling spi.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
 ../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
@@ -36,10 +36,8 @@ compiling main.c...
   #define  INSTRUCTION_CACHE_ENABLE     1U
 ../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
   #define  DATA_CACHE_ENABLE            1U
-..\BSP\DDS_DAC80004.h(119): error:  #256: invalid redeclaration of type name "DMAHandler_t" (declared at line 58)
-  } DMAHandler_t;
-../Core/Src/main.c: 4 warnings, 1 error
-compiling DDS_DAC80004.c...
+../Core/Src/spi.c: 4 warnings, 0 errors
+compiling Echem_stim.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
 ../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
@@ -48,76 +46,17 @@ compiling DDS_DAC80004.c...
   #define  INSTRUCTION_CACHE_ENABLE     1U
 ../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
   #define  DATA_CACHE_ENABLE            1U
-..\BSP\DDS_DAC80004.h(119): error:  #256: invalid redeclaration of type name "DMAHandler_t" (declared at line 58)
-  } DMAHandler_t;
-..\BSP\DDS_DAC80004.c(18): warning:  #223-D: function "memset" declared implicitly
-      memset((void*)&g_dma_handler, 0, sizeof(DMAHandler_t));
-..\BSP\DDS_DAC80004.c(21): error:  #136: struct "<unnamed>" has no field "current_mode"
-      g_dma_handler.current_mode = WAVE_MODE_NONE;
-..\BSP\DDS_DAC80004.c(22): error:  #136: struct "<unnamed>" has no field "state"
-      g_dma_handler.state = DMA_STATE_IDLE;
-..\BSP\DDS_DAC80004.c(32): error:  #136: struct "<unnamed>" has no field "current_mode"
-      g_dma_handler.current_mode = mode;
-..\BSP\DDS_DAC80004.c(34): error:  #136: struct "<unnamed>" has no field "stream5"
-      g_dma_handler.stream5.data_ptr = high_data;
-..\BSP\DDS_DAC80004.c(35): error:  #136: struct "<unnamed>" has no field "stream5"
-      g_dma_handler.stream5.data_points = high_points;
-..\BSP\DDS_DAC80004.c(36): error:  #136: struct "<unnamed>" has no field "stream5"
-      g_dma_handler.stream5.current_count = 0;
-..\BSP\DDS_DAC80004.c(37): error:  #136: struct "<unnamed>" has no field "stream5"
-      g_dma_handler.stream5.transfer_complete = 0;
-..\BSP\DDS_DAC80004.c(40): error:  #136: struct "<unnamed>" has no field "stream4"
-      g_dma_handler.stream4.data_ptr = low_data;
-..\BSP\DDS_DAC80004.c(41): error:  #136: struct "<unnamed>" has no field "stream4"
-      g_dma_handler.stream4.data_points = low_points;
-..\BSP\DDS_DAC80004.c(42): error:  #136: struct "<unnamed>" has no field "stream4"
-      g_dma_handler.stream4.current_count = 0;
-..\BSP\DDS_DAC80004.c(43): error:  #136: struct "<unnamed>" has no field "stream4"
-      g_dma_handler.stream4.transfer_complete = 0;
-..\BSP\DDS_DAC80004.c(46): error:  #136: struct "<unnamed>" has no field "repeat_count"
-      g_dma_handler.repeat_count = repeat_count; // DMAå¾?çŽ?æ¬?æ•?ï¼?0=æ—?é™?å¾?çŽ?
-..\BSP\DDS_DAC80004.c(47): error:  #136: struct "<unnamed>" has no field "wave_stage"
-      g_dma_handler.wave_stage = WAVE_STAGE_STAGE1; // åˆ?å§?é˜?æ®?1
-..\BSP\DDS_DAC80004.c(50): error:  #136: struct "<unnamed>" has no field "state"
-      g_dma_handler.state = DMA_STATE_RUNNING;
-..\BSP\DDS_DAC80004.c(209): error:  #136: struct "<unnamed>" has no field "stream5"
-      g_dma_handler.stream5.transfer_complete = 0;        // æ¸?é™?é«?16ä½?å®?æˆ?æ ?å¿?                                                                                                                                                                        
-..\BSP\DDS_DAC80004.c(210): error:  #136: struct "<unnamed>" has no field "stream4"
-      g_dma_handler.stream4.transfer_complete = 0;        // æ¸?é™?ä½?16ä½?å®?æˆ?æ ?å¿?
-..\BSP\DDS_DAC80004.c(410): error:  #136: struct "<unnamed>" has no field "repeat_count"
-          if (g_dma_handler.repeat_count > 0) {
-..\BSP\DDS_DAC80004.c(411): error:  #136: struct "<unnamed>" has no field "stream5"
-              g_dma_handler.stream5.current_count++;  // å¢?åŠ?é«?16ä½?å·?å®?æˆ?æ¬?æ•?
-..\BSP\DDS_DAC80004.c(414): error:  #136: struct "<unnamed>" has no field "stream5"
-              if (g_dma_handler.stream5.current_count < g_dma_handler.repeat_count) {
-..\BSP\DDS_DAC80004.c(414): error:  #136: struct "<unnamed>" has no field "repeat_count"
-              if (g_dma_handler.stream5.current_count < g_dma_handler.repeat_count) {
-..\BSP\DDS_DAC80004.c(420): error:  #136: struct "<unnamed>" has no field "stream5"
-                  LL_DMA_SetMemoryAddress(
-MA2, 
-L_DMA_STREAM_5, (uint32_t)g_dma_handler.stream5.data_ptr);
-..\BSP\DDS_DAC80004.c(421): error:  #136: struct "<unnamed>" has no field "stream5"
-                  LL_DMA_SetDataLength(
-MA2, 
-L_DMA_STREAM_5, g_dma_handler.stream5.data_points);
-..\BSP\DDS_DAC80004.c(427): error:  #136: struct "<unnamed>" has no field "stream5"
-                  g_dma_handler.stream5.transfer_complete = 1;  // è®?ç½?é«?16ä½?å®?æˆ?æ ?å¿?
-..\BSP\DDS_DAC80004.c(430): error:  #136: struct "<unnamed>" has no field "stream4"
-                  if (g_dma_handler.stream4.transfer_complete == 1) {
-..\BSP\DDS_DAC80004.c(432): error:  #136: struct "<unnamed>" has no field "state"
-                      g_dma_handler.state = DMA_STATE_COMPLETED;
-..\BSP\DDS_DAC80004.c(443): error:  #136: struct "<unnamed>" has no field "state"
-          g_dma_handler.state = DMA_STATE_ERROR;
-..\BSP\DDS_DAC80004.c(445): warning:  #223-D: function "LED_OFF" declared implicitly
-          LED_OFF();
-..\BSP\DDS_DAC80004.c(456): error:  #136: struct "<unnamed>" has no field "repeat_count"
-          if (g_dma_handler.repeat_count > 0) {
-..\BSP\DDS_DAC80004.c(457): error:  #136: struct "<unnamed>" has no field "stream4"
-              g_dma_handler.stream4.current_count++;  // å¢?åŠ?ä½?16ä½?å·?å®?æˆ?æ¬?æ•?
-..\BSP\DDS_DAC80004.c(460): error:  #136: struct "<unnamed>" has no field "stream4"
-              if (g_dma_handler.stream4.current_count < g_dma_handler.repeat_count) {
-..\BSP\DDS_DAC80004.c: 6 warnings, 30 errors
-"Project\Project.axf" - 31 Error(s), 10 Warning(s).
+..\BSP\Echem_stim.c(201): warning:  #177-D: variable "current_cycle" was declared but never referenced
+              uint32_t current_cycle = cycle_global_index / cycle_points;      // å½?å‰?æ˜?ç¬?å‡?ä¸?å¾?çŽ?
+..\BSP\Echem_stim.c(647): warning:  #223-D: function "memset" declared implicitly
+      memset(&g_cv_params, 0, sizeof(EchemCV_Params_t));
+..\BSP\Echem_stim.c(735): warning:  #1-D: last line of file ends without a newline
+  }
+..\BSP\Echem_stim.c: 7 warnings, 0 errors
+linking...
+Program Size: Code=11376 RO-data=600 RW-data=88 ZI-data=67336  
+FromELF: creating hex file...
+"Project\Project.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -139,8 +78,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
-Target not created.
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

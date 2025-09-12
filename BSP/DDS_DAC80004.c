@@ -165,8 +165,8 @@ bool DDS_Start_DualDMA(DAC80004_InitStruct *module,WaveMode_t wavemode ,uint16_t
     
     // TIM_ApplyFreqConfig(TIM1, &freq_config);
     // TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config);
-    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config,100000000,100000000/2);
-    SYNC_Cycle_SetPara(&freq_config,100000000,100000000/2); // 设置SYNC信号参数
+    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config,100000000,100000000/8);
+    SYNC_Cycle_SetPara(&freq_config,100000000,100000000/8); // 设置SYNC信号参数
     
     /* 6. 启动传输 */
     LL_SPI_EnableDMAReq_TX(SPI1);
@@ -1356,41 +1356,41 @@ void CV_Wave_DMA2_Stream4_IRQHandler(void)
 
 
 
-/**
- * @brief  DMA2 Stream5中断处理函数 - 双DMA模式（高16位数据流）
- */
-void DMA2_Stream5_IRQHandler(void)
-{
-    switch (g_dma_handler.current_mode)
-    {
-    case WAVE_MODE_SINE:
-        Sin_Wave_DMA2_Stream5_IRQHandler();
-        break;
-    case WAVE_MODE_CV:
-        CV_Wave_DMA2_Stream5_IRQHandler();
-        break;
-    default:
-        break;
-    }
-}
+// /**
+//  * @brief  DMA2 Stream5中断处理函数 - 双DMA模式（高16位数据流）
+//  */
+// void DMA2_Stream5_IRQHandler(void)
+// {
+//     switch (g_dma_handler.current_mode)
+//     {
+//     case WAVE_MODE_SINE:
+//         Sin_Wave_DMA2_Stream5_IRQHandler();
+//         break;
+//     case WAVE_MODE_CV:
+//         CV_Wave_DMA2_Stream5_IRQHandler();
+//         break;
+//     default:
+//         break;
+//     }
+// }
 
-/**
- * @brief  DMA2 Stream4中断处理函数 - 双DMA模式（低16位数据流）
- */
-void DMA2_Stream4_IRQHandler(void)
-{
-    switch (g_dma_handler.current_mode)
-    {
-    case WAVE_MODE_SINE:
-        Sin_Wave_DMA2_Stream4_IRQHandler();  // 注意：这里之前有错误，应该是Stream4处理函数
-        break;
-    case WAVE_MODE_CV:
-        CV_Wave_DMA2_Stream4_IRQHandler();
-        break;
-    default:
-        break;
-    }
-}
+// /**
+//  * @brief  DMA2 Stream4中断处理函数 - 双DMA模式（低16位数据流）
+//  */
+// void DMA2_Stream4_IRQHandler(void)
+// {
+//     switch (g_dma_handler.current_mode)
+//     {
+//     case WAVE_MODE_SINE:
+//         Sin_Wave_DMA2_Stream4_IRQHandler();  // 注意：这里之前有错误，应该是Stream4处理函数
+//         break;
+//     case WAVE_MODE_CV:
+//         CV_Wave_DMA2_Stream4_IRQHandler();
+//         break;
+//     default:
+//         break;
+//     }
+// }
 
 /**
  * @brief  波形数据编码 - 双DMA版本，输出分离的数组

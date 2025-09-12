@@ -529,6 +529,16 @@
               <FileType>5</FileType>
               <FilePath>..\BSP\DDS_DAC80004.h</FilePath>
             </File>
+            <File>
+              <FileName>Echem_stim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\Echem_stim.c</FilePath>
+            </File>
+            <File>
+              <FileName>Echem_stim.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\Echem_stim.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

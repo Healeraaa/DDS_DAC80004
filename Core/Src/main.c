@@ -4,12 +4,18 @@
 #include "gpio.h"
 #include "LED.h"
 #include "DAC80004.h"
-#include "DDS_DAC80004.h"
+// #include "DDS_DAC80004.h"
+#include "Echem_stim.h"
 #include "main_init.h"
 
-uint16_t wave_high_data[1024*20];
-uint16_t wave_low_data[1024*20];
+// uint16_t wave_high_data[1024*20];
+// uint16_t wave_low_data[1024*20];
 // uint16_t wave_buffer[1024*20];
+
+uint16_t wave_high_data1[1024*8];
+uint16_t wave_high_data2[1024*8];
+uint16_t wave_low_data1[1024*8];
+uint16_t wave_low_data2[1024*8];
 
 
 void SystemClock_Config(void);
@@ -30,49 +36,55 @@ int main(void)
   LED_Init();
   LED_ON();
 
-  DDS_Init(&DAC80004_Module1);
-  
-  // DDS_Start_Precise(wave_data, 4, 10);
-  // DDS_Start_Repeat(wave_data, 4, 10, 3);
- 
-  // bool success = Generate_And_Start_Sine_DDS(&DAC80004_Module1,
-  //                                           1000.0,      // 目标频率 
-  //                                           1000000.0,   // 最大采样率 
-  //                                           20,          // 最小点数
-  //                                           1024*20,     // 最大点数
-  //                                           20000,       // 幅值
-  //                                           32768,       // 偏移
-  //                                           0,           // 重复次数 (0=无限循环)
-  //                                           wave_buffer,
-  //                                           wave_high_data,
-  //                                           wave_low_data);
-// bool success = Generate_And_Start_CV_DDS(&DAC80004_Module1,
-//                                             0.0,        // 初始电位 0mV
-//                                             0.0,      // 终止电位 100mV
-//                                             -500.0,     // 扫描极限1 -500mV
-//                                             500.0,      // 扫描极限2 +500mV
-//                                             100.0,      // 扫描速率 100mV/s
-//                                             1000000.0,  // 最大采样率 1MHz
-//                                             100,        // 最小点数
-//                                             1024*20,       // 最大点数
-//                                             0,          // 重复3次
-//                                             wave_buffer,
-//                                             wave_high_data,
-//                                             wave_low_data);
+  // DDS_Init(&DAC80004_Module1);
+  Echem_stim_Init(&DAC80004_Module1);
 
-CV_DDS_Start(&DAC80004_Module1,
-                               500.0,        // 初始电位 0mV
-                               500.0,      // 终止电位 100mV
-                               -500.0,     // 扫描极限1 -500mV
-                               500.0,      // 扫描极限2 +500mV
-                               100.0,      // 扫描速率 100mV/s
-                               1000000.0,  // 最大采样率 1MHz
-                               100,        // 最小点数
-                               1024*20,       // 最大点数
-                               0,          // 重复
-                               wave_high_data,
-                               wave_low_data);
+  EchemCV_Params_t cv_params = {
+        // 基本电位参数
+        .Initial_E = 500.0,      // 初始电位 500mV
+        .Final_E = 500.0,        // 终止电位 500mV  
+        .Scan_Limit1 = -500.0,   // 扫描极限1 -500mV
+        .Scan_Limit2 = 500.0,    // 扫描极限2 500mV
+        .Scan_Rate = 100.0,      // 扫描速率 100mV/s
+        .cycles = 3,             // 循环3次
+        .equilibrium_time = 2.0, // 平衡时间 2s
+        .auto_sensitivity = true,
+        
+        // 以下字段会由系统自动计算填充，无需手动设置
+        .initial_points = 0,
+        .cycle_points = 0,
+        .final_points = 0,
+        .total_points = 0,
+        .actual_sample_rate = 0.0
+    };
+    
+    // 乒乓DMA配置
+    PingPongConfig_t config = {
+        .buffer_size = 1024*8,         // 单个缓冲区大小
+        .max_sample_rate = 5000.0, // 最大采样率 1MHz
+        .min_points = 100,           // 最小点数
+        .max_points = 1024*8,       // 最大点数
+        .enable_progress_callback = true,
+        .enable_error_recovery = false
+    };
+    CV_DDS_Start_Precise(&DAC80004_Module1, 
+                          &cv_params, 
+                          &config, 
+                          wave_high_data1,
+                          wave_high_data2,
+                          wave_low_data1, 
+                          wave_low_data2);
 
+
+            while (!PingPong_DMA_IsComplete()) {
+            
+            // 检查是否需要填充缓冲区（关键！）
+            if (CV_NeedFillBuffer()) {
+                CV_Fill_Next_Buffer();
+            }
+            // LL_mDelay(1);
+
+        }
 
 
     while (1)
