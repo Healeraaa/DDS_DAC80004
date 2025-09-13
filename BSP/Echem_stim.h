@@ -70,7 +70,7 @@ typedef struct {
     double equilibrium_time;        // 平衡时间 (s)
     bool auto_sensitivity;          // 自动灵敏度调节
     
-    // 新增：计算出的段点数（由系统自动计算填充）
+    // 计算出的段点数（由系统自动计算填充）
     uint32_t initial_points;        // 起始段点数
     uint32_t cycle_points;          // 循环段点数  
     uint32_t final_points;          // 结束段点数
@@ -78,7 +78,7 @@ typedef struct {
     double actual_sample_rate;      // 实际采样率 (Hz)
 } EchemCV_Params_t;
 /**
- * @brief  电化学DPV参数结构体
+ * @brief  电化学DPV参数结构体（
  */
 typedef struct {
     double Initial_E;               // 初始电位 (mV)
@@ -86,10 +86,18 @@ typedef struct {
     double Step_E;                  // 步进电位 (mV)
     double Pulse_Amplitude;         // 脉冲幅度 (mV)
     double Pulse_Width;             // 脉冲宽度 (ms)
-    double Sample_Width;            // 采样宽度 (ms)
     double Pulse_Period;            // 脉冲周期 (ms)
+    double equilibrium_time;        // 平衡时间 (s)
+    bool auto_sensitivity;          // 自动灵敏度调节
+    
+    // 计算出的参数（由系统自动计算填充）
+    uint32_t total_steps;           // 总步数
+    uint32_t points_per_step;       // 每步的点数
+    uint32_t pulse_points;          // 脉冲部分点数
+    uint32_t base_points;           // 基础部分点数
+    uint32_t total_points;          // 总点数
+    double actual_sample_rate;      // 实际采样率 (Hz)
 } EchemDPV_Params_t;
-
 /**
  * @brief  电化学实验结果结构体
  */
@@ -165,8 +173,28 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 #define ECHEM_IS_SCAN_RATE_VALID(scan_rate) \
     ((scan_rate) >= ECHEM_SCAN_RATE_MIN_MV_S && (scan_rate) <= ECHEM_SCAN_RATE_MAX_MV_S)
 
+// ==================== DPV常量定义 ====================
+#define DPV_PULSE_WIDTH_MIN_MS         0.1          // 最小脉冲宽度 0.1ms
+#define DPV_PULSE_WIDTH_MAX_MS         1000.0       // 最大脉冲宽度 1s
+#define DPV_PULSE_PERIOD_MIN_MS        1.0          // 最小脉冲周期 1ms
+#define DPV_PULSE_PERIOD_MAX_MS        10000.0      // 最大脉冲周期 10s
+#define DPV_STEP_E_MIN_MV              0.1          // 最小步进电位 0.1mV
+#define DPV_STEP_E_MAX_MV              1000.0       // 最大步进电位 1V
+#define DPV_PULSE_AMPLITUDE_MIN_MV     1.0          // 最小脉冲幅度 1mV
+#define DPV_PULSE_AMPLITUDE_MAX_MV     500.0        // 最大脉冲幅度 500mV
 
+// DPV参数验证宏
+#define DPV_IS_PULSE_WIDTH_VALID(width_ms) \
+    ((width_ms) >= DPV_PULSE_WIDTH_MIN_MS && (width_ms) <= DPV_PULSE_WIDTH_MAX_MS)
 
+#define DPV_IS_PULSE_PERIOD_VALID(period_ms) \
+    ((period_ms) >= DPV_PULSE_PERIOD_MIN_MS && (period_ms) <= DPV_PULSE_PERIOD_MAX_MS)
+
+#define DPV_IS_STEP_E_VALID(step_e_mv) \
+    ((step_e_mv) >= DPV_STEP_E_MIN_MV && (step_e_mv) <= DPV_STEP_E_MAX_MV)
+
+#define DPV_IS_PULSE_AMPLITUDE_VALID(amplitude_mv) \
+    ((amplitude_mv) >= DPV_PULSE_AMPLITUDE_MIN_MV && (amplitude_mv) <= DPV_PULSE_AMPLITUDE_MAX_MV)
 
 
 
@@ -231,6 +259,28 @@ void CV_Fill_Next_Buffer(void);
  * @retval true: 需要填充, false: 不需要填充
  */
 bool CV_NeedFillBuffer(void);
+
+// ==================== DPV专用函数 ====================
+/**
+ * @brief  差分脉冲伏安法DDS输出 - 乒乓DMA精确版本
+ */
+bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
+                          const EchemDPV_Params_t *dpv_params,
+                          const PingPongConfig_t *config,
+                          uint16_t *wave_high_data1, uint16_t *wave_high_data2,
+                          uint16_t *wave_low_data1, uint16_t *wave_low_data2);
+
+/**
+ * @brief  填充下一个DPV缓冲区的数据
+ */
+void DPV_Fill_Next_Buffer(void);
+
+/**
+ * @brief  检查是否需要填充DPV缓冲区
+ */
+bool DPV_NeedFillBuffer(void);
+
+
 
 // ==================== 实验结果和回调管理 ====================
 

@@ -27,7 +27,7 @@ Project File Date:  09/12/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling Echem_stim.c...
+compiling main.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE"
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
 ../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE"
@@ -36,17 +36,11 @@ compiling Echem_stim.c...
   #define  INSTRUCTION_CACHE_ENABLE     1U
 ../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE"
   #define  DATA_CACHE_ENABLE            1U
-..\BSP\Echem_stim.c(219): warning:  #177-D: variable "current_cycle" was declared but never referenced
-              uint32_t current_cycle = cycle_global_index / cycle_points;      // å½?å‰?æ˜?ç¬?å‡?ä¸?å¾?çŽ?
-..\BSP\Echem_stim.c(738): warning:  #223-D: function "memset" declared implicitly
-      memset(&g_cv_params, 0, sizeof(EchemCV_Params_t));
-..\BSP\Echem_stim.c(826): warning:  #1-D: last line of file ends without a newline
-  }
-..\BSP\Echem_stim.c: 7 warnings, 0 errors
+../Core/Src/main.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=11712 RO-data=600 RW-data=92 ZI-data=67356  
+Program Size: Code=11888 RO-data=600 RW-data=88 ZI-data=67440  
 FromELF: creating hex file...
-"Project\Project.axf" - 0 Error(s), 7 Warning(s).
+"Project\Project.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -68,7 +62,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
