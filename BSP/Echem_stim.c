@@ -10,7 +10,8 @@
 #endif
 
 // 全局乒乓DMA管理结构体
-volatile PingPongDMA_t g_pingpong_dma = {0};
+volatile PingPongDMA_t g_pingpong_dma_stream4 = {0};
+volatile PingPongDMA_t g_pingpong_dma_stream5 = {0};
 EchemResult_t g_echem_result = {0};
 
 // 添加全局变量保存参数（供CV_Fill_Next_Buffer使用）
@@ -27,7 +28,6 @@ static uint16_t *g_cv_wave_high_data1 = NULL;
 static uint16_t *g_cv_wave_high_data2 = NULL;
 static uint16_t *g_cv_wave_low_data1 = NULL;
 static uint16_t *g_cv_wave_low_data2 = NULL;
-
 
 
 
@@ -77,8 +77,10 @@ void PingPong_DMA_Stop(void)
     LL_DMA_ClearFlag_FE4(DMA2);
     
     // 更新状态
-    g_pingpong_dma.is_running = false;
-    g_pingpong_dma.need_fill_buffer = false;
+    g_pingpong_dma_stream4.is_running = false;
+    g_pingpong_dma_stream4.need_fill_buffer = false;
+    g_pingpong_dma_stream5.is_running = false;
+    g_pingpong_dma_stream5.need_fill_buffer = false;
 }
 
 /**
@@ -87,7 +89,7 @@ void PingPong_DMA_Stop(void)
  */
 void PingPong_DMA_Pause(void)
 {
-    if (!g_pingpong_dma.is_running) {
+    if ((!g_pingpong_dma_stream4.is_running) && (!g_pingpong_dma_stream5.is_running)) {
         return;
     }
     
@@ -104,7 +106,8 @@ void PingPong_DMA_Pause(void)
  */
 void PingPong_DMA_Resume(void)
 {
-    if (!g_pingpong_dma.is_running || g_pingpong_dma.transfer_complete) {
+    if ((!g_pingpong_dma_stream4.is_running && !g_pingpong_dma_stream5.is_running) || 
+        (g_pingpong_dma_stream4.transfer_complete && g_pingpong_dma_stream5.transfer_complete)) {
         return;
     }
     
@@ -121,7 +124,7 @@ void PingPong_DMA_Resume(void)
  */
 bool PingPong_DMA_IsComplete(void)
 {
-    return g_pingpong_dma.transfer_complete;
+    return g_pingpong_dma_stream4.transfer_complete && g_pingpong_dma_stream5.transfer_complete;
 }
 
 /**
@@ -130,11 +133,15 @@ bool PingPong_DMA_IsComplete(void)
  */
 uint8_t PingPong_DMA_GetProgress(void)
 {
-    if (g_pingpong_dma.total_points == 0) {
+    if (g_pingpong_dma_stream4.total_points == 0) {
         return 0;
     }
     
-    uint32_t progress = (g_pingpong_dma.points_sent * 100) / g_pingpong_dma.total_points;
+    // 使用较快完成的Stream来计算进度
+    uint32_t max_points_sent = (g_pingpong_dma_stream4.points_sent > g_pingpong_dma_stream5.points_sent) ? 
+                               g_pingpong_dma_stream4.points_sent : g_pingpong_dma_stream5.points_sent;
+    
+    uint32_t progress = (max_points_sent * 100) / g_pingpong_dma_stream4.total_points;
     return (progress > 100) ? 100 : (uint8_t)progress;
 }
 
@@ -144,14 +151,25 @@ uint8_t PingPong_DMA_GetProgress(void)
  */
 void PingPong_DMA_Reset(void)
 {
-    g_pingpong_dma.active_buffer = 0;
-    g_pingpong_dma.total_points = 0;
-    g_pingpong_dma.points_sent = 0;
-    g_pingpong_dma.buffer_size = 0;
-    g_pingpong_dma.transfer_complete = false;
-    g_pingpong_dma.is_running = false;
-    g_pingpong_dma.need_fill_buffer = false;
-    g_pingpong_dma.buffer_to_fill = 0;
+    // Stream4重置
+    g_pingpong_dma_stream4.active_buffer = 0;
+    g_pingpong_dma_stream4.total_points = 0;
+    g_pingpong_dma_stream4.points_sent = 0;
+    g_pingpong_dma_stream4.buffer_size = 0;
+    g_pingpong_dma_stream4.transfer_complete = false;
+    g_pingpong_dma_stream4.is_running = false;
+    g_pingpong_dma_stream4.need_fill_buffer = false;
+    g_pingpong_dma_stream4.buffer_to_fill = 0;
+    
+    // Stream5重置
+    g_pingpong_dma_stream5.active_buffer = 0;
+    g_pingpong_dma_stream5.total_points = 0;
+    g_pingpong_dma_stream5.points_sent = 0;
+    g_pingpong_dma_stream5.buffer_size = 0;
+    g_pingpong_dma_stream5.transfer_complete = false;
+    g_pingpong_dma_stream5.is_running = false;
+    g_pingpong_dma_stream5.need_fill_buffer = false;
+    g_pingpong_dma_stream5.buffer_to_fill = 0;
 }
 
 // ==================== CV专用函数 ====================
@@ -184,7 +202,7 @@ static void Generate_CV_Data_Partial(DAC80004_InitStruct *module,
     uint32_t initial_points = cv_params->initial_points;
     uint32_t cycle_points = cv_params->cycle_points;
     uint32_t final_points = cv_params->final_points;
-    uint32_t total_cycle_points = cycle_points * cycles;  // ✅ 所有循环的总点数
+    uint32_t total_cycle_points = cycle_points * cycles;  
 
     for (uint32_t i = 0; i < points_to_fill; i++) {
         uint32_t global_index = start_point + i;
@@ -237,24 +255,27 @@ static void Generate_CV_Data_Partial(DAC80004_InitStruct *module,
  */
 void CV_Fill_Next_Buffer(void)
 {
-    if (!g_pingpong_dma.need_fill_buffer || !g_pingpong_dma.is_running || g_pingpong_dma.transfer_complete) {
+    if (!g_pingpong_dma_stream4.need_fill_buffer || 
+        !g_pingpong_dma_stream4.is_running || 
+        g_pingpong_dma_stream4.transfer_complete) {
         return;
     }
     
-    // 计算下次需要填充的起始点
-    uint32_t next_start_point = g_pingpong_dma.points_sent + g_pingpong_dma.buffer_size;
+    // 计算下次需要填充的起始点 以Stream4为准
+    uint32_t next_start_point = g_pingpong_dma_stream4.points_sent + g_pingpong_dma_stream4.buffer_size;
     
-    if (next_start_point >= g_pingpong_dma.total_points) {
-        g_pingpong_dma.need_fill_buffer = false;
+    if (next_start_point >= g_pingpong_dma_stream4.total_points) {
+        g_pingpong_dma_stream4.need_fill_buffer = false;
+        g_pingpong_dma_stream4.need_fill_buffer = false;
         return;
     }
     
-    uint32_t remaining_points = g_pingpong_dma.total_points - next_start_point;
-    uint32_t points_to_fill = (remaining_points > g_pingpong_dma.buffer_size) ? 
-                              g_pingpong_dma.buffer_size : remaining_points;
+    uint32_t remaining_points = g_pingpong_dma_stream4.total_points - next_start_point;
+    uint32_t points_to_fill = (remaining_points > g_pingpong_dma_stream4.buffer_size) ? 
+                              g_pingpong_dma_stream4.buffer_size : remaining_points;
     
     // 根据标志位指示的缓冲区索引选择目标缓冲区
-    if (g_pingpong_dma.buffer_to_fill == 0) {
+    if (g_pingpong_dma_stream4.buffer_to_fill == 0) {
         Generate_CV_Data_Partial(g_dac_module, g_cv_wave_high_data1, g_cv_wave_low_data1,
                                  next_start_point, points_to_fill, &g_cv_params);
     } else {
@@ -263,7 +284,8 @@ void CV_Fill_Next_Buffer(void)
     }
     
     // 清除填充标志
-    g_pingpong_dma.need_fill_buffer = false;
+    g_pingpong_dma_stream4.need_fill_buffer = false;
+    g_pingpong_dma_stream5.need_fill_buffer = false;
 }
 
 
@@ -392,14 +414,23 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
     g_cv_params = cv_params_calc;
     
     /* 2. 初始化乒乓DMA管理结构体 */
-    g_pingpong_dma.active_buffer = 0;
-    g_pingpong_dma.total_points = cv_params_calc.total_points;
-    g_pingpong_dma.points_sent = 0;
-    g_pingpong_dma.buffer_size = config->buffer_size;
-    g_pingpong_dma.transfer_complete = false;
-    g_pingpong_dma.is_running = true;
-    g_pingpong_dma.need_fill_buffer = false;
-    g_pingpong_dma.buffer_to_fill = 0;
+    g_pingpong_dma_stream4.active_buffer = 0;
+    g_pingpong_dma_stream4.total_points = cv_params_calc.total_points;
+    g_pingpong_dma_stream4.points_sent = 0;
+    g_pingpong_dma_stream4.buffer_size = config->buffer_size;
+    g_pingpong_dma_stream4.transfer_complete = false;
+    g_pingpong_dma_stream4.is_running = true;
+    g_pingpong_dma_stream4.need_fill_buffer = false;
+    g_pingpong_dma_stream4.buffer_to_fill = 0; 
+
+    g_pingpong_dma_stream5.active_buffer = 0;
+    g_pingpong_dma_stream5.total_points = cv_params_calc.total_points;
+    g_pingpong_dma_stream5.points_sent = 0;
+    g_pingpong_dma_stream5.buffer_size = config->buffer_size;
+    g_pingpong_dma_stream5.transfer_complete = false;
+    g_pingpong_dma_stream5.is_running = true;
+    g_pingpong_dma_stream5.need_fill_buffer = false;
+    g_pingpong_dma_stream5.buffer_to_fill = 0; 
     
     /* 3. 更新实验结果结构体 */
     g_echem_result.total_points = cv_params_calc.total_points;
@@ -419,7 +450,8 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
                              0, first_batch_size, &cv_params_calc);
     
     /* 5. 如果数据量大于一个缓冲区，填充第二个缓冲区（缓冲区2） */
-    if (cv_params_calc.total_points > config->buffer_size) {
+    if (cv_params_calc.total_points > config->buffer_size) 
+    {
         uint32_t second_batch_size = ((cv_params_calc.total_points - config->buffer_size) > config->buffer_size) ? 
                                      config->buffer_size : (cv_params_calc.total_points - config->buffer_size);
         Generate_CV_Data_Partial(module, wave_high_data2, wave_low_data2,
@@ -482,8 +514,8 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
         return false;
     }
     
-    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config, 100000000, 100000000/32);
-    SYNC_Cycle_SetPara(&freq_config, 100000000, 100000000/32);
+    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config, 100000000, 100000000/2);
+    SYNC_Cycle_SetPara(&freq_config, 100000000, 100000000/2);
     
     /* 8. 启动传输 */
     g_echem_result.state = ECHEM_STATE_RUNNING;
@@ -520,7 +552,8 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
  */
 bool CV_NeedFillBuffer(void)
 {
-    return g_pingpong_dma.need_fill_buffer && g_pingpong_dma.is_running && !g_pingpong_dma.transfer_complete;
+    return (g_pingpong_dma_stream4.need_fill_buffer && g_pingpong_dma_stream4.is_running && !g_pingpong_dma_stream4.transfer_complete) &&
+           (g_pingpong_dma_stream5.need_fill_buffer && g_pingpong_dma_stream5.is_running && !g_pingpong_dma_stream5.transfer_complete);
 }
 
 /**
@@ -530,13 +563,66 @@ void CV_PingPong_DMA2_Stream5_IRQHandler(void)
 {
     if (LL_DMA_IsActiveFlag_TC5(DMA2)) {
         LL_DMA_ClearFlag_TC5(DMA2);
-        // Stream5的传输完成处理在Stream4中完成（Stream4通常后完成）
+
+        if (!g_pingpong_dma_stream5.is_running) {
+            return;
+        }
+        
+        // Stream5独立管理自己的传输计数
+        g_pingpong_dma_stream5.points_sent += g_pingpong_dma_stream5.buffer_size;
+        
+        // 检查Stream5是否完成传输
+        if (g_pingpong_dma_stream5.points_sent >= g_pingpong_dma_stream5.total_points) {
+            g_pingpong_dma_stream5.transfer_complete = true;
+            g_pingpong_dma_stream5.is_running = false;
+            
+            // 检查是否两个Stream都完成了
+            if (g_pingpong_dma_stream4.transfer_complete) {
+                g_echem_result.state = ECHEM_STATE_COMPLETED;
+                PingPong_DMA_Stop();
+                
+                if (g_progress_callback != NULL) {
+                    g_progress_callback(100, ECHEM_STATE_COMPLETED);
+                }
+            }
+            return;
+        }
+        
+
+        // ！！！先保存当前缓冲区索引（用于后续填充）
+        uint8_t completed_buffer = g_pingpong_dma_stream5.active_buffer;
+        // ！！！ 切换到另一个缓冲区
+        g_pingpong_dma_stream5.active_buffer = 1 - g_pingpong_dma_stream5.active_buffer;
+        
+        // ！！！ 设置填充需求 - 填充刚刚传输完成的缓冲区
+        uint32_t next_start_point = g_pingpong_dma_stream5.points_sent + g_pingpong_dma_stream5.buffer_size;
+        if (next_start_point < g_pingpong_dma_stream5.total_points) {
+            g_pingpong_dma_stream5.buffer_to_fill = completed_buffer;  // 填充刚完成的缓冲区
+            g_pingpong_dma_stream5.need_fill_buffer = true;
+        }
+        
+        // 重新配置Stream5
+        LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+        while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+        
+        uint32_t remaining_points = g_pingpong_dma_stream5.total_points - g_pingpong_dma_stream5.points_sent;
+        uint32_t next_transfer_size = (remaining_points > g_pingpong_dma_stream5.buffer_size) ? 
+                                      g_pingpong_dma_stream5.buffer_size : remaining_points;
+        
+        if (g_pingpong_dma_stream5.active_buffer == 0) {
+            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_cv_wave_high_data1);
+        } else {
+            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_cv_wave_high_data2);
+        }
+        
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, next_transfer_size);
+        LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
     }
     
     if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
         LL_DMA_ClearFlag_TE5(DMA2);
-        g_pingpong_dma.is_running = false;
-        g_pingpong_dma.need_fill_buffer = false;
+        g_pingpong_dma_stream5.is_running = false;
+        g_pingpong_dma_stream5.need_fill_buffer = false;
         g_echem_result.state = ECHEM_STATE_ERROR;
         
         PingPong_DMA_Stop();
@@ -547,84 +633,78 @@ void CV_PingPong_DMA2_Stream5_IRQHandler(void)
     }
 }
 
-/**
- * @brief  乒乓DMA中断处理函数 - Stream4（低16位）- 主处理逻辑
- */
+
 void CV_PingPong_DMA2_Stream4_IRQHandler(void)
 {
+
     if (LL_DMA_IsActiveFlag_TC4(DMA2)) {
         LL_DMA_ClearFlag_TC4(DMA2);
         
-        if (!g_pingpong_dma.is_running) {
-            return; // 如果已停止运行，直接返回
+        if (!g_pingpong_dma_stream4.is_running) {
+            return;
         }
         
-        // 更新已发送点数
-        g_pingpong_dma.points_sent += g_pingpong_dma.buffer_size;
+        // Stream4独立管理自己的传输计数
+        g_pingpong_dma_stream4.points_sent += g_pingpong_dma_stream4.buffer_size;
         
-        // 调用进度回调函数
+        // Stream4负责进度报告（因为通常是后完成的）
         if (g_progress_callback != NULL) {
             uint8_t progress = PingPong_DMA_GetProgress();
             g_progress_callback(progress, ECHEM_STATE_RUNNING);
         }
         
-        // 检查是否传输完成
-        if (g_pingpong_dma.points_sent >= g_pingpong_dma.total_points) {
-            // 传输完成，停止DMA
-            g_pingpong_dma.transfer_complete = true;
-            g_pingpong_dma.is_running = false;
-            g_echem_result.state = ECHEM_STATE_COMPLETED;
+        // 检查Stream4是否完成传输
+        if (g_pingpong_dma_stream4.points_sent >= g_pingpong_dma_stream4.total_points) {
+            g_pingpong_dma_stream4.transfer_complete = true;
+            g_pingpong_dma_stream4.is_running = false;
             
-            PingPong_DMA_Stop();
-            
-            if (g_progress_callback != NULL) {
-                g_progress_callback(100, ECHEM_STATE_COMPLETED);
+            // 检查是否两个Stream都完成了
+            if (g_pingpong_dma_stream5.transfer_complete) {
+                g_echem_result.state = ECHEM_STATE_COMPLETED;
+                PingPong_DMA_Stop();
+                
+                if (g_progress_callback != NULL) {
+                    g_progress_callback(100, ECHEM_STATE_COMPLETED);
+                }
             }
             return;
         }
         
-        // 切换到另一个缓冲区
-        g_pingpong_dma.active_buffer = 1 - g_pingpong_dma.active_buffer;
+
+        // ！！！先保存当前缓冲区索引（用于后续填充）
+        uint8_t completed_buffer = g_pingpong_dma_stream4.active_buffer;
+        // ！！！ 切换到另一个缓冲区
+        g_pingpong_dma_stream4.active_buffer = 1 - g_pingpong_dma_stream4.active_buffer;
         
-        // ======== 关键：设置填充标志位，让主循环填充下一个缓冲区 ========
-        uint32_t next_start_point = g_pingpong_dma.points_sent + g_pingpong_dma.buffer_size;
-        if (next_start_point < g_pingpong_dma.total_points) {
-            g_pingpong_dma.buffer_to_fill = g_pingpong_dma.active_buffer;  // 设置要填充的缓冲区
-            g_pingpong_dma.need_fill_buffer = true;  // 设置填充标志
+        // ！！！ 设置填充需求 - 填充刚刚传输完成的缓冲区
+        uint32_t next_start_point = g_pingpong_dma_stream4.points_sent + g_pingpong_dma_stream4.buffer_size;
+        if (next_start_point < g_pingpong_dma_stream4.total_points) {
+            g_pingpong_dma_stream4.buffer_to_fill = completed_buffer;  // 填充刚完成的缓冲区
+            g_pingpong_dma_stream4.need_fill_buffer = true;
         }
         
-        // 重新配置DMA指向新的活跃缓冲区
-        LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+        // 重新配置Stream4
         LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
+        while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
         
-        while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5) || LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
+        uint32_t remaining_points = g_pingpong_dma_stream4.total_points - g_pingpong_dma_stream4.points_sent;
+        uint32_t next_transfer_size = (remaining_points > g_pingpong_dma_stream4.buffer_size) ? 
+                                      g_pingpong_dma_stream4.buffer_size : remaining_points;
         
-        // 计算剩余点数
-        uint32_t remaining_points = g_pingpong_dma.total_points - g_pingpong_dma.points_sent;
-        uint32_t next_transfer_size = (remaining_points > g_pingpong_dma.buffer_size) ? 
-                                      g_pingpong_dma.buffer_size : remaining_points;
-        
-        // 设置新的DMA地址和长度
-        if (g_pingpong_dma.active_buffer == 0) {
-            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_cv_wave_high_data1);
+        if (g_pingpong_dma_stream4.active_buffer == 0) {
             LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)g_cv_wave_low_data1);
         } else {
-            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_cv_wave_high_data2);
             LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)g_cv_wave_low_data2);
         }
         
-        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, next_transfer_size);
         LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, next_transfer_size);
-        
-        // 重新启动DMA
-        LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
         LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);
     }
     
     if (LL_DMA_IsActiveFlag_TE4(DMA2)) {
         LL_DMA_ClearFlag_TE4(DMA2);
-        g_pingpong_dma.is_running = false;
-        g_pingpong_dma.need_fill_buffer = false;
+        g_pingpong_dma_stream4.is_running = false;
+        g_pingpong_dma_stream4.need_fill_buffer = false;
         g_echem_result.state = ECHEM_STATE_ERROR;
         
         PingPong_DMA_Stop();
@@ -634,7 +714,6 @@ void CV_PingPong_DMA2_Stream4_IRQHandler(void)
         }
     }
 }
-
 
 
 // ==================== 实验结果和回调管理 ====================
@@ -699,7 +778,7 @@ void Echem_SetErrorCallback(EchemErrorCallback_t callback)
  */
 void DMA2_Stream5_IRQHandler(void)
 {
-    if (g_pingpong_dma.is_running) {
+    if (g_pingpong_dma_stream5.is_running) {
         CV_PingPong_DMA2_Stream5_IRQHandler();
     }
     // switch (g_dma_handler.current_mode)
@@ -725,7 +804,7 @@ void DMA2_Stream5_IRQHandler(void)
  */
 void DMA2_Stream4_IRQHandler(void)
 {
-    if (g_pingpong_dma.is_running) {
+    if (g_pingpong_dma_stream4.is_running) {
         CV_PingPong_DMA2_Stream4_IRQHandler();
     }
     // switch (g_dma_handler.current_mode)

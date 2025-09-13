@@ -17,6 +17,9 @@ uint16_t wave_high_data2[1024*8];
 uint16_t wave_low_data1[1024*8];
 uint16_t wave_low_data2[1024*8];
 
+uint8_t dma_cnt = 0;
+uint8_t dma1_cnt = 0;
+uint8_t dma2_cnt = 0;
 
 void SystemClock_Config(void);
 uint32_t data32 = 0;
@@ -35,6 +38,7 @@ int main(void)
 
   LED_Init();
   LED_ON();
+  LL_mDelay(1000);
 
   // DDS_Init(&DAC80004_Module1);
   Echem_stim_Init(&DAC80004_Module1);
@@ -42,11 +46,11 @@ int main(void)
   EchemCV_Params_t cv_params = {
         // 基本电位参数
         .Initial_E = 500.0,      // 初始电位 500mV
-        .Final_E = 500.0,        // 终止电位 500mV  
-        .Scan_Limit1 = -500.0,   // 扫描极限1 -500mV
-        .Scan_Limit2 = 500.0,    // 扫描极限2 500mV
-        .Scan_Rate = 100.0,      // 扫描速率 100mV/s
-        .cycles = 3,             // 循环3次
+        .Final_E = -500.0,        // 终止电位 500mV  
+        .Scan_Limit1 = -1000.0,   // 扫描极限1 -500mV
+        .Scan_Limit2 = 1000.0,    // 扫描极限2 500mV
+        .Scan_Rate = 1000.0,      // 扫描速率 100mV/s
+        .cycles = 2,             // 循环3次
         .equilibrium_time = 2.0, // 平衡时间 2s
         .auto_sensitivity = true,
         
@@ -61,7 +65,7 @@ int main(void)
     // 乒乓DMA配置
     PingPongConfig_t config = {
         .buffer_size = 1024*8,         // 单个缓冲区大小
-        .max_sample_rate = 5000.0, // 最大采样率 1MHz
+        .max_sample_rate = 85000.0, // 最大采样率 1MHz
         .min_points = 100,           // 最小点数
         .max_points = 1024*8,       // 最大点数
         .enable_progress_callback = true,
@@ -76,14 +80,34 @@ int main(void)
                           wave_low_data2);
 
 
-            while (!PingPong_DMA_IsComplete()) {
-            
-            // 检查是否需要填充缓冲区（关键！）
-            if (CV_NeedFillBuffer()) {
-                CV_Fill_Next_Buffer();
-            }
-            // LL_mDelay(1);
+    while (!PingPong_DMA_IsComplete()) 
+    {
+      // 检查是否需要填充缓冲区（关键！）
+      if (CV_NeedFillBuffer()) {
+        dma_cnt++;
+      
+        CV_Fill_Next_Buffer();
+      }
+        }
 
+        LL_mDelay(1000);
+    CV_DDS_Start_Precise(&DAC80004_Module1, 
+                          &cv_params, 
+                          &config, 
+                          wave_high_data1,
+                          wave_high_data2,
+                          wave_low_data1, 
+                          wave_low_data2);
+
+
+    while (!PingPong_DMA_IsComplete()) 
+    {
+      // 检查是否需要填充缓冲区（关键！）
+      if (CV_NeedFillBuffer()) {
+        dma_cnt++;
+      
+        CV_Fill_Next_Buffer();
+      }
         }
 
 

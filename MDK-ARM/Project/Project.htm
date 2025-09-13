@@ -3,9 +3,9 @@
 <title>Static Call Graph - [Project\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Project\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Sep 12 16:11:59 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Sat Sep 13 15:17:28 2025
 <BR><P>
-<H3>Maximum Stack Usage =        536 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        552 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 __rt_entry_main &rArr; main &rArr; CV_DDS_Start_Precise &rArr; TIM_CalculateFreqDivision_Precise &rArr; __hardfp_round &rArr; _drnd &rArr; __fpl_dnaninf
 <P>
@@ -215,7 +215,7 @@ Global Symbols
 <P><STRONG><a name="[e8]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[52]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 536 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 552 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; CV_DDS_Start_Precise &rArr; TIM_CalculateFreqDivision_Precise &rArr; __hardfp_round &rArr; _drnd &rArr; __fpl_dnaninf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -497,8 +497,8 @@ Global Symbols
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DAC80004_Init
 </UL>
 
-<P><STRONG><a name="[5c]"></a>CV_DDS_Start_Precise</STRONG> (Thumb, 1570 bytes, Stack size 224 bytes, echem_stim.o(i.CV_DDS_Start_Precise))
-<BR><BR>[Stack]<UL><LI>Max Depth = 400<LI>Call Chain = CV_DDS_Start_Precise &rArr; TIM_CalculateFreqDivision_Precise &rArr; __hardfp_round &rArr; _drnd &rArr; __fpl_dnaninf
+<P><STRONG><a name="[5c]"></a>CV_DDS_Start_Precise</STRONG> (Thumb, 1582 bytes, Stack size 240 bytes, echem_stim.o(i.CV_DDS_Start_Precise))
+<BR><BR>[Stack]<UL><LI>Max Depth = 416<LI>Call Chain = CV_DDS_Start_Precise &rArr; TIM_CalculateFreqDivision_Precise &rArr; __hardfp_round &rArr; _drnd &rArr; __fpl_dnaninf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CalculateFreqDivision_Precise
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ApplyFreqConfig_DualDMA
@@ -529,7 +529,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[76]"></a>CV_Fill_Next_Buffer</STRONG> (Thumb, 88 bytes, Stack size 32 bytes, echem_stim.o(i.CV_Fill_Next_Buffer))
+<P><STRONG><a name="[76]"></a>CV_Fill_Next_Buffer</STRONG> (Thumb, 100 bytes, Stack size 32 bytes, echem_stim.o(i.CV_Fill_Next_Buffer))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = CV_Fill_Next_Buffer &rArr; Generate_CV_Data_Partial &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Generate_CV_Data_Partial
@@ -537,11 +537,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[b7]"></a>CV_NeedFillBuffer</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, echem_stim.o(i.CV_NeedFillBuffer))
+<P><STRONG><a name="[b8]"></a>CV_NeedFillBuffer</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, echem_stim.o(i.CV_NeedFillBuffer))
 <BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[77]"></a>CV_PingPong_DMA2_Stream4_IRQHandler</STRONG> (Thumb, 304 bytes, Stack size 32 bytes, echem_stim.o(i.CV_PingPong_DMA2_Stream4_IRQHandler))
+<P><STRONG><a name="[77]"></a>CV_PingPong_DMA2_Stream4_IRQHandler</STRONG> (Thumb, 252 bytes, Stack size 32 bytes, echem_stim.o(i.CV_PingPong_DMA2_Stream4_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CV_PingPong_DMA2_Stream4_IRQHandler &rArr; PingPong_DMA_Stop
 </UL>
 <BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PingPong_DMA_Stop
@@ -555,10 +555,15 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA2_Stream4_IRQHandler
 </UL>
 
-<P><STRONG><a name="[7a]"></a>CV_PingPong_DMA2_Stream5_IRQHandler</STRONG> (Thumb, 74 bytes, Stack size 8 bytes, echem_stim.o(i.CV_PingPong_DMA2_Stream5_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = CV_PingPong_DMA2_Stream5_IRQHandler &rArr; PingPong_DMA_Stop
+<P><STRONG><a name="[7a]"></a>CV_PingPong_DMA2_Stream5_IRQHandler</STRONG> (Thumb, 240 bytes, Stack size 32 bytes, echem_stim.o(i.CV_PingPong_DMA2_Stream5_IRQHandler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CV_PingPong_DMA2_Stream5_IRQHandler &rArr; PingPong_DMA_Stop
 </UL>
 <BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PingPong_DMA_Stop
+<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_DMA_SetMemoryAddress
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_DMA_SetDataLength
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_DMA_IsEnabledStream
+<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_DMA_EnableStream
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_DMA_DisableStream
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA2_Stream5_IRQHandler
 </UL>
@@ -633,7 +638,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
 </UL>
 <P><STRONG><a name="[3c]"></a>DMA2_Stream5_IRQHandler</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, echem_stim.o(i.DMA2_Stream5_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = DMA2_Stream5_IRQHandler &rArr; CV_PingPong_DMA2_Stream5_IRQHandler &rArr; PingPong_DMA_Stop
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = DMA2_Stream5_IRQHandler &rArr; CV_PingPong_DMA2_Stream5_IRQHandler &rArr; PingPong_DMA_Stop
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream5_IRQHandler
 </UL>
@@ -732,7 +737,7 @@ Global Symbols
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM1_DMA_SPI1_Init
 </UL>
 
-<P><STRONG><a name="[b9]"></a>LL_mDelay</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, stm32f4xx_ll_utils.o(i.LL_mDelay))
+<P><STRONG><a name="[b7]"></a>LL_mDelay</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, stm32f4xx_ll_utils.o(i.LL_mDelay))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = LL_mDelay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -765,15 +770,15 @@ Global Symbols
 <P><STRONG><a name="[a]"></a>PendSV_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.PendSV_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f411xe.o(RESET)
 </UL>
-<P><STRONG><a name="[78]"></a>PingPong_DMA_GetProgress</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, echem_stim.o(i.PingPong_DMA_GetProgress))
+<P><STRONG><a name="[78]"></a>PingPong_DMA_GetProgress</STRONG> (Thumb, 50 bytes, Stack size 0 bytes, echem_stim.o(i.PingPong_DMA_GetProgress))
 <BR><BR>[Called By]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
-<P><STRONG><a name="[b8]"></a>PingPong_DMA_IsComplete</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, echem_stim.o(i.PingPong_DMA_IsComplete))
+<P><STRONG><a name="[b9]"></a>PingPong_DMA_IsComplete</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, echem_stim.o(i.PingPong_DMA_IsComplete))
 <BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[79]"></a>PingPong_DMA_Stop</STRONG> (Thumb, 168 bytes, Stack size 8 bytes, echem_stim.o(i.PingPong_DMA_Stop))
+<P><STRONG><a name="[79]"></a>PingPong_DMA_Stop</STRONG> (Thumb, 174 bytes, Stack size 8 bytes, echem_stim.o(i.PingPong_DMA_Stop))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = PingPong_DMA_Stop
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_DMA_IsEnabledStream
@@ -786,7 +791,7 @@ Global Symbols
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
-<P><STRONG><a name="[82]"></a>SPI1_Init</STRONG> (Thumb, 128 bytes, Stack size 72 bytes, spi.o(i.SPI1_Init))
+<P><STRONG><a name="[82]"></a>SPI1_Init</STRONG> (Thumb, 126 bytes, Stack size 72 bytes, spi.o(i.SPI1_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 92<LI>Call Chain = SPI1_Init &rArr; LL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_SPI_Init
@@ -988,16 +993,16 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
 </UL>
 
-<P><STRONG><a name="[53]"></a>main</STRONG> (Thumb, 206 bytes, Stack size 136 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 536<LI>Call Chain = main &rArr; CV_DDS_Start_Precise &rArr; TIM_CalculateFreqDivision_Precise &rArr; __hardfp_round &rArr; _drnd &rArr; __fpl_dnaninf
+<P><STRONG><a name="[53]"></a>main</STRONG> (Thumb, 280 bytes, Stack size 136 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 552<LI>Call Chain = main &rArr; CV_DDS_Start_Precise &rArr; TIM_CalculateFreqDivision_Precise &rArr; __hardfp_round &rArr; _drnd &rArr; __fpl_dnaninf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;System_GPIO_Init
-<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PingPong_DMA_IsComplete
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_mDelay
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PingPong_DMA_IsComplete
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_mDelay
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED_ON
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED_Init
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Echem_stim_Init
-<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_NeedFillBuffer
+<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_NeedFillBuffer
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_Fill_Next_Buffer
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemClock_Config
@@ -1297,6 +1302,7 @@ Local Symbols
 <P><STRONG><a name="[69]"></a>LL_DMA_DisableStream</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, echem_stim.o(i.LL_DMA_DisableStream))
 <BR><BR>[Called By]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PingPong_DMA_Stop
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream5_IRQHandler
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
@@ -1310,22 +1316,26 @@ Local Symbols
 
 <P><STRONG><a name="[74]"></a>LL_DMA_EnableStream</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, echem_stim.o(i.LL_DMA_EnableStream))
 <BR><BR>[Called By]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream5_IRQHandler
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
 <P><STRONG><a name="[6a]"></a>LL_DMA_IsEnabledStream</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, echem_stim.o(i.LL_DMA_IsEnabledStream))
 <BR><BR>[Called By]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PingPong_DMA_Stop
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream5_IRQHandler
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
 <P><STRONG><a name="[6d]"></a>LL_DMA_SetDataLength</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, echem_stim.o(i.LL_DMA_SetDataLength))
 <BR><BR>[Called By]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream5_IRQHandler
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
 <P><STRONG><a name="[6c]"></a>LL_DMA_SetMemoryAddress</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, echem_stim.o(i.LL_DMA_SetMemoryAddress))
 <BR><BR>[Called By]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
+<LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream5_IRQHandler
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_PingPong_DMA2_Stream4_IRQHandler
 </UL>
 
