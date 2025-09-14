@@ -104,9 +104,9 @@ int main(void)
     // 2. 定义乒乓DMA配置
     PingPongConfig_t config = {
         .buffer_size = 1024*8,
-        .max_sample_rate = 850000.0,     // 10kHz采样率
+        .max_sample_rate = 85000.0,     // 10kHz采样率
         .min_points = 100,
-        .max_points = 20000,
+        .max_points = 1024*8,
         .enable_progress_callback = true,
         .enable_error_recovery = false
     };

@@ -902,9 +902,9 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     double base_time = step_time - pulse_time;
     
     // 计算每步的点数
-    uint32_t points_per_step = (uint32_t)round(best_sample_rate * step_time);
-    uint32_t pulse_points = (uint32_t)round(best_sample_rate * pulse_time);
-    uint32_t base_points = points_per_step - pulse_points;
+    uint32_t points_per_step = (uint32_t)round(best_sample_rate * step_time); //一步的总点数
+    uint32_t pulse_points = (uint32_t)round(best_sample_rate * pulse_time); //一步中脉冲抬升的点数
+    uint32_t base_points = points_per_step - pulse_points;//一步中基础电位的点数
     
     // 确保最小点数
     if (points_per_step < 2) points_per_step = 2;
@@ -928,15 +928,15 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
         base_points = points_per_step - pulse_points;
     }
     
-    if (total_points > config->max_points) {
-        total_points = config->max_points;
-        // 重新调整采样率
-        best_sample_rate = total_points / (total_steps * step_time);
-        // 重新计算点数分配
-        points_per_step = total_points / total_steps;
-        pulse_points = (uint32_t)round(points_per_step * (pulse_time / step_time));
-        base_points = points_per_step - pulse_points;
-    }
+    // if (total_points > config->max_points) {
+    //     total_points = config->max_points;
+    //     // 重新调整采样率
+    //     best_sample_rate = total_points / (total_steps * step_time);
+    //     // 重新计算点数分配
+    //     points_per_step = total_points / total_steps;
+    //     pulse_points = (uint32_t)round(points_per_step * (pulse_time / step_time));
+    //     base_points = points_per_step - pulse_points;
+    // }
     
     // 保存计算后的参数
     dpv_params_calc.total_steps = total_steps;
