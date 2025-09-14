@@ -565,7 +565,7 @@ void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, dou
   
   // 使用double精度计算35个SPI时钟周期对应的定时器计数值
   // 精确计算：(35.0 * effective_timer_clock) / spi_baudrate
-  double spi_35_clk_timer_counts_double = (42.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
+  double spi_35_clk_timer_counts_double = (60.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
   
   // uint32_t spi_35_clk_timer_counts = (uint32_t)round(spi_35_clk_timer_counts_double); // 四舍五入到最接近的整数
     

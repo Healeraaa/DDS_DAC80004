@@ -95,10 +95,18 @@ int main(void)
         .Final_E = 500.0,           // 终止电位 +500mV
         .Step_E = 50.0,             // 步进电位 10mV
         .Pulse_Amplitude = 200.0,    // 脉冲幅度 50mV
-        .Pulse_Width = 100.0,        // 脉冲宽度 50ms
+        .Pulse_Width = 50.0,        // 脉冲宽度 50ms
         .Pulse_Period = 200.0,      // 脉冲周期 200ms
         .equilibrium_time = 2.0,    // 平衡时间 2s
-        .auto_sensitivity = true
+        .auto_sensitivity = true,
+        // 以下字段会由系统自动计算填充，无需手动设置
+        .total_steps = 0,         // 总步数
+        .points_per_step = 0,       // 每步的点数
+        .pulse_points = 0,        // 脉冲部分点数
+        .base_points = 0,       // 基础部分点数
+        .total_points = 0,         // 总点数
+        .actual_sample_rate = 0.0     // 实际采样率 (Hz)
+      
     };
     
     // 2. 定义乒乓DMA配置
