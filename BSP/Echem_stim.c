@@ -946,7 +946,7 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     
     // 限制在配置范围内
     volatile double best_sample_rate = fmin(optimal_sample_rate, config->max_sample_rate);
-    best_sample_rate = fmax(best_sample_rate, 10.0);  // 最低10Hz，避免过低
+    best_sample_rate = fmax(best_sample_rate, 20.0);  // 最低20Hz，避免过低
     
     // 计算每步的点数分配
     uint32_t points_per_step = (uint32_t)round(best_sample_rate * step_time);
@@ -974,13 +974,13 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     uint32_t total_points = total_steps * points_per_step;
     
     // 限制总点数在合理范围内
-    if (total_points < config->min_points) {
-        total_points = config->min_points;
-        best_sample_rate = total_points / (total_steps * step_time);
-        points_per_step = total_points / total_steps;
-        pulse_points = (uint32_t)round(points_per_step * (pulse_time / step_time));
-        base_points = points_per_step - pulse_points;
-    }
+    // if (total_points < config->min_points) {
+    //     total_points = config->min_points;
+    //     best_sample_rate = total_points / (total_steps * step_time);
+    //     points_per_step = total_points / total_steps;
+    //     pulse_points = (uint32_t)round(points_per_step * (pulse_time / step_time));
+    //     base_points = points_per_step - pulse_points;
+    // }
     
     // if (total_points > config->max_points) {
     //     total_points = config->max_points;
