@@ -7,6 +7,7 @@
 // #include "DDS_DAC80004.h"
 #include "Echem_stim.h"
 #include "main_init.h"
+#include "usart.h"
 
 // uint16_t wave_high_data[1024*20];
 // uint16_t wave_low_data[1024*20];
@@ -39,6 +40,17 @@ int main(void)
   LED_Init();
   LED_ON();
   LL_mDelay(500);
+
+  while(1)
+  {
+    LL_USART_TransmitData8(USART1,0x55);
+    LL_mDelay(500);
+  }
+
+
+
+
+
   memset(wave_high_data1, 0, sizeof(wave_high_data1));
   memset(wave_high_data2, 0, sizeof(wave_high_data2));
   memset(wave_low_data1, 0, sizeof(wave_low_data1));
@@ -46,13 +58,15 @@ int main(void)
   // DDS_Init(&DAC80004_Module1);
   Echem_stim_Init(&DAC80004_Module1);
 
+  // LL_USART_ReceiveData8(USART1);
+
   EchemCV_Params_t cv_params = {
         // 基本电位参数
         .Initial_E = 500.0,      // 初始电位 500mV
         .Final_E = -500.0,        // 终止电位 500mV  
-        .Scan_Limit1 = -1000.0,   // 扫描极限1 -500mV
-        .Scan_Limit2 = 1000.0,    // 扫描极限2 500mV
-        .Scan_Rate = 1000.0,      // 扫描速率 100mV/s
+        .Scan_Limit1 = -500.0,   // 扫描极限1 -500mV
+        .Scan_Limit2 = 500.0,    // 扫描极限2 500mV
+        .Scan_Rate = 50.0,      // 扫描速率 100mV/s
         .cycles = 2,             // 循环3次
         .equilibrium_time = 2.0, // 平衡时间 2s
         .auto_sensitivity = true,
@@ -60,7 +74,7 @@ int main(void)
         // 以下字段会由系统自动计算填充，无需手动设置
         .initial_points = 0,
         .cycle_points = 0,
-        .final_points = 0,
+        .final_points = 0, 
         .total_points = 0,
         .actual_sample_rate = 0.0
     };

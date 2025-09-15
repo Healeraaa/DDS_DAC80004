@@ -39,6 +39,7 @@ project\echem_stim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_pwr.h
 project\echem_stim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h
 project\echem_stim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
 project\echem_stim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h
+project\echem_stim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h
 project\echem_stim.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 project\echem_stim.o: ..\BSP\DAC80004.h
 project\echem_stim.o: ../Core/Inc/tim.h

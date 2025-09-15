@@ -39,5 +39,6 @@ project\tim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_pwr.h
 project\tim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h
 project\tim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
 project\tim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h
+project\tim.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h
 project\tim.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\float.h
 project\tim.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
