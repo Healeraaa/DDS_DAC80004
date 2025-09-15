@@ -346,6 +346,11 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
     
     /* 1. 使用最大采样率计算波形参数 */
     double best_sample_rate = config->max_sample_rate;
+    // double optimal_sample_rate = ECHEM_VOLTAGE_TO_DAC(cv_params->Scan_Rate); // 初步估算采样率
+    // double best_sample_rate = (optimal_sample_rate < config->max_sample_rate) ? optimal_sample_rate : config->max_sample_rate;
+    
+
+
     uint32_t cycles = (cv_params->cycles > 0) ? cv_params->cycles : 1;  // 确保至少1个循环
     
     // 计算各段的电位变化和时间
@@ -716,20 +721,48 @@ void CV_PingPong_DMA2_Stream4_IRQHandler(void)
 
 // ==================== DPV专用函数 ====================
 
+/**
+ * @brief  计算两个双精度浮点数的最大公约数
+ * @param  a: 第一个数
+ * @param  b: 第二个数
+ * @retval 最大公约数
+ */
 static double gcd_double(double a, double b) {
-    // 将浮点数转换为整数进行GCD计算
-    // 精度到0.1Hz
-    uint32_t int_a = (uint32_t)round(a * 10);
-    uint32_t int_b = (uint32_t)round(b * 10);
+    // 处理特殊情况
+    if (a == 0.0) return fabs(b);
+    if (b == 0.0) return fabs(a);
     
-    while (int_b != 0) {
-        uint32_t temp = int_b;
-        int_b = int_a % int_b;
-        int_a = temp;
+    // 确保正数
+    a = fabs(a);
+    b = fabs(b);
+    
+    if (fabs(a - b) < 1e-6) return a;  // 如果相等，直接返回
+    
+    // 确保 a >= b
+    if (a < b) {
+        double temp = a;
+        a = b;
+        b = temp;
     }
     
-    return (double)int_a / 10.0;
+    // 设置精度阈值
+    const double epsilon = 1e-6;
+    
+    // 使用欧几里得算法的浮点版本
+    while (b > epsilon) {
+        double remainder = fmod(a, b);
+        a = b;
+        b = remainder;
+    }
+    
+    // ✅ 修正：如果结果太小，认为是1（互质）
+    if (a < epsilon) {
+        return 1.0;
+    }
+    
+    return a;
 }
+
 
 
 /**
@@ -914,39 +947,42 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     double base_time = step_time - pulse_time;
     
     /* 关键优化：根据base_time和pulse_time计算最优采样率 */
-    double optimal_sample_rate;
+double optimal_sample_rate;
 
-    // 方案：基于时间精度的最小公倍数计算
-    if (pulse_time > 0.001) {  // 脉冲宽度 > 1ms
-        // 计算基础频率
-        volatile double pulse_freq = 1.0 / pulse_time;  // 脉冲频率
-        volatile double base_freq = 1.0 / base_time;    // 基础频率
-        
-        // 计算最小公倍数对应的采样率
-        // 使用简化的LCM计算：LCM(a,b) = a*b/GCD(a,b)
-        volatile double gcd_freq = gcd_double(pulse_freq, base_freq);
-        volatile double lcm_freq = (pulse_freq * base_freq) / gcd_freq;
-        
-        // 但LCM可能过高，所以我们取一个合理的倍数
-        optimal_sample_rate = fmin(lcm_freq, config->max_sample_rate);
-        
-        // 如果LCM太高，则退回到较简单的方案
-        if (optimal_sample_rate > 10000.0) {  // 超过10kHz认为过高
-            // 脉冲阶段需要至少3-5个点
-            double pulse_min_rate = 5.0 / pulse_time;
-            // 基础阶段可以用较低采样率
-            double base_min_rate = (base_time > 0.010) ? (2.0 / base_time) : (1.0 / base_time);
-            optimal_sample_rate = fmax(pulse_min_rate, base_min_rate);
-        }
-        
-    } else {  // 脉冲宽度很小 <= 1ms
-        optimal_sample_rate = fmin(config->max_sample_rate, 10000.0);
+// 方案：基于时间精度的最小公倍数计算
+if (pulse_time > 0.001) {  // 脉冲宽度 > 1ms
+    // ✅ 修正：计算正确的频率
+    double pulse_freq = round((1.0 / pulse_time) * 10.0) / 10.0;  // 脉冲频率
+    double step_freq = round((1.0 / step_time) * 10.0) / 10.0;    
+    
+    // 计算最小公倍数对应的采样率
+    double gcd_freq = gcd_double(pulse_freq, step_freq);  
+    
+    // 保留一位小数精度
+    gcd_freq = round(gcd_freq * 10.0) / 10.0;
+    
+    double lcm_freq = (pulse_freq * step_freq) / gcd_freq;  
+    
+    // 但LCM可能过高，所以我们取一个合理的倍数
+    optimal_sample_rate = fmin(lcm_freq, config->max_sample_rate);
+    
+    // 如果LCM太高，则退回到较简单的方案
+    if (optimal_sample_rate > 10000.0) {  // 超过10kHz认为过高
+        // 脉冲阶段需要至少3-5个点
+        double pulse_min_rate = 5.0 / pulse_time;
+        // 步长阶段可以用较低采样率
+        double step_min_rate = (step_time > 0.010) ? (2.0 / step_time) : (1.0 / step_time);
+        optimal_sample_rate = fmax(pulse_min_rate, step_min_rate);
     }
+    
+} else {  // 脉冲宽度很小 <= 1ms
+    optimal_sample_rate = fmin(config->max_sample_rate, 10000.0);
+}
 
     
     // 限制在配置范围内
-    volatile double best_sample_rate = fmin(optimal_sample_rate, config->max_sample_rate);
-    best_sample_rate = fmax(best_sample_rate, 10.0);  // 最低10Hz，避免过低
+     double best_sample_rate = fmin(optimal_sample_rate, config->max_sample_rate);
+    best_sample_rate = fmax(best_sample_rate, 20.0);  // 最低10Hz，避免过低
     
     // 计算每步的点数分配
     uint32_t points_per_step = (uint32_t)round(best_sample_rate * step_time);
@@ -954,14 +990,14 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     uint32_t base_points = points_per_step - pulse_points;
     
     // 确保点数合理性
-    // if (points_per_step < 2) points_per_step = 2;
-    // if (pulse_points < 1) pulse_points = 1;
-    // if (base_points < 1) {
-    //     base_points = 1;
-    //     points_per_step = base_points + pulse_points;
-    //     // 重新调整采样率
-    //     best_sample_rate = points_per_step / step_time;
-    // }
+    if (points_per_step < 2) points_per_step = 2;
+    if (pulse_points < 1) pulse_points = 1;
+    if (base_points < 1) {
+        base_points = 1;
+        points_per_step = base_points + pulse_points;
+        // 重新调整采样率
+        best_sample_rate = points_per_step / step_time;
+    }
     
     // // 进一步优化：如果基础时间很长，确保基础部分不超过必要的点数
     // if (base_time > 0.1 && base_points > 10) {  // 基础时间>100ms且点数>10
@@ -969,28 +1005,10 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     //     points_per_step = base_points + pulse_points;
     //     best_sample_rate = points_per_step / step_time;
     // }
-    
+      
     // 计算总点数
     uint32_t total_points = total_steps * points_per_step;
-    
-    // 限制总点数在合理范围内
-    if (total_points < config->min_points) {
-        total_points = config->min_points;
-        best_sample_rate = total_points / (total_steps * step_time);
-        points_per_step = total_points / total_steps;
-        pulse_points = (uint32_t)round(points_per_step * (pulse_time / step_time));
-        base_points = points_per_step - pulse_points;
-    }
-    
-    // if (total_points > config->max_points) {
-    //     total_points = config->max_points;
-    //     // 重新调整采样率
-    //     best_sample_rate = total_points / (total_steps * step_time);
-    //     // 重新计算点数分配
-    //     points_per_step = total_points / total_steps;
-    //     pulse_points = (uint32_t)round(points_per_step * (pulse_time / step_time));
-    //     base_points = points_per_step - pulse_points;
-    // }
+
     
     // 保存计算后的参数
     dpv_params_calc.total_steps = total_steps;

@@ -135,10 +135,10 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 // ==================== 常量定义 ====================
 
 // 默认配置常量
-#define ECHEM_DEFAULT_BUFFER_SIZE       4096        // 默认缓冲区大小
-#define ECHEM_DEFAULT_MAX_SAMPLE_RATE   1000000.0   // 默认最大采样率 1MHz
+#define ECHEM_DEFAULT_BUFFER_SIZE       1024*8        // 默认缓冲区大小
+#define ECHEM_DEFAULT_MAX_SAMPLE_RATE   85000.0   // 默认最大采样率 1MHz
 #define ECHEM_DEFAULT_MIN_POINTS        100         // 默认最小点数
-#define ECHEM_DEFAULT_MAX_POINTS        4096        // 默认最大点数
+#define ECHEM_DEFAULT_MAX_POINTS        1024*8         // 默认最大点数
 
 // 电位范围常量
 #define ECHEM_VOLTAGE_MIN_MV           -5000.0      // 最小电位 -5V
@@ -161,8 +161,11 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 #define ECHEM_ERROR_SCAN_RATE_RANGE    0x00000080   // 扫描速率超出范围
 
 // 便用宏定义
-#define ECHEM_VOLTAGE_TO_DAC(voltage_mv) \
+#define ECHEM_VOLTAGE_RATE_TO_DAC_RATE(voltage_mv) \
     ((uint16_t)(32768 + ((voltage_mv) * 32768.0 / 5000.0)))
+
+#define ECHEM_VOLTAGE_TO_DAC(voltage_mv) \
+    ((uint16_t)((voltage_mv) * (0xFFFF) / 10000.0))
 
 #define ECHEM_DAC_TO_VOLTAGE(dac_value) \
     (((double)(dac_value) - 32768.0) * 5000.0 / 32768.0)

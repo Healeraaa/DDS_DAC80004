@@ -95,7 +95,7 @@ int main(void)
         .Final_E = 500.0,           // 终止电位 +500mV
         .Step_E = 50.0,             // 步进电位 10mV
         .Pulse_Amplitude = 200.0,    // 脉冲幅度 50mV
-        .Pulse_Width = 50.0,        // 脉冲宽度 50ms
+        .Pulse_Width = 100.0,        // 脉冲宽度 50ms
         .Pulse_Period = 200.0,      // 脉冲周期 200ms
         .equilibrium_time = 2.0,    // 平衡时间 2s
         .auto_sensitivity = true,
@@ -113,7 +113,7 @@ int main(void)
     PingPongConfig_t config = {
         .buffer_size = 1024*8,
         .max_sample_rate = 85000.0,     // 10kHz采样率
-        .min_points = 100,
+        .min_points = 1,
         .max_points = 1024*8,
         .enable_progress_callback = true,
         .enable_error_recovery = false

@@ -152,25 +152,25 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>952</LineNumber>
+          <LineNumber>127</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220482</Address>
+          <Address>134228354</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\BSP\Echem_stim.c</Filename>
+          <Filename>../Core/Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Project\../BSP/Echem_stim.c\952</Expression>
+          <Expression>\\Project\../Core/Src/main.c\127</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>1131</LineNumber>
+          <LineNumber>1150</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221374</Address>
+          <Address>134221378</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -179,7 +179,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\BSP\Echem_stim.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Project\../BSP/Echem_stim.c\1131</Expression>
+          <Expression>\\Project\../BSP/Echem_stim.c\1150</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -243,27 +243,42 @@
         <Ww>
           <count>4</count>
           <WinNumber>2</WinNumber>
-          <ItemText>base_freq</ItemText>
+          <ItemText>gcd_freq</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>2</WinNumber>
-          <ItemText>gcd_freq</ItemText>
+          <ItemText>lcm_freq</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>2</WinNumber>
-          <ItemText>lcm_freq</ItemText>
+          <ItemText>optimal_sample_rate</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>2</WinNumber>
-          <ItemText>optimal_sample_rate</ItemText>
+          <ItemText>best_sample_rate</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>2</WinNumber>
-          <ItemText>best_sample_rate</ItemText>
+          <ItemText>g_echem_result</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>step_freq</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>\\Project\../BSP/Echem_stim.c\DPV_DDS_Start_Precise\lexical_1\pulse_freq</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>g_cv_params</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
