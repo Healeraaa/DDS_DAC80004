@@ -162,10 +162,10 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 
 // 便用宏定义
 #define ECHEM_VOLTAGE_RATE_TO_DAC_RATE(voltage_mv) \
-    ((uint16_t)(32768 + ((voltage_mv) * 32768.0 / 5000.0)))
+    ((uint16_t)((voltage_mv) * (0xFFFF) / 10000.0))
 
 #define ECHEM_VOLTAGE_TO_DAC(voltage_mv) \
-    ((uint16_t)((voltage_mv) * (0xFFFF) / 10000.0))
+    ((uint16_t)(32768 + ((voltage_mv) * 32768.0 / 5000.0)))
 
 #define ECHEM_DAC_TO_VOLTAGE(dac_value) \
     (((double)(dac_value) - 32768.0) * 5000.0 / 32768.0)

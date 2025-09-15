@@ -4,10 +4,6 @@
             "path": "."
         }
     ],
-    "settings": {
-        "files.associations": {
-            "dds_dac80004.h": "c"
-        }
-    },
+    "settings": {},
     "extensions": {}
 }

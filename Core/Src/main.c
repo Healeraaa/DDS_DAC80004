@@ -39,97 +39,101 @@ int main(void)
   LED_Init();
   LED_ON();
   LL_mDelay(500);
+  memset(wave_high_data1, 0, sizeof(wave_high_data1));
+  memset(wave_high_data2, 0, sizeof(wave_high_data2));
+  memset(wave_low_data1, 0, sizeof(wave_low_data1));
+  memset(wave_low_data2, 0, sizeof(wave_low_data2));
   // DDS_Init(&DAC80004_Module1);
   Echem_stim_Init(&DAC80004_Module1);
 
-  // EchemCV_Params_t cv_params = {
-  //       // 基本电位参数
-  //       .Initial_E = 500.0,      // 初始电位 500mV
-  //       .Final_E = -500.0,        // 终止电位 500mV  
-  //       .Scan_Limit1 = -1000.0,   // 扫描极限1 -500mV
-  //       .Scan_Limit2 = 1000.0,    // 扫描极限2 500mV
-  //       .Scan_Rate = 1000.0,      // 扫描速率 100mV/s
-  //       .cycles = 2,             // 循环3次
-  //       .equilibrium_time = 2.0, // 平衡时间 2s
-  //       .auto_sensitivity = true,
-        
-  //       // 以下字段会由系统自动计算填充，无需手动设置
-  //       .initial_points = 0,
-  //       .cycle_points = 0,
-  //       .final_points = 0,
-  //       .total_points = 0,
-  //       .actual_sample_rate = 0.0
-  //   };
-    
-  //   // 乒乓DMA配置
-  //   PingPongConfig_t config = {
-  //       .buffer_size = 1024*8,         // 单个缓冲区大小
-  //       .max_sample_rate = 85000.0, // 最大采样率 1MHz
-  //       .min_points = 100,           // 最小点数
-  //       .max_points = 1024*8,       // 最大点数
-  //       .enable_progress_callback = true,
-  //       .enable_error_recovery = false
-  //   };
-  //   CV_DDS_Start_Precise(&DAC80004_Module1, 
-  //                         &cv_params, 
-  //                         &config, 
-  //                         wave_high_data1,
-  //                         wave_high_data2,
-  //                         wave_low_data1, 
-  //                         wave_low_data2);
-
-
-  //   while (!PingPong_DMA_IsComplete()) 
-  //   {
-  //     // 检查是否需要填充缓冲区（关键！）
-  //     if (CV_NeedFillBuffer()) {
-  //       dma_cnt++;
-      
-  //       CV_Fill_Next_Buffer();
-  //     }
-  //     }
-
-      // 1. 定义DPV参数
-    EchemDPV_Params_t dpv_params = {
-        .Initial_E = -500.0,        // 初始电位 -500mV
-        .Final_E = 500.0,           // 终止电位 +500mV
-        .Step_E = 50.0,             // 步进电位 10mV
-        .Pulse_Amplitude = 200.0,    // 脉冲幅度 50mV
-        .Pulse_Width = 100.0,        // 脉冲宽度 50ms
-        .Pulse_Period = 200.0,      // 脉冲周期 200ms
-        .equilibrium_time = 2.0,    // 平衡时间 2s
+  EchemCV_Params_t cv_params = {
+        // 基本电位参数
+        .Initial_E = 500.0,      // 初始电位 500mV
+        .Final_E = -500.0,        // 终止电位 500mV  
+        .Scan_Limit1 = -1000.0,   // 扫描极限1 -500mV
+        .Scan_Limit2 = 1000.0,    // 扫描极限2 500mV
+        .Scan_Rate = 1000.0,      // 扫描速率 100mV/s
+        .cycles = 2,             // 循环3次
+        .equilibrium_time = 2.0, // 平衡时间 2s
         .auto_sensitivity = true,
+        
         // 以下字段会由系统自动计算填充，无需手动设置
-        .total_steps = 0,         // 总步数
-        .points_per_step = 0,       // 每步的点数
-        .pulse_points = 0,        // 脉冲部分点数
-        .base_points = 0,       // 基础部分点数
-        .total_points = 0,         // 总点数
-        .actual_sample_rate = 0.0     // 实际采样率 (Hz)
-      
+        .initial_points = 0,
+        .cycle_points = 0,
+        .final_points = 0,
+        .total_points = 0,
+        .actual_sample_rate = 0.0
     };
     
-    // 2. 定义乒乓DMA配置
+    // 乒乓DMA配置
     PingPongConfig_t config = {
-        .buffer_size = 1024*8,
-        .max_sample_rate = 85000.0,     // 10kHz采样率
-        .min_points = 1,
-        .max_points = 1024*8,
+        .buffer_size = 1024*8,         // 单个缓冲区大小
+        .max_sample_rate = 85000.0, // 最大采样率 1MHz
+        .min_points = 100,           // 最小点数
+        .max_points = 1024*8,       // 最大点数
         .enable_progress_callback = true,
         .enable_error_recovery = false
     };
+    CV_DDS_Start_Precise(&DAC80004_Module1, 
+                          &cv_params, 
+                          &config, 
+                          wave_high_data1,
+                          wave_high_data2,
+                          wave_low_data1, 
+                          wave_low_data2);
 
-    DPV_DDS_Start_Precise(&DAC80004_Module1, &dpv_params, &config,
-                             wave_high_data1, wave_high_data2,
-                             wave_low_data1, wave_low_data2); 
+
+    while (!PingPong_DMA_IsComplete()) 
+    {
+      // 检查是否需要填充缓冲区（关键！）
+      if (CV_NeedFillBuffer()) {
+        // dma_cnt++;
+      
+        CV_Fill_Next_Buffer();
+      }
+      }
+
+      // 1. 定义DPV参数
+    // EchemDPV_Params_t dpv_params = {
+    //     .Initial_E = -500.0,        // 初始电位 -500mV
+    //     .Final_E = 500.0,           // 终止电位 +500mV
+    //     .Step_E = 50.0,             // 步进电位 10mV
+    //     .Pulse_Amplitude = 200.0,    // 脉冲幅度 50mV
+    //     .Pulse_Width = 100.0,        // 脉冲宽度 50ms
+    //     .Pulse_Period = 200.0,      // 脉冲周期 200ms
+    //     .equilibrium_time = 2.0,    // 平衡时间 2s
+    //     .auto_sensitivity = true,
+    //     // 以下字段会由系统自动计算填充，无需手动设置
+    //     .total_steps = 0,         // 总步数
+    //     .points_per_step = 0,       // 每步的点数
+    //     .pulse_points = 0,        // 脉冲部分点数
+    //     .base_points = 0,       // 基础部分点数
+    //     .total_points = 0,         // 总点数
+    //     .actual_sample_rate = 0.0     // 实际采样率 (Hz)
+      
+    // };
+    
+    // // 2. 定义乒乓DMA配置
+    // PingPongConfig_t config = {
+    //     .buffer_size = 1024*8,
+    //     .max_sample_rate = 85000.0,     // 10kHz采样率
+    //     .min_points = 1,
+    //     .max_points = 1024*8,
+    //     .enable_progress_callback = true,
+    //     .enable_error_recovery = false
+    // };
+
+    // DPV_DDS_Start_Precise(&DAC80004_Module1, &dpv_params, &config,
+    //                          wave_high_data1, wave_high_data2,
+    //                          wave_low_data1, wave_low_data2); 
         
-        // 5. 主循环中处理缓冲区填充
-        while (!PingPong_DMA_IsComplete()) {
-            if (DPV_NeedFillBuffer()) {
-                DPV_Fill_Next_Buffer();
-            }
+    //     // 5. 主循环中处理缓冲区填充
+    //     while (!PingPong_DMA_IsComplete()) {
+    //         if (DPV_NeedFillBuffer()) {
+    //             DPV_Fill_Next_Buffer();
+    //         }
             
-        }
+    //     }
 
 
 

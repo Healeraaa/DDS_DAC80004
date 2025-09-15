@@ -9,6 +9,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+extern uint8_t dma1_cnt;
+
 // 全局乒乓DMA管理结构体
 volatile PingPongDMA_t g_pingpong_dma_stream4 = {0};
 volatile PingPongDMA_t g_pingpong_dma_stream5 = {0};
@@ -199,7 +201,7 @@ static void Generate_CV_Data_Partial(DAC80004_InitStruct *module,
                                     const EchemCV_Params_t *cv_params)
 {
     uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);
-    uint32_t encoded_data;
+    volatile uint32_t encoded_data;
     uint32_t cycles = (cv_params->cycles > 0) ? cv_params->cycles : 1;
     
     // 直接使用结构体中的点数
@@ -210,11 +212,12 @@ static void Generate_CV_Data_Partial(DAC80004_InitStruct *module,
 
     for (uint32_t i = 0; i < points_to_fill; i++) {
         uint32_t global_index = start_point + i;
-        double voltage = 0.0;
+        volatile double voltage = 0.0;
+        volatile double progress = 0.0;
 
         if (global_index < initial_points) {
             // 起始阶段：Initial_E → Scan_Limit1
-            double progress = (initial_points > 1) ? (double)global_index / (initial_points - 1) : 0.0;
+            progress = (initial_points > 1) ? (double)global_index / (initial_points - 1) : 0.0;
             voltage = cv_params->Initial_E + progress * (cv_params->Scan_Limit1 - cv_params->Initial_E);
         }
         else if (global_index < (initial_points + total_cycle_points)) {
@@ -226,20 +229,20 @@ static void Generate_CV_Data_Partial(DAC80004_InitStruct *module,
 
             if (cycle_point_idx < half_cycle_points) {
                 // 正向扫描：Scan_Limit1 → Scan_Limit2
-                double progress = (half_cycle_points > 1) ? (double)cycle_point_idx / (half_cycle_points - 1) : 0.0;
+                progress = (half_cycle_points > 1) ? (double)cycle_point_idx / (half_cycle_points - 1) : 0.0;
                 voltage = cv_params->Scan_Limit1 + progress * (cv_params->Scan_Limit2 - cv_params->Scan_Limit1);
             } else {
                 // 反向扫描：Scan_Limit2 → Scan_Limit1
                 uint32_t reverse_index = cycle_point_idx - half_cycle_points;
                 uint32_t remaining_points = cycle_points - half_cycle_points;
-                double progress = (remaining_points > 1) ? (double)reverse_index / (remaining_points - 1) : 0.0;
+                progress = (remaining_points > 1) ? (double)reverse_index / (remaining_points - 1) : 0.0;
                 voltage = cv_params->Scan_Limit2 + progress * (cv_params->Scan_Limit1 - cv_params->Scan_Limit2);
             }
         }
         else {
             // 结束阶段：Scan_Limit1 → Final_E
             uint32_t final_index = global_index - initial_points - total_cycle_points;  
-            double progress = (final_points > 1) ? (double)final_index / (final_points - 1) : 0.0;
+            progress = (final_points > 1) ? (double)final_index / (final_points - 1) : 0.0;
             voltage = cv_params->Scan_Limit1 + progress * (cv_params->Final_E - cv_params->Scan_Limit1);
         }
 
@@ -345,9 +348,9 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
     g_cv_wave_low_data2 = wave_low_data2;
     
     /* 1. 使用最大采样率计算波形参数 */
-    double best_sample_rate = config->max_sample_rate;
-    // double optimal_sample_rate = ECHEM_VOLTAGE_TO_DAC(cv_params->Scan_Rate); // 初步估算采样率
-    // double best_sample_rate = (optimal_sample_rate < config->max_sample_rate) ? optimal_sample_rate : config->max_sample_rate;
+    // double best_sample_rate = config->max_sample_rate;
+    double optimal_sample_rate = ECHEM_VOLTAGE_RATE_TO_DAC_RATE(cv_params->Scan_Rate); // 初步估算采样率
+    double best_sample_rate = (optimal_sample_rate < config->max_sample_rate) ? optimal_sample_rate : config->max_sample_rate;
     
 
 
@@ -392,15 +395,15 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
                                cv_params_calc.final_points;
     
     // 调整点数确保总和正确
-    if (calculated_total != total_points) {
-        int32_t diff = total_points - calculated_total;
-        cv_params_calc.cycle_points += (diff / cycles);  // 平均分配到各个循环
+    // if (calculated_total != total_points) {
+    //     int32_t diff = total_points - calculated_total;
+    //     cv_params_calc.cycle_points += (diff / cycles);  // 平均分配到各个循环
         
-        // 重新计算总点数
-        calculated_total = cv_params_calc.initial_points + 
-                          (cv_params_calc.cycle_points * cycles) + 
-                          cv_params_calc.final_points;
-    }
+    //     // 重新计算总点数
+    //     calculated_total = cv_params_calc.initial_points + 
+    //                       (cv_params_calc.cycle_points * cycles) + 
+    //                       cv_params_calc.final_points;
+    // }
     
     // 确保各段点数不为0
     if (cv_params_calc.initial_points == 0 && initial_voltage_change > 0) 
@@ -451,6 +454,9 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
     g_echem_result.timestamp = LL_SYSTICK_GetClkSource();
     
     /* 4. 填充第一个缓冲区（缓冲区1） */
+    
+
+
     uint32_t first_batch_size = (cv_params_calc.total_points > config->buffer_size) ? config->buffer_size : cv_params_calc.total_points;
     Generate_CV_Data_Partial(module, wave_high_data1, wave_low_data1,
                              0, first_batch_size, &cv_params_calc);
@@ -685,7 +691,7 @@ void CV_PingPong_DMA2_Stream4_IRQHandler(void)
             g_pingpong_dma_stream4.buffer_to_fill = completed_buffer;  // 填充刚完成的缓冲区
             g_pingpong_dma_stream4.need_fill_buffer = true;
         }
-        
+
         // 重新配置Stream4
         LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
         while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
@@ -982,7 +988,7 @@ if (pulse_time > 0.001) {  // 脉冲宽度 > 1ms
     
     // 限制在配置范围内
      double best_sample_rate = fmin(optimal_sample_rate, config->max_sample_rate);
-    best_sample_rate = fmax(best_sample_rate, 20.0);  // 最低10Hz，避免过低
+    best_sample_rate = fmax(best_sample_rate, 20.0);  // 最低20Hz，避免过低
     
     // 计算每步的点数分配
     uint32_t points_per_step = (uint32_t)round(best_sample_rate * step_time);
