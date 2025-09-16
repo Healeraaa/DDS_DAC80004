@@ -152,25 +152,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>299</LineNumber>
+          <LineNumber>50</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\BSP\Echem_stim.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>92</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134227718</Address>
+          <Address>134221930</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -179,39 +163,39 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Core/Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Project\../Core/Src/main.c\92</Expression>
+          <Expression>\\Project\../Core/Src/main.c\50</Expression>
         </Bp>
         <Bp>
-          <Number>2</Number>
+          <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>257</LineNumber>
+          <LineNumber>12</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222502</Address>
+          <Address>134221074</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\BSP\Echem_stim.c</Filename>
+          <Filename>..\BSP\Serial.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../BSP/Echem_stim.c\257</Expression>
+          <Expression>\\Project\../BSP/Serial.c\12</Expression>
         </Bp>
         <Bp>
-          <Number>3</Number>
+          <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>127</LineNumber>
+          <LineNumber>83</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134221504</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>startup_stm32f411xe.s</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\BSP\Serial.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\Project\../BSP/Serial.c\83</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -326,6 +310,11 @@
           <count>14</count>
           <WinNumber>2</WinNumber>
           <ItemText>progress</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>g_serial_rx_packet</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>
@@ -789,6 +778,30 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\BSP\Echem_stim.h</PathWithFileName>
       <FilenameWithoutPath>Echem_stim.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>30</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\BSP\Serial.c</PathWithFileName>
+      <FilenameWithoutPath>Serial.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>31</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\BSP\Serial.h</PathWithFileName>
+      <FilenameWithoutPath>Serial.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

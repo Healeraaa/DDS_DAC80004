@@ -8,6 +8,7 @@
 #include "Echem_stim.h"
 #include "main_init.h"
 #include "usart.h"
+#include "Serial.h"
 
 // uint16_t wave_high_data[1024*20];
 // uint16_t wave_low_data[1024*20];
@@ -21,6 +22,10 @@ uint16_t wave_low_data2[1024*8];
 uint8_t dma_cnt = 0;
 uint8_t dma1_cnt = 0;
 uint8_t dma2_cnt = 0;
+
+SerialDoubeleBuffer_t Serial_Data;
+
+
 
 void SystemClock_Config(void);
 uint32_t data32 = 0;
@@ -39,23 +44,33 @@ int main(void)
 
   LED_Init();
   LED_ON();
+  USART1_Init();
   LL_mDelay(500);
 
   while(1)
   {
-    LL_USART_TransmitData8(USART1,0x55);
+    uint8_t rx_data[5] = {0};
+    if(Serial_GetRxFlag()==1)
+    {
+      Serial_GetRxData(rx_data,5);
+
+      Serial_TransmitByte(USART1,rx_data[0],100);
+      Serial_TransmitByte(USART1,rx_data[1],100);
+      Serial_TransmitByte(USART1,rx_data[2],100);
+      Serial_TransmitByte(USART1,rx_data[3],100);
+      Serial_TransmitByte(USART1,rx_data[4],100);
+    }
+
+    Serial_Data.doubele_data = 123456.789;
+    Serial_TransmitData(USART1,Serial_Data.data,8,100);
     LL_mDelay(500);
   }
-
-
-
-
 
   memset(wave_high_data1, 0, sizeof(wave_high_data1));
   memset(wave_high_data2, 0, sizeof(wave_high_data2));
   memset(wave_low_data1, 0, sizeof(wave_low_data1));
   memset(wave_low_data2, 0, sizeof(wave_low_data2));
-  // DDS_Init(&DAC80004_Module1);
+
   Echem_stim_Init(&DAC80004_Module1);
 
   // LL_USART_ReceiveData8(USART1);

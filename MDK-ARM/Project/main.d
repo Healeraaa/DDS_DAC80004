@@ -48,3 +48,5 @@ project\main.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 project\main.o: ../Core/Inc/tim.h
 project\main.o: ../Core/Inc/main_init.h
 project\main.o: ../Core/Inc/usart.h
+project\main.o: ..\BSP\Serial.h
+project\main.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

@@ -9,7 +9,9 @@
             "main_init.h": "c",
             "usart.h": "c",
             "main.h": "c",
-            "stm32f4xx_ll_usart.h": "c"
+            "stm32f4xx_ll_usart.h": "c",
+            "string": "c",
+            "string_view": "c"
         }
     },
     "extensions": {}
