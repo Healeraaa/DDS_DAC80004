@@ -23,7 +23,8 @@ uint8_t dma_cnt = 0;
 uint8_t dma1_cnt = 0;
 uint8_t dma2_cnt = 0;
 
-SerialDoubeleBuffer_t Serial_Data;
+Serial_DoubleConverter_t Serial_Data[2] ;
+double rx_data[2] = {0};
 
 
 
@@ -47,23 +48,38 @@ int main(void)
   USART1_Init();
   LL_mDelay(500);
 
+  Serial_Data[0].double_val = 123.4;
+  Serial_Data[1].double_val = 234.5;
+  // Serial_Data[2].double_val = 345.6;
+  // Serial_Data[3].double_val = 456.7;
+  // Serial_Data[4].double_val = 567.8;
+  // Serial_Data[5].double_val = 678.9;
+  // Serial_Data[6].double_val = 789.0;
+  // Serial_Data[7].double_val = 890.1;
+  // Serial_Data[8].double_val = 901.2;
+  // Serial_Data[9].double_val = 12.34;
+
+
   while(1)
   {
-    uint8_t rx_data[5] = {0};
+    for(uint16_t i=0;i<2;i++)
+    {
+      Serial_TransmitData(USART1,Serial_Data[i].u8_array,8,100);
+      LL_mDelay(100);
+    }
+    
     if(Serial_GetRxFlag()==1)
     {
-      Serial_GetRxData(rx_data,5);
+      Serial_GetRxData(rx_data,2);
 
       Serial_TransmitByte(USART1,rx_data[0],100);
       Serial_TransmitByte(USART1,rx_data[1],100);
-      Serial_TransmitByte(USART1,rx_data[2],100);
-      Serial_TransmitByte(USART1,rx_data[3],100);
-      Serial_TransmitByte(USART1,rx_data[4],100);
+      // Serial_TransmitByte(USART1,rx_data[2],100);
+      // Serial_TransmitByte(USART1,rx_data[3],100);
+      // Serial_TransmitByte(USART1,rx_data[4],100);
     }
 
-    Serial_Data.doubele_data = 123456.789;
-    Serial_TransmitData(USART1,Serial_Data.data,8,100);
-    LL_mDelay(500);
+    LL_mDelay(1000);
   }
 
   memset(wave_high_data1, 0, sizeof(wave_high_data1));

@@ -11,7 +11,8 @@
             "main.h": "c",
             "stm32f4xx_ll_usart.h": "c",
             "string": "c",
-            "string_view": "c"
+            "string_view": "c",
+            "serial.h": "c"
         }
     },
     "extensions": {}

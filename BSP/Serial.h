@@ -8,7 +8,7 @@
 // 协议定义
 #define SERIAL_PACKET_HEADER    0xFF
 #define SERIAL_PACKET_TAIL      0xFE
-#define SERIAL_DATA_LENGTH      5
+#define SERIAL_DATA_LENGTH      2 // 数据长度（double）
 #define SERIAL_TIMEOUT_MS       100
 
 // 接收状态枚举
@@ -24,29 +24,23 @@ typedef union {
 } Serial_DoubleConverter_t;
 
 // 双缓冲区结构体
+
 typedef struct {
-    uint8_t write_buffer[SERIAL_DATA_LENGTH];    // 中断写入缓冲区
-    uint8_t read_buffer[SERIAL_DATA_LENGTH];     // 用户读取缓冲区
-    uint8_t length;                              // 当前接收长度
-    uint8_t is_ready;                            // 数据包完整标志
-    uint8_t buffer_swapped;                      // 缓冲区交换标志
-    SerialRxState_t state;                       // 接收状态
-    uint32_t timeout_counter;                    // 超时计数器
+    Serial_DoubleConverter_t write_buffer[SERIAL_DATA_LENGTH];        // 写缓冲区
+    Serial_DoubleConverter_t read_buffer[SERIAL_DATA_LENGTH];         // 读缓冲区
+    uint8_t expected_length;        // 期望接收的数据长度
+    uint8_t current_length;         // 当前接收长度
+    uint8_t is_ready;               // 数据包完整标志
+    SerialRxState_t state;          // 接收状态
+    uint32_t timeout_counter;       // 超时计数器
 } SerialPacket_t;
-
-union SerialDoubeleBuffer_t {
-    double doubele_data;
-    uint8_t data[8];
-};
-
-
 
 
 
 uint8_t Serial_TransmitByte(USART_TypeDef *USARTx, uint8_t data, uint32_t timeout_ms);
 uint8_t Serial_TransmitData(USART_TypeDef *USARTx, uint8_t *data, uint8_t length, uint32_t timeout_ms);
 uint8_t Serial_GetRxFlag(void);
-uint8_t Serial_GetRxData(uint8_t *data, uint8_t length);
+uint8_t Serial_GetRxData(double *data, uint8_t length);
 void USART1_IRQ_Task(void);
 void Serial_TimeoutCheck(void);
 void USART_CommandTask(uint8_t command);

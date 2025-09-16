@@ -1,6 +1,12 @@
 #include "Serial.h"
 
-static SerialPacket_t g_serial_rx_packet = {0};
+static SerialPacket_t g_serial_rx_packet = {
+    .state = SERIAL_STATE_WAIT_HEADER,
+    .expected_length = SERIAL_DATA_LENGTH * sizeof(double), // 期望接收SERIAL_DATA_LENGTH个double数据
+    .current_length = 0,
+    .is_ready = 0,
+    .timeout_counter = 0
+};
 
 /**
  * @brief  安全发送单个字节数据
@@ -22,7 +28,6 @@ uint8_t Serial_TransmitByte(USART_TypeDef *USARTx, uint8_t data, uint32_t timeou
             }
         }
     }
-    
     // 发送数据
     LL_USART_TransmitData8(USARTx, data);
     
@@ -88,7 +93,7 @@ uint8_t Serial_GetRxFlag(void)
  * @param  length: 缓冲区长度
  * @retval 实际复制的数据长度
  */
-uint8_t Serial_GetRxData(uint8_t *data, uint8_t length)
+uint8_t Serial_GetRxData(double *data, uint8_t length)
 {
     if (data == NULL || length == 0) {
         return 0;
@@ -98,7 +103,7 @@ uint8_t Serial_GetRxData(uint8_t *data, uint8_t length)
     
     // 从读缓冲区复制数据，保证数据完整性
     for (uint8_t i = 0; i < copy_length; i++) {
-        data[i] = g_serial_rx_packet.read_buffer[i];
+        data[i] = g_serial_rx_packet.read_buffer[i].double_val;
     }
     
     return copy_length;
@@ -110,7 +115,7 @@ uint8_t Serial_GetRxData(uint8_t *data, uint8_t length)
 static void Serial_ResetRxStateOnly(void)
 {
     g_serial_rx_packet.state = SERIAL_STATE_WAIT_HEADER;
-    g_serial_rx_packet.length = 0;
+    g_serial_rx_packet.current_length = 0;
     g_serial_rx_packet.timeout_counter = 0;
     // 不重置 is_ready，让主循环处理
 }
@@ -121,7 +126,7 @@ static void Serial_ResetRxStateOnly(void)
 static void Serial_ResetRxState(void)
 {
     g_serial_rx_packet.state = SERIAL_STATE_WAIT_HEADER;
-    g_serial_rx_packet.length = 0;
+    g_serial_rx_packet.current_length = 0;
     g_serial_rx_packet.is_ready = 0;
     g_serial_rx_packet.timeout_counter = 0;
 }
@@ -133,7 +138,7 @@ static void Serial_PacketComplete(void)
 {
     // 将写缓冲区数据复制到读缓冲区
     for (uint8_t i = 0; i < SERIAL_DATA_LENGTH; i++) {
-        g_serial_rx_packet.read_buffer[i] = g_serial_rx_packet.write_buffer[i];
+        g_serial_rx_packet.read_buffer[i].double_val = g_serial_rx_packet.write_buffer[i].double_val;
     }
     
     g_serial_rx_packet.is_ready = 1;  // 设置数据包完整标志
@@ -167,19 +172,27 @@ void USART1_IRQ_Task(void)
             case SERIAL_STATE_WAIT_HEADER:
                 if (rx_data == SERIAL_PACKET_HEADER) {
                     g_serial_rx_packet.state = SERIAL_STATE_RECEIVE_DATA;
-                    g_serial_rx_packet.length = 0;
+                    g_serial_rx_packet.current_length = 0;
                     g_serial_rx_packet.timeout_counter = 0;
                 }
                 break;
                 
             case SERIAL_STATE_RECEIVE_DATA:
-                if (g_serial_rx_packet.length < SERIAL_DATA_LENGTH) {
-                    // 写入写缓冲区
-                    g_serial_rx_packet.write_buffer[g_serial_rx_packet.length] = rx_data;
-                    g_serial_rx_packet.length++;
+                if (g_serial_rx_packet.current_length < g_serial_rx_packet.expected_length) {
+                    uint8_t double_index = g_serial_rx_packet.current_length / sizeof(double);
+                    uint8_t byte_index = g_serial_rx_packet.current_length % sizeof(double);
                     
-                    if (g_serial_rx_packet.length >= SERIAL_DATA_LENGTH) {
-                        g_serial_rx_packet.state = SERIAL_STATE_WAIT_TAIL;
+                    // 确保不会越界
+                    if (double_index < SERIAL_DATA_LENGTH) {
+                        g_serial_rx_packet.write_buffer[double_index].u8_array[byte_index] = rx_data;
+                        g_serial_rx_packet.current_length++;
+                        
+                        if (g_serial_rx_packet.current_length >= g_serial_rx_packet.expected_length) {
+                            g_serial_rx_packet.state = SERIAL_STATE_WAIT_TAIL;
+                        }
+                    } else {
+                        // 越界保护
+                        Serial_ResetRxState();
                     }
                 } else {
                     // 数据溢出，重置状态机
