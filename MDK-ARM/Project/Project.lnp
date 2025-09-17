@@ -8,6 +8,7 @@
 "project\stm32f4xx_hal_msp.o"
 "project\tim.o"
 "project\usart.o"
+"project\main_init.o"
 "project\stm32f4xx_ll_gpio.o"
 "project\stm32f4xx_ll_dma.o"
 "project\stm32f4xx_ll_spi.o"
@@ -24,6 +25,7 @@
 "project\dds_dac80004.o"
 "project\echem_stim.o"
 "project\serial.o"
+"project\serial_process.o"
 --library_type=microlib --strict --scatter "Project\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

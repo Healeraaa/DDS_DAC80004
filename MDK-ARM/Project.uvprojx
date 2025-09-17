@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\usart.c</FilePath>
             </File>
+            <File>
+              <FileName>main_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\main_init.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -558,6 +563,16 @@
               <FileName>Serial.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\BSP\Serial.h</FilePath>
+            </File>
+            <File>
+              <FileName>Serial_Process.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\Serial_Process.c</FilePath>
+            </File>
+            <File>
+              <FileName>Serial_Process.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\Serial_Process.h</FilePath>
             </File>
           </Files>
         </Group>

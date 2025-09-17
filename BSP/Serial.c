@@ -1,6 +1,6 @@
 #include "Serial.h"
 
-static SerialPacket_t g_serial_rx_packet = {
+static Serial_Packet_t g_serial_rx_packet = {
     .state = SERIAL_STATE_WAIT_HEADER,
     .expected_length = SERIAL_DATA_LENGTH * sizeof(double), // 期望接收SERIAL_DATA_LENGTH个double数据
     .current_length = 0,
@@ -110,6 +110,16 @@ uint8_t Serial_GetRxData(double *data, uint8_t length)
 }
 
 /**
+ * @brief  获取接收到的命令字
+ * @param  none
+ * @retval 实际的command命令字
+ */
+uint8_t Serial_GetRxCommand(void)
+{
+    return g_serial_rx_packet.command_read_buffer;
+}
+
+/**
  * @brief  重置接收状态机（保留数据标志）
  */
 static void Serial_ResetRxStateOnly(void)
@@ -136,6 +146,9 @@ static void Serial_ResetRxState(void)
  */
 static void Serial_PacketComplete(void)
 {
+    // 将写缓冲区命令复制到读缓冲区
+    g_serial_rx_packet.command_read_buffer = g_serial_rx_packet.command_write_buffer;
+
     // 将写缓冲区数据复制到读缓冲区
     for (uint8_t i = 0; i < SERIAL_DATA_LENGTH; i++) {
         g_serial_rx_packet.read_buffer[i].double_val = g_serial_rx_packet.write_buffer[i].double_val;
@@ -171,10 +184,16 @@ void USART1_IRQ_Task(void)
         switch (g_serial_rx_packet.state) {
             case SERIAL_STATE_WAIT_HEADER:
                 if (rx_data == SERIAL_PACKET_HEADER) {
-                    g_serial_rx_packet.state = SERIAL_STATE_RECEIVE_DATA;
-                    g_serial_rx_packet.current_length = 0;
+                    g_serial_rx_packet.state = SERIAL_STATE_RECEIVE_COMMAND;
                     g_serial_rx_packet.timeout_counter = 0;
                 }
+                break;
+
+            case SERIAL_STATE_RECEIVE_COMMAND:
+                g_serial_rx_packet.command_write_buffer = rx_data;
+                g_serial_rx_packet.state = SERIAL_STATE_RECEIVE_DATA;
+                g_serial_rx_packet.current_length = 0;
+                g_serial_rx_packet.timeout_counter = 0;
                 break;
                 
             case SERIAL_STATE_RECEIVE_DATA:
@@ -224,14 +243,7 @@ void USART1_IRQ_Task(void)
 
 
 
-/**
- * @brief  串口命令处理函数
- * @param  command: 命令字节
- */
-void USART_CommandTask(uint8_t command)
-{
 
-}
 
 /**
   * @brief This function handles USART1 global interrupt.

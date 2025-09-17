@@ -375,10 +375,10 @@ bool CV_DDS_Start_Precise(DAC80004_InitStruct *module,
     uint32_t total_points = (uint32_t)round(best_sample_rate * theoretical_total_time);
     
     // 限制总点数在合理范围内
-    if (total_points < config->min_points) {
-        total_points = config->min_points;
-        best_sample_rate = total_points / theoretical_total_time;
-    }
+    // if (total_points < config->min_points) {
+    //     total_points = config->min_points;
+    //     best_sample_rate = total_points / theoretical_total_time;
+    // }
     
     // 重新计算时间比例
     double actual_total_time = total_points / best_sample_rate;

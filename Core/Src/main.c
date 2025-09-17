@@ -14,10 +14,10 @@
 // uint16_t wave_low_data[1024*20];
 // uint16_t wave_buffer[1024*20];
 
-uint16_t wave_high_data1[1024*8];
-uint16_t wave_high_data2[1024*8];
-uint16_t wave_low_data1[1024*8];
-uint16_t wave_low_data2[1024*8];
+// uint16_t wave_high_data1[1024*8];
+// uint16_t wave_high_data2[1024*8];
+// uint16_t wave_low_data1[1024*8];
+// uint16_t wave_low_data2[1024*8];
 
 uint8_t dma_cnt = 0;
 uint8_t dma1_cnt = 0;
@@ -25,8 +25,6 @@ uint8_t dma2_cnt = 0;
 
 Serial_DoubleConverter_t Serial_Data[2] ;
 double rx_data[2] = {0};
-
-
 
 void SystemClock_Config(void);
 uint32_t data32 = 0;
@@ -48,95 +46,105 @@ int main(void)
   USART1_Init();
   LL_mDelay(500);
 
-  Serial_Data[0].double_val = 123.4;
-  Serial_Data[1].double_val = 234.5;
-  // Serial_Data[2].double_val = 345.6;
-  // Serial_Data[3].double_val = 456.7;
-  // Serial_Data[4].double_val = 567.8;
-  // Serial_Data[5].double_val = 678.9;
+  // Serial_Data[0].double_val = 500.0;
+  // Serial_Data[1].double_val = -500.0;
+  // Serial_Data[2].double_val = -500.0;
+  // Serial_Data[3].double_val = 500.0;
+  // Serial_Data[4].double_val = 100.0;
+  // Serial_Data[5].double_val = 2.0;
   // Serial_Data[6].double_val = 789.0;
   // Serial_Data[7].double_val = 890.1;
   // Serial_Data[8].double_val = 901.2;
   // Serial_Data[9].double_val = 12.34;
 
 
-  while(1)
-  {
-    for(uint16_t i=0;i<2;i++)
-    {
-      Serial_TransmitData(USART1,Serial_Data[i].u8_array,8,100);
-      LL_mDelay(100);
-    }
+  // while(1)
+  // {
+  //   for(uint16_t i=0;i<6;i++)
+  //   {
+  //     Serial_TransmitData(USART1,Serial_Data[i].u8_array,8,100);
+  //     LL_mDelay(100);
+  //   }
+  //   LL_mDelay(1000);
     
-    if(Serial_GetRxFlag()==1)
-    {
-      Serial_GetRxData(rx_data,2);
+  //   if(Serial_GetRxFlag()==1)
+  //   {
+  //     Serial_GetRxData(rx_data,2);
 
-      Serial_TransmitByte(USART1,rx_data[0],100);
-      Serial_TransmitByte(USART1,rx_data[1],100);
-      // Serial_TransmitByte(USART1,rx_data[2],100);
-      // Serial_TransmitByte(USART1,rx_data[3],100);
-      // Serial_TransmitByte(USART1,rx_data[4],100);
-    }
+  //     // Serial_TransmitByte(USART1,rx_data[0],100);
+  //     // Serial_TransmitByte(USART1,rx_data[1],100);
+  //     // Serial_TransmitByte(USART1,rx_data[2],100);
+  //     // Serial_TransmitByte(USART1,rx_data[3],100);
+  //     // Serial_TransmitByte(USART1,rx_data[4],100);
+  //   }
 
-    LL_mDelay(1000);
-  }
+  //   LL_mDelay(1000);
+  // }
 
-  memset(wave_high_data1, 0, sizeof(wave_high_data1));
-  memset(wave_high_data2, 0, sizeof(wave_high_data2));
-  memset(wave_low_data1, 0, sizeof(wave_low_data1));
-  memset(wave_low_data2, 0, sizeof(wave_low_data2));
+  // memset(wave_high_data1, 0, sizeof(wave_high_data1));
+  // memset(wave_high_data2, 0, sizeof(wave_high_data2));
+  // memset(wave_low_data1, 0, sizeof(wave_low_data1));
+  // memset(wave_low_data2, 0, sizeof(wave_low_data2));
 
   Echem_stim_Init(&DAC80004_Module1);
 
+  while (1)
+  {
+    Serial_Process();
+  }
+  
+
   // LL_USART_ReceiveData8(USART1);
 
-  EchemCV_Params_t cv_params = {
-        // 基本电位参数
-        .Initial_E = 500.0,      // 初始电位 500mV
-        .Final_E = -500.0,        // 终止电位 500mV  
-        .Scan_Limit1 = -500.0,   // 扫描极限1 -500mV
-        .Scan_Limit2 = 500.0,    // 扫描极限2 500mV
-        .Scan_Rate = 50.0,      // 扫描速率 100mV/s
-        .cycles = 2,             // 循环3次
-        .equilibrium_time = 2.0, // 平衡时间 2s
-        .auto_sensitivity = true,
+  // EchemCV_Params_t cv_params = {
+  //       // 基本电位参数
+  //       .Initial_E = 500.0,      // 初始电位 500mV
+  //       .Final_E = -500.0,        // 终止电位 500mV  
+  //       .Scan_Limit1 = -500.0,   // 扫描极限1 -500mV
+  //       .Scan_Limit2 = 500.0,    // 扫描极限2 500mV
+  //       .Scan_Rate = 50.0,      // 扫描速率 100mV/s
+  //       .cycles = 2,             // 循环3次
+  //       .equilibrium_time = 2.0, // 平衡时间 2s
+  //       .auto_sensitivity = true,
         
-        // 以下字段会由系统自动计算填充，无需手动设置
-        .initial_points = 0,
-        .cycle_points = 0,
-        .final_points = 0, 
-        .total_points = 0,
-        .actual_sample_rate = 0.0
-    };
+  //       // 以下字段会由系统自动计算填充，无需手动设置
+  //       .initial_points = 0,
+  //       .cycle_points = 0,
+  //       .final_points = 0, 
+  //       .total_points = 0,
+  //       .actual_sample_rate = 0.0
+  //   };
     
-    // 乒乓DMA配置
-    PingPongConfig_t config = {
-        .buffer_size = 1024*8,         // 单个缓冲区大小
-        .max_sample_rate = 85000.0, // 最大采样率 1MHz
-        .min_points = 100,           // 最小点数
-        .max_points = 1024*8,       // 最大点数
-        .enable_progress_callback = true,
-        .enable_error_recovery = false
-    };
-    CV_DDS_Start_Precise(&DAC80004_Module1, 
-                          &cv_params, 
-                          &config, 
-                          wave_high_data1,
-                          wave_high_data2,
-                          wave_low_data1, 
-                          wave_low_data2);
+  //   // 乒乓DMA配置
+  //   PingPongConfig_t config = {
+  //       .buffer_size = 1024*8,         // 单个缓冲区大小
+  //       .max_sample_rate = 85000.0, // 最大采样率 1MHz
+  //       .min_points = 100,           // 最小点数
+  //       .max_points = 1024*8,       // 最大点数
+  //       .enable_progress_callback = true,
+  //       .enable_error_recovery = false
+  //   };
+  //   CV_DDS_Start_Precise(&DAC80004_Module1, 
+  //                         &cv_params, 
+  //                         &config, 
+  //                         wave_high_data1,
+  //                         wave_high_data2,
+  //                         wave_low_data1, 
+  //                         wave_low_data2);
 
 
-    while (!PingPong_DMA_IsComplete()) 
-    {
-      // 检查是否需要填充缓冲区（关键！）
-      if (CV_NeedFillBuffer()) {
-        // dma_cnt++;
+  //   while (!PingPong_DMA_IsComplete()) 
+  //   {
+  //     // 检查是否需要填充缓冲区（关键！）
+  //     if (CV_NeedFillBuffer()) {
+  //       // dma_cnt++;
       
-        CV_Fill_Next_Buffer();
-      }
-      }
+  //       CV_Fill_Next_Buffer();
+  //     }
+  //     }
+
+
+      
 
       // 1. 定义DPV参数
     // EchemDPV_Params_t dpv_params = {

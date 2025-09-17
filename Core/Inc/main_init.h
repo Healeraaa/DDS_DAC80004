@@ -2,29 +2,19 @@
 #define __MAIN_INIT_H
 
 #include "main.h"
-#include "DAC80004.h"
+#include "Echem_stim.h"
 
-dac80004_bus_t DAC80004_dev1 =
-{
-    .LDAC_PORT = GPIOA,
-    .CLR_PORT = GPIOA,
-    .CS_PORT = GPIOA,
-    .LDAC_PIN = LL_GPIO_PIN_2,
-    .CLR_PIN = LL_GPIO_PIN_3,
-    .CS_PIN = LL_GPIO_PIN_4,
-};
+extern dac80004_bus_t DAC80004_dev1;
+extern DAC80004_InitStruct DAC80004_Module1;
+extern PingPongConfig_t config;
 
-DAC80004_InitStruct DAC80004_Module1 =
-{
-    .dev = &DAC80004_dev1,
-    .WR_Buff = 0,
-    .Command_Buff = 0,
-    .Channel_Buff = 0,
-    .Data_Buff = 0,
-    .Mode_Buff = 0,
-    .TX_Data = 0,  
-};
+extern uint16_t wave_high_data1[1024*8];
+extern uint16_t wave_high_data2[1024*8];
+extern uint16_t wave_low_data1[1024*8];
+extern uint16_t wave_low_data2[1024*8];
 
+// 函数声明
+void Main_Variables_Init(void);
 
 
 #endif
