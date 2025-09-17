@@ -36,6 +36,7 @@ int main(void)
   LED_ON();
   USART1_Init();
   LL_mDelay(500);
+  LED_OFF();
 
   Echem_stim_Init(&DAC80004_Module1);
 

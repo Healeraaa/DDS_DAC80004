@@ -48,3 +48,4 @@ project\serial_process.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 project\serial_process.o: ..\BSP\DAC80004.h
 project\serial_process.o: ../Core/Inc/tim.h
 project\serial_process.o: ../Core/Inc/main_init.h
+project\serial_process.o: ..\BSP\LED.h

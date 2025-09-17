@@ -2,6 +2,7 @@
 #include "Serial.h"
 #include "Echem_stim.h"
 #include "main_init.h"
+#include "LED.h"
 
 double g_serial_rx_doubel_data[SERIAL_DATA_LENGTH] = {0};
 uint8_t g_serial_rx_command = 0;
@@ -35,6 +36,7 @@ void Serial_CV_CreateWave(double *data)
                           wave_high_data2,
                           wave_low_data1, 
                           wave_low_data2);
+    LED_ON();
     while (!PingPong_DMA_IsComplete()) 
     {
       if (CV_NeedFillBuffer()) {
@@ -50,7 +52,7 @@ void Serial_DPV_CreateWave(double *data)
         .Final_E = data[1],           // 终止电位 
         .Step_E = data[2],             // 步进电位 
         .Pulse_Amplitude = data[3],    // 脉冲幅度 
-        .Pulse_Width = data[4],        // 脉冲宽度 
+        .Pulse_Width = data[4],        // 脉冲宽度    
         .Pulse_Period = data[5],      // 脉冲周期 
         .equilibrium_time = 2.0,    // 平衡时间 2s
         .auto_sensitivity = true,
@@ -65,6 +67,7 @@ void Serial_DPV_CreateWave(double *data)
     DPV_DDS_Start_Precise(&DAC80004_Module1, &dpv_params, &config,
                              wave_high_data1, wave_high_data2,
                              wave_low_data1, wave_low_data2); 
+    LED_ON();
     while (!PingPong_DMA_IsComplete()) 
     {
         if (DPV_NeedFillBuffer()) {
@@ -102,6 +105,7 @@ void Serial_Process(void)
       g_serial_rx_command = Serial_GetRxCommand();
       Serial_GetRxData(g_serial_rx_doubel_data,SERIAL_DATA_LENGTH);
       Serial_CommandTask(g_serial_rx_command);
+      LED_OFF();
     }
 }
 
