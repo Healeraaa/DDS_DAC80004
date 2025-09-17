@@ -10,14 +10,6 @@
 #include "usart.h"
 #include "Serial.h"
 
-// uint16_t wave_high_data[1024*20];
-// uint16_t wave_low_data[1024*20];
-// uint16_t wave_buffer[1024*20];
-
-// uint16_t wave_high_data1[1024*8];
-// uint16_t wave_high_data2[1024*8];
-// uint16_t wave_low_data1[1024*8];
-// uint16_t wave_low_data2[1024*8];
 
 uint8_t dma_cnt = 0;
 uint8_t dma1_cnt = 0;
@@ -38,53 +30,12 @@ int main(void)
   NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 15, 0));
 
   SystemClock_Config();
-
   System_GPIO_Init();
 
   LED_Init();
   LED_ON();
   USART1_Init();
   LL_mDelay(500);
-
-  // Serial_Data[0].double_val = 500.0;
-  // Serial_Data[1].double_val = -500.0;
-  // Serial_Data[2].double_val = -500.0;
-  // Serial_Data[3].double_val = 500.0;
-  // Serial_Data[4].double_val = 100.0;
-  // Serial_Data[5].double_val = 2.0;
-  // Serial_Data[6].double_val = 789.0;
-  // Serial_Data[7].double_val = 890.1;
-  // Serial_Data[8].double_val = 901.2;
-  // Serial_Data[9].double_val = 12.34;
-
-
-  // while(1)
-  // {
-  //   for(uint16_t i=0;i<6;i++)
-  //   {
-  //     Serial_TransmitData(USART1,Serial_Data[i].u8_array,8,100);
-  //     LL_mDelay(100);
-  //   }
-  //   LL_mDelay(1000);
-    
-  //   if(Serial_GetRxFlag()==1)
-  //   {
-  //     Serial_GetRxData(rx_data,2);
-
-  //     // Serial_TransmitByte(USART1,rx_data[0],100);
-  //     // Serial_TransmitByte(USART1,rx_data[1],100);
-  //     // Serial_TransmitByte(USART1,rx_data[2],100);
-  //     // Serial_TransmitByte(USART1,rx_data[3],100);
-  //     // Serial_TransmitByte(USART1,rx_data[4],100);
-  //   }
-
-  //   LL_mDelay(1000);
-  // }
-
-  // memset(wave_high_data1, 0, sizeof(wave_high_data1));
-  // memset(wave_high_data2, 0, sizeof(wave_high_data2));
-  // memset(wave_low_data1, 0, sizeof(wave_low_data1));
-  // memset(wave_low_data2, 0, sizeof(wave_low_data2));
 
   Echem_stim_Init(&DAC80004_Module1);
 
@@ -94,116 +45,6 @@ int main(void)
   }
   
 
-  // LL_USART_ReceiveData8(USART1);
-
-  // EchemCV_Params_t cv_params = {
-  //       // 基本电位参数
-  //       .Initial_E = 500.0,      // 初始电位 500mV
-  //       .Final_E = -500.0,        // 终止电位 500mV  
-  //       .Scan_Limit1 = -500.0,   // 扫描极限1 -500mV
-  //       .Scan_Limit2 = 500.0,    // 扫描极限2 500mV
-  //       .Scan_Rate = 50.0,      // 扫描速率 100mV/s
-  //       .cycles = 2,             // 循环3次
-  //       .equilibrium_time = 2.0, // 平衡时间 2s
-  //       .auto_sensitivity = true,
-        
-  //       // 以下字段会由系统自动计算填充，无需手动设置
-  //       .initial_points = 0,
-  //       .cycle_points = 0,
-  //       .final_points = 0, 
-  //       .total_points = 0,
-  //       .actual_sample_rate = 0.0
-  //   };
-    
-  //   // 乒乓DMA配置
-  //   PingPongConfig_t config = {
-  //       .buffer_size = 1024*8,         // 单个缓冲区大小
-  //       .max_sample_rate = 85000.0, // 最大采样率 1MHz
-  //       .min_points = 100,           // 最小点数
-  //       .max_points = 1024*8,       // 最大点数
-  //       .enable_progress_callback = true,
-  //       .enable_error_recovery = false
-  //   };
-  //   CV_DDS_Start_Precise(&DAC80004_Module1, 
-  //                         &cv_params, 
-  //                         &config, 
-  //                         wave_high_data1,
-  //                         wave_high_data2,
-  //                         wave_low_data1, 
-  //                         wave_low_data2);
-
-
-  //   while (!PingPong_DMA_IsComplete()) 
-  //   {
-  //     // 检查是否需要填充缓冲区（关键！）
-  //     if (CV_NeedFillBuffer()) {
-  //       // dma_cnt++;
-      
-  //       CV_Fill_Next_Buffer();
-  //     }
-  //     }
-
-
-      
-
-      // 1. 定义DPV参数
-    // EchemDPV_Params_t dpv_params = {
-    //     .Initial_E = -500.0,        // 初始电位 -500mV
-    //     .Final_E = 500.0,           // 终止电位 +500mV
-    //     .Step_E = 50.0,             // 步进电位 10mV
-    //     .Pulse_Amplitude = 200.0,    // 脉冲幅度 50mV
-    //     .Pulse_Width = 100.0,        // 脉冲宽度 50ms
-    //     .Pulse_Period = 200.0,      // 脉冲周期 200ms
-    //     .equilibrium_time = 2.0,    // 平衡时间 2s
-    //     .auto_sensitivity = true,
-    //     // 以下字段会由系统自动计算填充，无需手动设置
-    //     .total_steps = 0,         // 总步数
-    //     .points_per_step = 0,       // 每步的点数
-    //     .pulse_points = 0,        // 脉冲部分点数
-    //     .base_points = 0,       // 基础部分点数
-    //     .total_points = 0,         // 总点数
-    //     .actual_sample_rate = 0.0     // 实际采样率 (Hz)
-      
-    // };
-    
-    // // 2. 定义乒乓DMA配置
-    // PingPongConfig_t config = {
-    //     .buffer_size = 1024*8,
-    //     .max_sample_rate = 85000.0,     // 10kHz采样率
-    //     .min_points = 1,
-    //     .max_points = 1024*8,
-    //     .enable_progress_callback = true,
-    //     .enable_error_recovery = false
-    // };
-
-    // DPV_DDS_Start_Precise(&DAC80004_Module1, &dpv_params, &config,
-    //                          wave_high_data1, wave_high_data2,
-    //                          wave_low_data1, wave_low_data2); 
-        
-    //     // 5. 主循环中处理缓冲区填充
-    //     while (!PingPong_DMA_IsComplete()) {
-    //         if (DPV_NeedFillBuffer()) {
-    //             DPV_Fill_Next_Buffer();
-    //         }
-            
-    //     }
-
-
-
-    while (1)
-    {
-			
-
-
-        LL_mDelay(100);
-    
-
-    // SPI1_Transmit16_Time(0xA55A, 1);
-    // DAC80004_Channel_Config(&DAC80004_Module1, DAC_CH_A);
-    // DAC80004_Data_Set(&DAC80004_Module1, 0);
-    // DAC80004_WriteData(&DAC80004_Module1);
-    // LL_mDelay(100);
-  }
 }
 
 
