@@ -9,6 +9,7 @@
 #include "main_init.h"
 #include "usart.h"
 #include "Serial.h"
+#include "Serial_Process.h"
 
 
 uint8_t dma_cnt = 0;
@@ -39,10 +40,16 @@ int main(void)
   LED_OFF();
 
   Echem_stim_Init(&DAC80004_Module1);
+  double data[10] = {100.0,-800.0,50.0,75.0,250.0,500.0,0,0.0,0.0,0.0};
+  // while (1)
+  // {
+    Serial_DPV_CreateWave(data);
+  // }
+  
 
   while (1)
   {
-    Serial_Process();
+    // Serial_Process();
   }
   
 

@@ -181,7 +181,7 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 #define DPV_PULSE_WIDTH_MAX_MS         1000.0       // 最大脉冲宽度 1s
 #define DPV_PULSE_PERIOD_MIN_MS        1.0          // 最小脉冲周期 1ms
 #define DPV_PULSE_PERIOD_MAX_MS        10000.0      // 最大脉冲周期 10s
-#define DPV_STEP_E_MIN_MV              0.1          // 最小步进电位 0.1mV
+#define DPV_STEP_E_MIN_MV              -1000.0      // 最小步进电位 -1V
 #define DPV_STEP_E_MAX_MV              1000.0       // 最大步进电位 1V
 #define DPV_PULSE_AMPLITUDE_MIN_MV     1.0          // 最小脉冲幅度 1mV
 #define DPV_PULSE_AMPLITUDE_MAX_MV     500.0        // 最大脉冲幅度 500mV

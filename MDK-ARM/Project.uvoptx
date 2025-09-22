@@ -152,9 +152,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>88</LineNumber>
+          <LineNumber>71</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134229282</Address>
+          <Address>134227022</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -163,7 +163,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\BSP\Serial_Process.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Project\../BSP/Serial_Process.c\88</Expression>
+          <Expression>\\Project\../BSP/Serial_Process.c\71</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -201,6 +201,21 @@
           <count>6</count>
           <WinNumber>1</WinNumber>
           <ItemText>dma2_cnt</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cc3_value</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>spi_35_clk_timer_counts_double</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>spi_35_clk_timer_counts</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

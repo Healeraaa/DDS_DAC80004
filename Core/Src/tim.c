@@ -328,6 +328,7 @@ void TIM1_DMA_SPI1_Init(void)
 uint8_t TIM_CalculateFreqDivision_Precise(uint32_t timer_clock, double target_freq, TIM_FreqConfig_t *config)
 {
   double min_error_double = DBL_MAX; // 初始化最小误差为double类型的最大值（需要#include "float.h"）
+  // uint32_t calc_period  = 100;//进入循环
 
   if (config == NULL || target_freq <= 0.0) // 参数有效性检查：配置指针非空且目标频率大于0
   {
@@ -352,6 +353,8 @@ uint8_t TIM_CalculateFreqDivision_Precise(uint32_t timer_clock, double target_fr
     }
 
     calc_period -= 1; // 转换为ARR寄存器值：ARR = 计数周期-1（因为定时器从0开始计数到ARR）
+    if(calc_period <= 70) // 最小ARR值限制，避免过高频率
+        break; // 频率过高，提前退出循环;
 
     // 计算实际频率和误差(使用double精度提高计算精度)
     double actual_freq_double = effective_clock / (double)(calc_period + 1); // 根据实际ARR值计算真实输出频率
@@ -565,11 +568,11 @@ void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, dou
   
   // 使用double精度计算35个SPI时钟周期对应的定时器计数值
   // 精确计算：(35.0 * effective_timer_clock) / spi_baudrate
-  double spi_35_clk_timer_counts_double = (60.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
+  volatile double spi_35_clk_timer_counts_double = (60.0 * effective_timer_clock) / spi_baudrate; // 计算35个SPI时钟周期的定时器计数值
   
   // uint32_t spi_35_clk_timer_counts = (uint32_t)round(spi_35_clk_timer_counts_double); // 四舍五入到最接近的整数
     
-  uint32_t spi_35_clk_timer_counts = (uint32_t)ceil(spi_35_clk_timer_counts_double);// 直接进一（向上取整）而不是四舍五入
+  volatile uint32_t spi_35_clk_timer_counts = (uint32_t)ceil(spi_35_clk_timer_counts_double);// 直接进一（向上取整）而不是四舍五入
   // 确保计数值在合理范围内
   if (spi_35_clk_timer_counts > config->period) {      // 如果35个SPI时钟周期超过了定时器周期
     spi_35_clk_timer_counts = (config->period + 1) / 2; // 则设为周期的一半
@@ -580,7 +583,7 @@ void TIM3_ApplyPWMConfig(const TIM_FreqConfig_t *config, double timer_clock, dou
     spi_35_clk_timer_counts = 1;                        // 设为最小值1
   }
   
-  uint32_t cc3_value = spi_35_clk_timer_counts;        // CS低电平持续时间对应的比较值
+  volatile uint32_t cc3_value = spi_35_clk_timer_counts;        // CS低电平持续时间对应的比较值
   
   /* 设置CC3比较值为35个SPI时钟周期的低电平持续时间 */
   LL_TIM_OC_SetCompareCH3(TIM3, cc3_value);            // 设置比较值，决定CS低电平持续时间

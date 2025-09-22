@@ -798,15 +798,21 @@ static void Generate_DPV_Data_Partial(DAC80004_InitStruct *module,
         double voltage = 0.0;
         
         // 计算当前是第几步
-        uint32_t current_step = global_index / points_per_step;
+        uint32_t current_step = global_index / points_per_step; 
         uint32_t point_in_step = global_index % points_per_step;
         
         // 计算基础电位（线性递增）
         double base_voltage = dpv_params->Initial_E + (current_step * dpv_params->Step_E);
         
-        // 确保不超过最终电位
-        if (base_voltage > dpv_params->Final_E) {
-            base_voltage = dpv_params->Final_E;
+        // 根据扫描方向进行边界钳位
+        if (dpv_params->Step_E > 0) { // 正向扫描
+            if (base_voltage > dpv_params->Final_E) {
+                base_voltage = dpv_params->Final_E;
+            }
+        } else { // 反向扫描
+            if (base_voltage < dpv_params->Final_E) {
+                base_voltage = dpv_params->Final_E;
+            }
         }
         
         // 判断当前点是在基础阶段还是脉冲阶段
@@ -923,6 +929,8 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
         }
         return false;
     }
+
+
     
     // 验证脉冲宽度不能大于脉冲周期
     if (dpv_params->Pulse_Width >= dpv_params->Pulse_Period) {
@@ -934,6 +942,14 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     
     // 创建可修改的DPV参数副本
     EchemDPV_Params_t dpv_params_calc = *dpv_params;
+
+    if(dpv_params_calc.Final_E < dpv_params_calc.Initial_E) //反向扫描
+    {
+        dpv_params_calc.Step_E = -fabs(dpv_params_calc.Step_E);
+    }
+    else {
+    dpv_params_calc.Step_E = fabs(dpv_params_calc.Step_E);
+    }
     
     // 保存DAC模块和缓冲区指针到全局变量
     g_dac_module = module;
@@ -944,7 +960,7 @@ bool DPV_DDS_Start_Precise(DAC80004_InitStruct *module,
     
         // 计算总步数
     double voltage_range = fabs(dpv_params->Final_E - dpv_params->Initial_E);
-    uint32_t total_steps = (uint32_t)ceil(voltage_range / dpv_params->Step_E);
+    uint32_t total_steps = (uint32_t)ceil(fabs(voltage_range) / dpv_params->Step_E);
     if (total_steps == 0) total_steps = 1;
     
     // 计算每步的时间
