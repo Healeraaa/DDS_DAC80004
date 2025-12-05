@@ -1,6 +1,7 @@
 #include "main.h"
 #include "dma.h"
-// #include "spi.h"
+#include "spi.h"
+#include "adc.h"
 #include "gpio.h"
 #include "LED.h"
 #include "DAC80004.h"
@@ -21,6 +22,7 @@ double rx_data[2] = {0};
 
 void SystemClock_Config(void);
 uint32_t data32 = 0;
+
 int main(void)
 {
 
@@ -39,10 +41,31 @@ int main(void)
   LL_mDelay(500);
   LED_OFF();
 
-  Echem_stim_Init(&DAC80004_Module1);
-  double data[10] = {100.0,-800.0,50.0,75.0,250.0,500.0,0,0.0,0.0,0.0};
+  //数字电位器测试开始
+  SPI2_Init();
+  ADC1_Init();
+  volatile uint32_t adc_value = 0;
+  while (1)
+  {
+    
+    SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
+    adc_value = ADC1_FifterRead();
+    LED_Reveral();
+    LL_mDelay(500);
+  }
+  
+  
 
-  Serial_DPV_CreateWave(data);
+
+
+
+  //数字电位器测试结束
+
+  // Echem_stim_Init(&DAC80004_Module1);
+
+  // double data[10] = {100.0,-800.0,50.0,75.0,250.0,500.0,0,0.0,0.0,0.0};
+
+  // Serial_DPV_CreateWave(data);
  
   
 

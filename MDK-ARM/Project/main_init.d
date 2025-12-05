@@ -40,6 +40,7 @@ project\main_init.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_spi.h
 project\main_init.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
 project\main_init.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h
 project\main_init.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usart.h
+project\main_init.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h
 project\main_init.o: ..\BSP\Echem_stim.h
 project\main_init.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 project\main_init.o: ..\BSP\DAC80004.h

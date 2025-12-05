@@ -63,63 +63,6 @@ void SPI1_Init(void)
 }
 
 
-/**
- * @brief  SPI2初始化函数
- * @note   配置SPI2为主机模式，16位数据宽度，带DMA传输功能
- * @param  None
- * @retval None
- */
-void SPI2_Init(void)
-{
-  LL_SPI_InitTypeDef SPI_InitStruct = {0};
-  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* 使能SPI1和GPIOA时钟 */
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SPI1);
-  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-  
-  /**SPI1 GPIO Configuration
-  PA5   ------> SPI1_SCK   (串行时钟)
-  PA7   ------> SPI1_MOSI  (主机输出从机输入)
-  */
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_5|LL_GPIO_PIN_7;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;        // 复用功能模式
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH; // 超高速
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL; // 推挽输出
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;               // 无上下拉
-  GPIO_InitStruct.Alternate = LL_GPIO_AF_5;             // 复用功能5
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  // /* SPI1 DMA初始化 - 配置DMA2_Stream2用于SPI1_TX */
-  // LL_DMA_SetChannelSelection(DMA2, LL_DMA_STREAM_2, LL_DMA_CHANNEL_2);         // 选择通道2
-  // LL_DMA_SetDataTransferDirection(DMA2, LL_DMA_STREAM_2, LL_DMA_DIRECTION_MEMORY_TO_PERIPH); // 内存到外设
-  // LL_DMA_SetStreamPriorityLevel(DMA2, LL_DMA_STREAM_2, LL_DMA_PRIORITY_LOW);  // 低优先级
-  // LL_DMA_SetMode(DMA2, LL_DMA_STREAM_2, LL_DMA_MODE_NORMAL);                  // 正常模式(非循环)
-  // LL_DMA_SetPeriphIncMode(DMA2, LL_DMA_STREAM_2, LL_DMA_PERIPH_NOINCREMENT);  // 外设地址不递增
-  // LL_DMA_SetMemoryIncMode(DMA2, LL_DMA_STREAM_2, LL_DMA_MEMORY_INCREMENT);    // 内存地址递增
-  // LL_DMA_SetPeriphSize(DMA2, LL_DMA_STREAM_2, LL_DMA_PDATAALIGN_HALFWORD);    // 外设数据宽度16位
-  // LL_DMA_SetMemorySize(DMA2, LL_DMA_STREAM_2, LL_DMA_MDATAALIGN_HALFWORD);    // 内存数据宽度16位
-  // LL_DMA_DisableFifoMode(DMA2, LL_DMA_STREAM_2);                              // 禁用FIFO模式
-
-  /* SPI1参数配置 */
-  SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;           // 全双工模式
-  SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;                       // 主机模式
-  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_16BIT;              // 16位数据宽度
-  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;             // 时钟空闲时为低电平
-  SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;                 // 第一个边沿采样
-  SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;                           // 软件控制NSS
-  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV32;      // 波特率分频128
-  SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;                     // MSB先发送
-  SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;  // 禁用CRC校验
-  SPI_InitStruct.CRCPoly = 10;                                    // CRC多项式(未使用)
-  LL_SPI_Init(SPI1, &SPI_InitStruct);
-  LL_SPI_SetStandard(SPI1, LL_SPI_PROTOCOL_MOTOROLA);            // 使用Motorola SPI协议
-
-  // /* 使能SPI1的DMA发送请求 */
-  // LL_SPI_EnableDMAReq_TX(SPI1);
-
-  /* 使能SPI1 */
-  LL_SPI_Enable(SPI1);
-}
 
 
 
@@ -304,4 +247,85 @@ uint8_t SPI1_Transmit_DMA_WaitComplete(void)
 		return 1; // 则返回1，并自动清零标志位
 	}
 	return 0; // 如果标志位为0，则返回0
+}
+
+
+void SPI2_Init(void)
+{
+  LL_SPI_InitTypeDef SPI_InitStruct = {0};
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* 使能SPI2、GPIOB、GPIOC时钟 */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_SPI2);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
+  
+  /*
+    SPI2 GPIO Configuration
+    PB10   ------> SPI2_SCK  
+    PC3   ------> SPI2_MOSI  
+  */
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_3;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
+  LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_10;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
+  LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* SPI2参数配置 */
+  SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
+  SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
+  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
+  SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
+  SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
+  SPI_InitStruct.NSS = LL_SPI_NSS_SOFT;
+  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV256;
+  SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;
+  SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;
+  SPI_InitStruct.CRCPoly = 10;
+  LL_SPI_Init(SPI2, &SPI_InitStruct);
+  LL_SPI_SetStandard(SPI2, LL_SPI_PROTOCOL_MOTOROLA);
+
+  /* 使能SPI2 */
+  LL_SPI_Enable(SPI2);
+}
+
+
+void SPI_Transmit8_Time(SPI_TypeDef *SPIx,uint8_t data, uint32_t Timeout)
+{
+  uint32_t tickstart = HAL_GetTick(); // 获取当前时间戳
+
+  while (!LL_SPI_IsActiveFlag_TXE(SPIx))
+  {
+    if ((HAL_GetTick() - tickstart) >= Timeout)
+    {
+      return; 
+    }
+  }
+
+  LL_SPI_TransmitData8(SPIx, data);
+
+  while (!LL_SPI_IsActiveFlag_TXE(SPIx))
+  {
+    if ((HAL_GetTick() - tickstart) >= Timeout)
+    {
+      return; 
+    }
+  }
+
+  while (LL_SPI_IsActiveFlag_BSY(SPIx))
+  {
+    if ((HAL_GetTick() - tickstart) >= Timeout)
+    {
+      return;
+    }
+  }
 }
