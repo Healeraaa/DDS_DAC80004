@@ -41,10 +41,9 @@ int main(void)
 
   Echem_stim_Init(&DAC80004_Module1);
   double data[10] = {100.0,-800.0,50.0,75.0,250.0,500.0,0,0.0,0.0,0.0};
-  // while (1)
-  // {
-    Serial_DPV_CreateWave(data);
-  // }
+
+  Serial_DPV_CreateWave(data);
+ 
   
 
   while (1)
