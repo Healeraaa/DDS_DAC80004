@@ -250,7 +250,7 @@ uint8_t SPI1_Transmit_DMA_WaitComplete(void)
 }
 
 
-void SPI2_Init(void)
+void SPI2_Init(void)//CPHA=0
 {
   LL_SPI_InitTypeDef SPI_InitStruct = {0};
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};

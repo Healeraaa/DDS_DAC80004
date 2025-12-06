@@ -1,0 +1,18 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/BasicMathFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/ConcatenationFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/FullyConnectedFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/ConvolutionFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/ActivationFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/PoolingFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/SoftmaxFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/SVDFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/ReshapeFunctions/cmake_install.cmake",
+		"E:/MCU_Project/STM32F411Project/DAC8004_Driver/build/Source/NNSupportFunctions/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

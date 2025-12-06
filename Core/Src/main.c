@@ -1,10 +1,11 @@
 #include "main.h"
 #include "dma.h"
-#include "spi.h"
+// #include "spi.h"
 #include "adc.h"
 #include "gpio.h"
 #include "LED.h"
 #include "DAC80004.h"
+#include "AD5231.h"
 // #include "DDS_DAC80004.h"
 #include "Echem_stim.h"
 #include "main_init.h"
@@ -42,14 +43,19 @@ int main(void)
   LED_OFF();
 
   //数字电位器测试开始
-  SPI2_Init();
+  // SPI2_Init();
+  AD5231_Init();
+  AD5231_WriteRDAC(512);
   ADC1_Init();
   volatile uint32_t adc_value = 0;
+  volatile float f_adc_value = 0;
   while (1)
   {
     
-    SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
+    // SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
+    AD5231_WriteRDAC(1023);
     adc_value = ADC1_FifterRead();
+    f_adc_value = (float)adc_value * 3.3f / 4095.0f;
     LED_Reveral();
     LL_mDelay(500);
   }

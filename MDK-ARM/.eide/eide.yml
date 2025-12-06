@@ -30,6 +30,7 @@ virtualFolder:
                 - path: ../Core/Src/tim.c
                 - path: ../Core/Src/usart.c
                 - path: ../Core/Src/main_init.c
+                - path: ../Core/Src/adc.c
               folders: []
     - name: Drivers
       files: []
@@ -46,6 +47,7 @@ virtualFolder:
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_tim.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usart.c
+            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c
           folders: []
         - name: CMSIS
           files:
