@@ -12,7 +12,7 @@ void USART1_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   /**USART1 GPIO Configuration
   PA9   ------> USART1_TX
-  PA10   ------> USART1_RX
+  PA10   ------> USART1_RX 
   */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_9|LL_GPIO_PIN_10;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;

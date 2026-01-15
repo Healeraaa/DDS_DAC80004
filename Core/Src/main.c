@@ -42,32 +42,26 @@ int main(void)
   LL_mDelay(500);
   LED_OFF();
 
-  //数字电位器测试开始
-  // SPI2_Init();
-  AD5231_Init();
-  AD5231_WriteRDAC(512);
-  ADC1_Init();
-  volatile uint32_t adc_value = 0;
-  volatile float f_adc_value = 0;
-  while (1)
-  {
+  // //数字电位器测试开始
+  // // SPI2_Init();
+  // AD5231_Init();
+  // AD5231_WriteRDAC(512);
+  // ADC1_Init();
+  // volatile uint32_t adc_value = 0;
+  // volatile float f_adc_value = 0;
+  // while (1)
+  // {
     
-    // SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
-    AD5231_WriteRDAC(1023);
-    adc_value = ADC1_FifterRead();
-    f_adc_value = (float)adc_value * 3.3f / 4095.0f;
-    LED_Reveral();
-    LL_mDelay(500);
-  }
-  
-  
+  //   // SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
+  //   AD5231_WriteRDAC(0);
+  //   adc_value = ADC1_FifterRead();
+  //   f_adc_value = (float)adc_value * 3.32f / 4095.0f;
+  //   LED_Reveral();
+  //   LL_mDelay(500);
+  // }
+  // //数字电位器测试结束
 
-
-
-
-  //数字电位器测试结束
-
-  // Echem_stim_Init(&DAC80004_Module1);
+  Echem_stim_Init(&DAC80004_Module1);
 
   // double data[10] = {100.0,-800.0,50.0,75.0,250.0,500.0,0,0.0,0.0,0.0};
 
@@ -77,7 +71,7 @@ int main(void)
 
   while (1)
   {
-    // Serial_Process();
+    Serial_Process();
   }
   
 

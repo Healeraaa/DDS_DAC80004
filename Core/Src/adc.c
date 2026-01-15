@@ -68,11 +68,11 @@ uint16_t ADC1_Read(void)
  */
 uint16_t ADC1_FifterRead(void)
 {
-  uint16_t fifter_value = 0;  
-  for (uint8_t i = 0; i < 10; i++)
+  uint64_t fifter_value = 0;  
+  for (uint8_t i = 0; i < 100; i++)
   {
     fifter_value += ADC1_Read();
   }
-  fifter_value/=10;
+  fifter_value/=100;
   return fifter_value;
 }

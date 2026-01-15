@@ -67,6 +67,8 @@ virtualFolder:
         - path: ../BSP/Serial.h
         - path: ../BSP/Serial_Process.c
         - path: ../BSP/Serial_Process.h
+        - path: ../BSP/AD5231.c
+        - path: ../BSP/AD5231.h
       folders: []
     - name: SYSTEM
       files: []
