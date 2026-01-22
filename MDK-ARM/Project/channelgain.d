@@ -1,0 +1,13 @@
+project\channelgain.o: ..\BSP\ChannelGain.c
+project\channelgain.o: ..\BSP\ChannelGain.h
+project\channelgain.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
+project\channelgain.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h
+project\channelgain.o: ../Drivers/CMSIS/Include/core_cm4.h
+project\channelgain.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+project\channelgain.o: ../Drivers/CMSIS/Include/cmsis_version.h
+project\channelgain.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+project\channelgain.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+project\channelgain.o: ../Drivers/CMSIS/Include/mpu_armv7.h
+project\channelgain.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
+project\channelgain.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h
+project\channelgain.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_bus.h

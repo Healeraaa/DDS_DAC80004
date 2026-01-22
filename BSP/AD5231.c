@@ -16,7 +16,7 @@ void AD5231_CS(uint8_t state)
 
 /**
  * @brief  AD5231 GPIO初始化
- */
+ */                   
 void AD5231_Init(void)
 {
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};

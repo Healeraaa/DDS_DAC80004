@@ -29,7 +29,8 @@
 "project\serial.o"
 "project\serial_process.o"
 "project\ad5231.o"
+"project\channelgain.o"
 --library_type=microlib --strict --scatter "Project\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list "Project.map" -o Project\Project.axf
+--list ".\Project.map" -o Project\Project.axf

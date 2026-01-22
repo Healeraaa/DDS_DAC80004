@@ -262,7 +262,7 @@ void SPI2_Init(void)//CPHA=0
   
   /*
     SPI2 GPIO Configuration
-    PB10   ------> SPI2_SCK  
+    PB10   ------> SPI2_SCK   
     PC3   ------> SPI2_MOSI  
   */
   GPIO_InitStruct.Pin = LL_GPIO_PIN_3;

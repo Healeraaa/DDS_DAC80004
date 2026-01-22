@@ -56,7 +56,7 @@
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>0</BrowseInformation>
-          <ListingPath></ListingPath>
+          <ListingPath>.\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -594,6 +594,16 @@
               <FileName>AD5231.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\BSP\AD5231.h</FilePath>
+            </File>
+            <File>
+              <FileName>ChannelGain.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\ChannelGain.c</FilePath>
+            </File>
+            <File>
+              <FileName>ChannelGain.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\ChannelGain.h</FilePath>
             </File>
           </Files>
         </Group>

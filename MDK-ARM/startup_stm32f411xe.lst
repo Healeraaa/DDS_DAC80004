@@ -734,8 +734,8 @@ Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
 interwork --depend=project\startup_stm32f411xe.d -oproject\startup_stm32f411xe.
 o -I.\RTE\_Project -ID:\Keil\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include --predefi
 ne="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 542" --predefine="ST
-M32F411xE SETA 1" --predefine="_RTE_ SETA 1" --list=startup_stm32f411xe.lst sta
-rtup_stm32f411xe.s
+M32F411xE SETA 1" --predefine="_RTE_ SETA 1" --list=.\startup_stm32f411xe.lst s
+tartup_stm32f411xe.s
 
 
 

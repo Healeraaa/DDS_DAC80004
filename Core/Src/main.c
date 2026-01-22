@@ -12,6 +12,7 @@
 #include "usart.h"
 #include "Serial.h"
 #include "Serial_Process.h"
+#include "ChannelGain.h"
 
 
 uint8_t dma_cnt = 0;
@@ -36,38 +37,19 @@ int main(void)
   SystemClock_Config();
   System_GPIO_Init();
 
-  LED_Init();
+  LED_Init(); 
   LED_ON();
   USART1_Init();
+  ChannelGain_Init();
+  // WE_Channel_Select(WE_CHANNEL_1);
   LL_mDelay(500);
   LED_OFF();
 
-  // //数字电位器测试开始
-  // // SPI2_Init();
-  // AD5231_Init();
-  // AD5231_WriteRDAC(512);
-  // ADC1_Init();
-  // volatile uint32_t adc_value = 0;
-  // volatile float f_adc_value = 0;
-  // while (1)
-  // {
-    
-  //   // SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
-  //   AD5231_WriteRDAC(0);
-  //   adc_value = ADC1_FifterRead();
-  //   f_adc_value = (float)adc_value * 3.32f / 4095.0f;
-  //   LED_Reveral();
-  //   LL_mDelay(500);
-  // }
-  // //数字电位器测试结束
+
+
+
 
   Echem_stim_Init(&DAC80004_Module1);
-
-  // double data[10] = {100.0,-800.0,50.0,75.0,250.0,500.0,0,0.0,0.0,0.0};
-
-  // Serial_DPV_CreateWave(data);
- 
-  
 
   while (1)
   {

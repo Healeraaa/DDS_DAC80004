@@ -3,6 +3,7 @@
 #include "Echem_stim.h"
 #include "main_init.h"
 #include "LED.h"
+#include "ChannelGain.h"
 
 double g_serial_rx_doubel_data[SERIAL_DATA_LENGTH] = {0};
 uint8_t g_serial_rx_command = 0;
@@ -12,6 +13,15 @@ uint8_t g_serial_rx_command = 0;
 
 void Serial_CV_CreateWave(double *data)
 {
+    Serial_DoubleConverter_t converter;
+    converter.double_val = data[6];
+    WE_Channel_Select((WE_Channel_TypeDef)converter.u8_array[0]);
+    IV_Gain_Set((IV_Gain_TypeDef)converter.u8_array[1]);
+    Voltage_Gain_Set((Voltage_Gain_TypeDef)converter.u8_array[2]);
+    FB_Channel_Select((FB_Channel_TypeDef)converter.u8_array[3]);
+
+    DAC80004_Channel_Config(&DAC80004_Module1, (uint8_t)(data[7])); // 选择DAC通道
+
     EchemCV_Params_t cv_params = {
         // 基本电位参数
         .Initial_E = data[0],      // 初始电位 
@@ -47,6 +57,15 @@ void Serial_CV_CreateWave(double *data)
 
 void Serial_DPV_CreateWave(double *data)
 {
+    Serial_DoubleConverter_t converter;
+    converter.double_val = data[6];
+    WE_Channel_Select((WE_Channel_TypeDef)converter.u8_array[0]);
+    IV_Gain_Set((IV_Gain_TypeDef)converter.u8_array[1]);
+    Voltage_Gain_Set((Voltage_Gain_TypeDef)converter.u8_array[2]);
+    FB_Channel_Select((FB_Channel_TypeDef)converter.u8_array[3]);
+
+    DAC80004_Channel_Config(&DAC80004_Module1, (uint8_t)(data[7])); // 选择DAC通道
+    
     EchemDPV_Params_t dpv_params = {
         .Initial_E = data[0],        // 初始电位 
         .Final_E = data[1],           // 终止电位 

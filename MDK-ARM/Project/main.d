@@ -54,3 +54,4 @@ project\main.o: ../Core/Inc/usart.h
 project\main.o: ..\BSP\Serial.h
 project\main.o: D:\Keil\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 project\main.o: ..\BSP\Serial_Process.h
+project\main.o: ..\BSP\ChannelGain.h
