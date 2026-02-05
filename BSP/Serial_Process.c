@@ -17,8 +17,12 @@ void Serial_CV_CreateWave(double *data)
     converter.double_val = data[6];
     WE_Channel_Select((WE_Channel_TypeDef)converter.u8_array[0]);
     IV_Gain_Set((IV_Gain_TypeDef)converter.u8_array[1]);
-    Voltage_Gain_Set((Voltage_Gain_TypeDef)converter.u8_array[2]);
-    FB_Channel_Select((FB_Channel_TypeDef)converter.u8_array[3]);
+    Voltage_Gain_Stage1_Set((Voltage_Gain_Stage1_TypeDef)converter.u8_array[2]);
+    Voltage_Gain_Stage2_Set((Voltage_Gain_Stage2_TypeDef)converter.u8_array[3]);
+    Feedback1_Select((Feedback_Select_TypeDef)converter.u8_array[4]);
+    Feedback2_Select((Feedback_Select_TypeDef)converter.u8_array[5]);
+    Feedback3_Select((Feedback_Select_TypeDef)converter.u8_array[6]);
+    Feedback4_Select((Feedback_Select_TypeDef)converter.u8_array[7]);
 
     DAC80004_Channel_Config(&DAC80004_Module1, (uint8_t)(data[7])); // 选择DAC通道
 
@@ -61,8 +65,12 @@ void Serial_DPV_CreateWave(double *data)
     converter.double_val = data[6];
     WE_Channel_Select((WE_Channel_TypeDef)converter.u8_array[0]);
     IV_Gain_Set((IV_Gain_TypeDef)converter.u8_array[1]);
-    Voltage_Gain_Set((Voltage_Gain_TypeDef)converter.u8_array[2]);
-    FB_Channel_Select((FB_Channel_TypeDef)converter.u8_array[3]);
+    Voltage_Gain_Stage1_Set((Voltage_Gain_Stage1_TypeDef)converter.u8_array[2]);
+    Voltage_Gain_Stage2_Set((Voltage_Gain_Stage2_TypeDef)converter.u8_array[3]);
+    Feedback1_Select((Feedback_Select_TypeDef)converter.u8_array[4]);
+    Feedback2_Select((Feedback_Select_TypeDef)converter.u8_array[5]);
+    Feedback3_Select((Feedback_Select_TypeDef)converter.u8_array[6]);
+    Feedback4_Select((Feedback_Select_TypeDef)converter.u8_array[7]);
 
     DAC80004_Channel_Config(&DAC80004_Module1, (uint8_t)(data[7])); // 选择DAC通道
     

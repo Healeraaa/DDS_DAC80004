@@ -29,13 +29,12 @@ Section Cross References
     main.o(i.main) refers to led.o(i.LED_Init) for LED_Init
     main.o(i.main) refers to led.o(i.LED_ON) for LED_ON
     main.o(i.main) refers to usart.o(i.USART1_Init) for USART1_Init
+    main.o(i.main) refers to channelgain.o(i.ChannelGain_Init) for ChannelGain_Init
     main.o(i.main) refers to stm32f4xx_ll_utils.o(i.LL_mDelay) for LL_mDelay
     main.o(i.main) refers to led.o(i.LED_OFF) for LED_OFF
-    main.o(i.main) refers to ad5260.o(i.AD5260_Init) for AD5260_Init
-    main.o(i.main) refers to adc.o(i.ADC1_Init) for ADC1_Init
-    main.o(i.main) refers to ad5260.o(i.AD5260_WriteRDAC) for AD5260_WriteRDAC
-    main.o(i.main) refers to adc.o(i.ADC1_FifterRead) for ADC1_FifterRead
-    main.o(i.main) refers to led.o(i.LED_Reveral) for LED_Reveral
+    main.o(i.main) refers to echem_stim.o(i.Echem_stim_Init) for Echem_stim_Init
+    main.o(i.main) refers to serial_process.o(i.Serial_Process) for Serial_Process
+    main.o(i.main) refers to main_init.o(.data) for DAC80004_Module1
     gpio.o(i.GPIOB_Group1_Init) refers to memseta.o(.text) for __aeabi_memclr4
     gpio.o(i.GPIOB_Group1_Init) refers to gpio.o(i.LL_AHB1_GRP1_EnableClock) for LL_AHB1_GRP1_EnableClock
     gpio.o(i.GPIOB_Group1_Init) refers to stm32f4xx_ll_gpio.o(i.LL_GPIO_Init) for LL_GPIO_Init
@@ -501,8 +500,12 @@ Section Cross References
     serial.o(i.USART1_IRQ_Task) refers to serial.o(.data) for .data
     serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.WE_Channel_Select) for WE_Channel_Select
     serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.IV_Gain_Set) for IV_Gain_Set
-    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Voltage_Gain_Set) for Voltage_Gain_Set
-    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.FB_Channel_Select) for FB_Channel_Select
+    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Voltage_Gain_Stage1_Set) for Voltage_Gain_Stage1_Set
+    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Voltage_Gain_Stage2_Set) for Voltage_Gain_Stage2_Set
+    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Feedback1_Select) for Feedback1_Select
+    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Feedback2_Select) for Feedback2_Select
+    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Feedback3_Select) for Feedback3_Select
+    serial_process.o(i.Serial_CV_CreateWave) refers to channelgain.o(i.Feedback4_Select) for Feedback4_Select
     serial_process.o(i.Serial_CV_CreateWave) refers to dfixui.o(.text) for __aeabi_d2uiz
     serial_process.o(i.Serial_CV_CreateWave) refers to dac80004.o(i.DAC80004_Channel_Config) for DAC80004_Channel_Config
     serial_process.o(i.Serial_CV_CreateWave) refers to memcpya.o(.text) for __aeabi_memcpy4
@@ -520,8 +523,12 @@ Section Cross References
     serial_process.o(i.Serial_CommandTask) refers to serial_process.o(.bss) for .bss
     serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.WE_Channel_Select) for WE_Channel_Select
     serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.IV_Gain_Set) for IV_Gain_Set
-    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Voltage_Gain_Set) for Voltage_Gain_Set
-    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.FB_Channel_Select) for FB_Channel_Select
+    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Voltage_Gain_Stage1_Set) for Voltage_Gain_Stage1_Set
+    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Voltage_Gain_Stage2_Set) for Voltage_Gain_Stage2_Set
+    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Feedback1_Select) for Feedback1_Select
+    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Feedback2_Select) for Feedback2_Select
+    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Feedback3_Select) for Feedback3_Select
+    serial_process.o(i.Serial_DPV_CreateWave) refers to channelgain.o(i.Feedback4_Select) for Feedback4_Select
     serial_process.o(i.Serial_DPV_CreateWave) refers to dfixui.o(.text) for __aeabi_d2uiz
     serial_process.o(i.Serial_DPV_CreateWave) refers to dac80004.o(i.DAC80004_Channel_Config) for DAC80004_Channel_Config
     serial_process.o(i.Serial_DPV_CreateWave) refers to memcpya.o(.text) for __aeabi_memcpy4
@@ -542,15 +549,24 @@ Section Cross References
     serial_process.o(i.Serial_Process) refers to serial_process.o(.data) for .data
     serial_process.o(i.Serial_Process) refers to serial_process.o(.bss) for .bss
     channelgain.o(i.ChannelGain_GPIO_Init) refers to memseta.o(.text) for __aeabi_memclr4
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.LL_AHB1_GRP1_EnableClock) for LL_AHB1_GRP1_EnableClock
     channelgain.o(i.ChannelGain_GPIO_Init) refers to stm32f4xx_ll_gpio.o(i.LL_GPIO_Init) for LL_GPIO_Init
     channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.WE_Channel_Select) for WE_Channel_Select
     channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.IV_Gain_Set) for IV_Gain_Set
-    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Voltage_Gain_Set) for Voltage_Gain_Set
-    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.FB_Channel_Select) for FB_Channel_Select
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Voltage_Gain_Stage1_Set) for Voltage_Gain_Stage1_Set
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Voltage_Gain_Stage2_Set) for Voltage_Gain_Stage2_Set
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Feedback1_Select) for Feedback1_Select
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Feedback2_Select) for Feedback2_Select
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Feedback3_Select) for Feedback3_Select
+    channelgain.o(i.ChannelGain_GPIO_Init) refers to channelgain.o(i.Feedback4_Select) for Feedback4_Select
     channelgain.o(i.ChannelGain_Init) refers to channelgain.o(i.ChannelGain_GPIO_Init) for ChannelGain_GPIO_Init
-    channelgain.o(i.FB_Channel_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
+    channelgain.o(i.Feedback1_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
+    channelgain.o(i.Feedback2_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
+    channelgain.o(i.Feedback3_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
+    channelgain.o(i.Feedback4_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
     channelgain.o(i.IV_Gain_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
-    channelgain.o(i.Voltage_Gain_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
+    channelgain.o(i.Voltage_Gain_Stage1_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
+    channelgain.o(i.Voltage_Gain_Stage2_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
     channelgain.o(i.WE_Channel_GetCurrent) refers to channelgain.o(i.LL_GPIO_IsOutputPinSet) for LL_GPIO_IsOutputPinSet
     ad5260.o(i.AD5260_Init) refers to memseta.o(.text) for __aeabi_memclr4
     ad5260.o(i.AD5260_Init) refers to stm32f4xx_ll_gpio.o(i.LL_GPIO_Init) for LL_GPIO_Init
@@ -740,23 +756,19 @@ Removing Unused input sections from the image.
     Removing dma.o(.rev16_text), (4 bytes).
     Removing dma.o(.revsh_text), (4 bytes).
     Removing dma.o(.rrx_text), (6 bytes).
-    Removing dma.o(i.MX_DMA_Init), (92 bytes).
-    Removing dma.o(i.NVIC_EncodePriority), (50 bytes).
-    Removing dma.o(i.__NVIC_EnableIRQ), (26 bytes).
-    Removing dma.o(i.__NVIC_SetPriority), (32 bytes).
     Removing spi.o(.rev16_text), (4 bytes).
     Removing spi.o(.revsh_text), (4 bytes).
     Removing spi.o(.rrx_text), (6 bytes).
     Removing spi.o(i.LL_DMA_DisableStream), (20 bytes).
     Removing spi.o(i.LL_DMA_EnableStream), (20 bytes).
     Removing spi.o(i.LL_DMA_SetDataLength), (24 bytes).
-    Removing spi.o(i.SPI1_Init), (148 bytes).
     Removing spi.o(i.SPI1_SetDataWidth), (36 bytes).
-    Removing spi.o(i.SPI1_Transmit16_Time), (96 bytes).
     Removing spi.o(i.SPI1_Transmit8_Time), (96 bytes).
     Removing spi.o(i.SPI1_Transmit_DMA), (108 bytes).
     Removing spi.o(i.SPI1_Transmit_DMA_Start), (100 bytes).
     Removing spi.o(i.SPI1_Transmit_DMA_WaitComplete), (24 bytes).
+    Removing spi.o(i.SPI2_Init), (180 bytes).
+    Removing spi.o(i.SPI_Transmit8_Time), (92 bytes).
     Removing stm32f4xx_it.o(.rev16_text), (4 bytes).
     Removing stm32f4xx_it.o(.revsh_text), (4 bytes).
     Removing stm32f4xx_it.o(.rrx_text), (6 bytes).
@@ -767,26 +779,7 @@ Removing Unused input sections from the image.
     Removing tim.o(.rev16_text), (4 bytes).
     Removing tim.o(.revsh_text), (4 bytes).
     Removing tim.o(.rrx_text), (6 bytes).
-    Removing tim.o(i.LL_AHB1_GRP1_EnableClock), (24 bytes).
-    Removing tim.o(i.LL_DMA_DisableFifoMode), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetChannelSelection), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetDataTransferDirection), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetMemoryIncMode), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetMemorySize), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetMode), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetPeriphIncMode), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetPeriphSize), (20 bytes).
-    Removing tim.o(i.LL_DMA_SetStreamPriorityLevel), (20 bytes).
-    Removing tim.o(i.LL_TIM_OC_DisableFast), (84 bytes).
-    Removing tim.o(i.LL_TIM_OC_EnablePreload), (84 bytes).
-    Removing tim.o(i.TIM1_DMA_SPI1_Init), (500 bytes).
-    Removing tim.o(i.TIM3_ApplyPWMConfig), (212 bytes).
-    Removing tim.o(i.TIM3_PWM_Init), (208 bytes).
-    Removing tim.o(i.TIM3_PWM_Start), (16 bytes).
     Removing tim.o(i.TIM_ApplyFreqConfig), (22 bytes).
-    Removing tim.o(i.TIM_ApplyFreqConfig_DualDMA), (192 bytes).
-    Removing tim.o(i.TIM_CalculateFreqDivision_Precise), (432 bytes).
-    Removing tim.o(.constdata), (22 bytes).
     Removing usart.o(.rev16_text), (4 bytes).
     Removing usart.o(.revsh_text), (4 bytes).
     Removing usart.o(.rrx_text), (6 bytes).
@@ -795,13 +788,12 @@ Removing Unused input sections from the image.
     Removing main_init.o(.revsh_text), (4 bytes).
     Removing main_init.o(.rrx_text), (6 bytes).
     Removing main_init.o(i.Main_Variables_Init), (60 bytes).
-    Removing main_init.o(.bss), (65536 bytes).
-    Removing main_init.o(.data), (24 bytes).
-    Removing main_init.o(.data), (16 bytes).
-    Removing main_init.o(.data), (32 bytes).
     Removing adc.o(.rev16_text), (4 bytes).
     Removing adc.o(.revsh_text), (4 bytes).
     Removing adc.o(.rrx_text), (6 bytes).
+    Removing adc.o(i.ADC1_FifterRead), (44 bytes).
+    Removing adc.o(i.ADC1_Init), (268 bytes).
+    Removing adc.o(i.ADC1_Read), (36 bytes).
     Removing stm32f4xx_ll_gpio.o(.rev16_text), (4 bytes).
     Removing stm32f4xx_ll_gpio.o(.revsh_text), (4 bytes).
     Removing stm32f4xx_ll_gpio.o(.rrx_text), (6 bytes).
@@ -913,7 +905,6 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_ll_tim.o(i.LL_APB1_GRP1_ReleaseReset), (16 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_APB2_GRP1_ForceReset), (16 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_APB2_GRP1_ReleaseReset), (16 bytes).
-    Removing stm32f4xx_ll_tim.o(i.LL_TIM_BDTR_Init), (52 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_BDTR_StructInit), (18 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_DeInit), (172 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_ENCODER_Init), (96 bytes).
@@ -922,8 +913,6 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_HALLSENSOR_StructInit), (12 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_IC_Init), (224 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_IC_StructInit), (16 bytes).
-    Removing stm32f4xx_ll_tim.o(i.LL_TIM_Init), (152 bytes).
-    Removing stm32f4xx_ll_tim.o(i.LL_TIM_OC_Init), (396 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_OC_StructInit), (20 bytes).
     Removing stm32f4xx_ll_tim.o(i.LL_TIM_StructInit), (16 bytes).
     Removing stm32f4xx_ll_usart.o(.rev16_text), (4 bytes).
@@ -937,10 +926,13 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_ll_adc.o(.revsh_text), (4 bytes).
     Removing stm32f4xx_ll_adc.o(.rrx_text), (6 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_CommonDeInit), (28 bytes).
+    Removing stm32f4xx_ll_adc.o(i.LL_ADC_CommonInit), (36 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_CommonStructInit), (6 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_DeInit), (192 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_INJ_Init), (78 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_INJ_StructInit), (12 bytes).
+    Removing stm32f4xx_ll_adc.o(i.LL_ADC_Init), (52 bytes).
+    Removing stm32f4xx_ll_adc.o(i.LL_ADC_REG_Init), (80 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_REG_StructInit), (14 bytes).
     Removing stm32f4xx_ll_adc.o(i.LL_ADC_StructInit), (14 bytes).
     Removing system_stm32f4xx.o(.rev16_text), (4 bytes).
@@ -950,21 +942,11 @@ Removing Unused input sections from the image.
     Removing led.o(.rev16_text), (4 bytes).
     Removing led.o(.revsh_text), (4 bytes).
     Removing led.o(.rrx_text), (6 bytes).
+    Removing led.o(i.LED_Reveral), (28 bytes).
     Removing dac80004.o(.rev16_text), (4 bytes).
     Removing dac80004.o(.revsh_text), (4 bytes).
     Removing dac80004.o(.rrx_text), (6 bytes).
-    Removing dac80004.o(i.CLR), (14 bytes).
-    Removing dac80004.o(i.CS), (14 bytes).
-    Removing dac80004.o(i.DAC80004_Channel_Config), (16 bytes).
-    Removing dac80004.o(i.DAC80004_Command_Config), (16 bytes).
-    Removing dac80004.o(i.DAC80004_Data_Set), (20 bytes).
-    Removing dac80004.o(i.DAC80004_GPIO_init), (96 bytes).
-    Removing dac80004.o(i.DAC80004_Init), (90 bytes).
-    Removing dac80004.o(i.DAC80004_Mode_Config), (14 bytes).
-    Removing dac80004.o(i.DAC80004_WR_Config), (16 bytes).
-    Removing dac80004.o(i.DAC80004_WriteData), (44 bytes).
     Removing dac80004.o(i.DAC8004_CSL_Config), (10 bytes).
-    Removing dac80004.o(i.LDAC), (14 bytes).
     Removing dds_dac80004.o(.rev16_text), (4 bytes).
     Removing dds_dac80004.o(.revsh_text), (4 bytes).
     Removing dds_dac80004.o(.rrx_text), (6 bytes).
@@ -991,9 +973,6 @@ Removing Unused input sections from the image.
     Removing dds_dac80004.o(i.LL_DMA_SetDataLength), (24 bytes).
     Removing dds_dac80004.o(i.LL_DMA_SetMemoryAddress), (16 bytes).
     Removing dds_dac80004.o(i.LL_DMA_SetMode), (20 bytes).
-    Removing dds_dac80004.o(i.SYNC_Cycle_Init), (4 bytes).
-    Removing dds_dac80004.o(i.SYNC_Cycle_SetPara), (4 bytes).
-    Removing dds_dac80004.o(i.SYNC_Cycle_Start), (4 bytes).
     Removing dds_dac80004.o(i.Sin_Wave_DMA2_Stream4_IRQHandler), (152 bytes).
     Removing dds_dac80004.o(i.Sin_Wave_DMA2_Stream5_IRQHandler), (152 bytes).
     Removing dds_dac80004.o(i.__NVIC_EnableIRQ), (26 bytes).
@@ -1002,80 +981,45 @@ Removing Unused input sections from the image.
     Removing echem_stim.o(.rev16_text), (4 bytes).
     Removing echem_stim.o(.revsh_text), (4 bytes).
     Removing echem_stim.o(.rrx_text), (6 bytes).
-    Removing echem_stim.o(i.CV_DDS_Start_Precise), (1636 bytes).
-    Removing echem_stim.o(i.CV_Fill_Next_Buffer), (108 bytes).
-    Removing echem_stim.o(i.CV_NeedFillBuffer), (44 bytes).
-    Removing echem_stim.o(i.DPV_DDS_Start_Precise), (1824 bytes).
-    Removing echem_stim.o(i.DPV_Fill_Next_Buffer), (108 bytes).
-    Removing echem_stim.o(i.DPV_NeedFillBuffer), (28 bytes).
     Removing echem_stim.o(i.Echem_GetResult), (8 bytes).
     Removing echem_stim.o(i.Echem_Reset), (40 bytes).
     Removing echem_stim.o(i.Echem_SetErrorCallback), (12 bytes).
     Removing echem_stim.o(i.Echem_SetProgressCallback), (12 bytes).
-    Removing echem_stim.o(i.Echem_stim_Init), (22 bytes).
-    Removing echem_stim.o(i.Generate_CV_Data_Partial), (484 bytes).
-    Removing echem_stim.o(i.Generate_DPV_Data_Partial), (328 bytes).
-    Removing echem_stim.o(i.LL_DMA_EnableIT_TC), (20 bytes).
-    Removing echem_stim.o(i.LL_DMA_EnableIT_TE), (20 bytes).
-    Removing echem_stim.o(i.LL_DMA_SetMode), (20 bytes).
-    Removing echem_stim.o(i.PingPong_DMA_IsComplete), (28 bytes).
     Removing echem_stim.o(i.PingPong_DMA_Pause), (48 bytes).
     Removing echem_stim.o(i.PingPong_DMA_Reset), (44 bytes).
     Removing echem_stim.o(i.PingPong_DMA_Resume), (56 bytes).
-    Removing echem_stim.o(i.__NVIC_EnableIRQ), (26 bytes).
-    Removing echem_stim.o(i.gcd_double), (284 bytes).
     Removing serial.o(.rev16_text), (4 bytes).
     Removing serial.o(.revsh_text), (4 bytes).
     Removing serial.o(.rrx_text), (6 bytes).
-    Removing serial.o(i.Serial_GetRxCommand), (12 bytes).
-    Removing serial.o(i.Serial_GetRxData), (60 bytes).
-    Removing serial.o(i.Serial_GetRxFlag), (28 bytes).
     Removing serial.o(i.Serial_TimeoutCheck), (32 bytes).
     Removing serial.o(i.Serial_TransmitByte), (44 bytes).
     Removing serial.o(i.Serial_TransmitData), (96 bytes).
     Removing serial_process.o(.rev16_text), (4 bytes).
     Removing serial_process.o(.revsh_text), (4 bytes).
     Removing serial_process.o(.rrx_text), (6 bytes).
-    Removing serial_process.o(i.Serial_CV_CreateWave), (212 bytes).
-    Removing serial_process.o(i.Serial_CommandTask), (24 bytes).
-    Removing serial_process.o(i.Serial_DPV_CreateWave), (204 bytes).
-    Removing serial_process.o(i.Serial_Process), (52 bytes).
-    Removing serial_process.o(.bss), (80 bytes).
-    Removing serial_process.o(.constdata), (176 bytes).
-    Removing serial_process.o(.data), (1 bytes).
     Removing channelgain.o(.rev16_text), (4 bytes).
     Removing channelgain.o(.revsh_text), (4 bytes).
     Removing channelgain.o(.rrx_text), (6 bytes).
-    Removing channelgain.o(i.ChannelGain_GPIO_Init), (100 bytes).
-    Removing channelgain.o(i.ChannelGain_Init), (4 bytes).
-    Removing channelgain.o(i.FB_Channel_GetCurrent), (44 bytes).
-    Removing channelgain.o(i.FB_Channel_Select), (32 bytes).
-    Removing channelgain.o(i.IV_Gain_GetCurrent), (24 bytes).
-    Removing channelgain.o(i.IV_Gain_Set), (24 bytes).
+    Removing channelgain.o(i.Feedback1_GetCurrent), (24 bytes).
+    Removing channelgain.o(i.Feedback2_GetCurrent), (24 bytes).
+    Removing channelgain.o(i.Feedback3_GetCurrent), (24 bytes).
+    Removing channelgain.o(i.Feedback4_GetCurrent), (24 bytes).
+    Removing channelgain.o(i.IV_Gain_GetCurrent), (40 bytes).
     Removing channelgain.o(i.LL_GPIO_IsOutputPinSet), (14 bytes).
-    Removing channelgain.o(i.Voltage_Gain_GetCurrent), (40 bytes).
-    Removing channelgain.o(i.Voltage_Gain_Set), (32 bytes).
+    Removing channelgain.o(i.Voltage_Gain_Stage1_GetCurrent), (24 bytes).
+    Removing channelgain.o(i.Voltage_Gain_Stage2_GetCurrent), (44 bytes).
     Removing channelgain.o(i.WE_Channel_GetCurrent), (40 bytes).
-    Removing channelgain.o(i.WE_Channel_Select), (32 bytes).
     Removing ad5260.o(.rev16_text), (4 bytes).
     Removing ad5260.o(.revsh_text), (4 bytes).
     Removing ad5260.o(.rrx_text), (6 bytes).
-    Removing dadd.o(.text), (334 bytes).
-    Removing dmul.o(.text), (228 bytes).
-    Removing ddiv.o(.text), (222 bytes).
+    Removing ad5260.o(i.AD5260_CS), (24 bytes).
+    Removing ad5260.o(i.AD5260_Init), (88 bytes).
+    Removing ad5260.o(i.AD5260_WriteRDAC), (60 bytes).
     Removing dneg.o(.text), (6 bytes).
-    Removing dfltui.o(.text), (26 bytes).
     Removing dfixi.o(.text), (62 bytes).
-    Removing dfixui.o(.text), (50 bytes).
-    Removing cdcmple.o(.text), (48 bytes).
-    Removing cdrcmple.o(.text), (48 bytes).
-    Removing depilogue.o(.text), (186 bytes).
-    Removing drnd.o(.text), (136 bytes).
-    Removing drem.o(.text), (134 bytes).
-    Removing dcmp4.o(.text), (96 bytes).
     Removing dflti.o(.text), (34 bytes).
 
-352 unused section(s) (total 90818 bytes) removed from the image.
+280 unused section(s) (total 15369 bytes) removed from the image.
 
 ==============================================================================
 
@@ -1097,23 +1041,24 @@ Image Symbol Table
     ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c 0x00000000   Number         0  stm32f4xx_ll_rcc.o ABSOLUTE
     ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_spi.c 0x00000000   Number         0  stm32f4xx_ll_spi.o ABSOLUTE
     ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c 0x00000000   Number         0  stm32f4xx_ll_utils.o ABSOLUTE
+    ../clib/../cmprslib/zerorunl2.c          0x00000000   Number         0  __dczerorl2.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
     ../clib/microlib/errno.c                 0x00000000   Number         0  errno.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12a.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
@@ -1137,16 +1082,16 @@ Image Symbol Table
     ../mathlib/cos_i.c                       0x00000000   Number         0  cos_i.o ABSOLUTE
     ../mathlib/dunder.c                      0x00000000   Number         0  dunder.o ABSOLUTE
     ../mathlib/fabs.c                        0x00000000   Number         0  fabs.o ABSOLUTE
-    ../mathlib/fmax.c                        0x00000000   Number         0  fmin.o ABSOLUTE
     ../mathlib/fmax.c                        0x00000000   Number         0  fmax.o ABSOLUTE
-    ../mathlib/fmod.c                        0x00000000   Number         0  fmod_x.o ABSOLUTE
+    ../mathlib/fmax.c                        0x00000000   Number         0  fmin.o ABSOLUTE
     ../mathlib/fmod.c                        0x00000000   Number         0  fmod.o ABSOLUTE
+    ../mathlib/fmod.c                        0x00000000   Number         0  fmod_x.o ABSOLUTE
     ../mathlib/fpclassify.c                  0x00000000   Number         0  fpclassify.o ABSOLUTE
     ../mathlib/poly.c                        0x00000000   Number         0  poly.o ABSOLUTE
     ../mathlib/round.c                       0x00000000   Number         0  round.o ABSOLUTE
     ../mathlib/rred.c                        0x00000000   Number         0  rred.o ABSOLUTE
-    ../mathlib/sin.c                         0x00000000   Number         0  sin_x.o ABSOLUTE
     ../mathlib/sin.c                         0x00000000   Number         0  sin.o ABSOLUTE
+    ../mathlib/sin.c                         0x00000000   Number         0  sin_x.o ABSOLUTE
     ../mathlib/sin_i.c                       0x00000000   Number         0  sin_i_x.o ABSOLUTE
     ../mathlib/sin_i.c                       0x00000000   Number         0  sin_i.o ABSOLUTE
     ..\BSP\AD5260.c                          0x00000000   Number         0  ad5260.o ABSOLUTE
@@ -1218,115 +1163,236 @@ Image Symbol Table
     .text                                    0x080001b0   Section       36  startup_stm32f411xe.o(.text)
     $v0                                      0x080001b0   Number         0  startup_stm32f411xe.o(.text)
     .text                                    0x080001d4   Section        0  uldiv.o(.text)
-    .text                                    0x08000236   Section        0  memseta.o(.text)
-    .text                                    0x0800025a   Section        0  llshl.o(.text)
-    .text                                    0x08000278   Section        0  llushr.o(.text)
-    .text                                    0x08000298   Section       36  init.o(.text)
-    i.AD5260_CS                              0x080002bc   Section        0  ad5260.o(i.AD5260_CS)
-    i.AD5260_Init                            0x080002d4   Section        0  ad5260.o(i.AD5260_Init)
-    i.AD5260_WriteRDAC                       0x0800032c   Section        0  ad5260.o(i.AD5260_WriteRDAC)
-    i.ADC1_FifterRead                        0x08000368   Section        0  adc.o(i.ADC1_FifterRead)
-    i.ADC1_Init                              0x08000394   Section        0  adc.o(i.ADC1_Init)
-    i.ADC1_Read                              0x080004a0   Section        0  adc.o(i.ADC1_Read)
-    i.BusFault_Handler                       0x080004c4   Section        0  stm32f4xx_it.o(i.BusFault_Handler)
-    i.CV_PingPong_DMA2_Stream4_IRQHandler    0x080004c8   Section        0  echem_stim.o(i.CV_PingPong_DMA2_Stream4_IRQHandler)
-    i.CV_PingPong_DMA2_Stream5_IRQHandler    0x080005d0   Section        0  echem_stim.o(i.CV_PingPong_DMA2_Stream5_IRQHandler)
-    i.DMA2_Stream2_IRQHandler                0x080006cc   Section        0  stm32f4xx_it.o(i.DMA2_Stream2_IRQHandler)
-    i.DMA2_Stream3_IRQHandler                0x080006d0   Section        0  spi.o(i.DMA2_Stream3_IRQHandler)
-    i.DMA2_Stream4_IRQHandler                0x08000704   Section        0  echem_stim.o(i.DMA2_Stream4_IRQHandler)
-    i.DMA2_Stream5_IRQHandler                0x08000728   Section        0  echem_stim.o(i.DMA2_Stream5_IRQHandler)
-    i.DPV_PingPong_DMA2_Stream4_IRQHandler   0x0800074c   Section        0  echem_stim.o(i.DPV_PingPong_DMA2_Stream4_IRQHandler)
-    i.DPV_PingPong_DMA2_Stream5_IRQHandler   0x08000854   Section        0  echem_stim.o(i.DPV_PingPong_DMA2_Stream5_IRQHandler)
-    i.DebugMon_Handler                       0x08000950   Section        0  stm32f4xx_it.o(i.DebugMon_Handler)
-    i.GPIOC_Group1_Init                      0x08000954   Section        0  gpio.o(i.GPIOC_Group1_Init)
-    i.HAL_GetTick                            0x0800098c   Section        0  stm32f4xx_hal.o(i.HAL_GetTick)
-    i.HardFault_Handler                      0x08000998   Section        0  stm32f4xx_it.o(i.HardFault_Handler)
-    i.LED_Init                               0x0800099a   Section        0  led.o(i.LED_Init)
-    i.LED_OFF                                0x080009a0   Section        0  led.o(i.LED_OFF)
-    i.LED_ON                                 0x080009b0   Section        0  led.o(i.LED_ON)
-    i.LED_Reveral                            0x080009c0   Section        0  led.o(i.LED_Reveral)
-    i.LL_ADC_CommonInit                      0x080009dc   Section        0  stm32f4xx_ll_adc.o(i.LL_ADC_CommonInit)
-    i.LL_ADC_Init                            0x08000a00   Section        0  stm32f4xx_ll_adc.o(i.LL_ADC_Init)
-    i.LL_ADC_REG_Init                        0x08000a34   Section        0  stm32f4xx_ll_adc.o(i.LL_ADC_REG_Init)
-    i.LL_AHB1_GRP1_EnableClock               0x08000a84   Section        0  gpio.o(i.LL_AHB1_GRP1_EnableClock)
-    LL_AHB1_GRP1_EnableClock                 0x08000a85   Thumb Code    18  gpio.o(i.LL_AHB1_GRP1_EnableClock)
-    i.LL_AHB1_GRP1_EnableClock               0x08000a9c   Section        0  spi.o(i.LL_AHB1_GRP1_EnableClock)
-    LL_AHB1_GRP1_EnableClock                 0x08000a9d   Thumb Code    18  spi.o(i.LL_AHB1_GRP1_EnableClock)
-    i.LL_DMA_DisableIT_TC                    0x08000ab4   Section        0  echem_stim.o(i.LL_DMA_DisableIT_TC)
-    LL_DMA_DisableIT_TC                      0x08000ab5   Thumb Code    14  echem_stim.o(i.LL_DMA_DisableIT_TC)
-    i.LL_DMA_DisableIT_TE                    0x08000ac8   Section        0  echem_stim.o(i.LL_DMA_DisableIT_TE)
-    LL_DMA_DisableIT_TE                      0x08000ac9   Thumb Code    14  echem_stim.o(i.LL_DMA_DisableIT_TE)
-    i.LL_DMA_DisableStream                   0x08000adc   Section        0  echem_stim.o(i.LL_DMA_DisableStream)
-    LL_DMA_DisableStream                     0x08000add   Thumb Code    14  echem_stim.o(i.LL_DMA_DisableStream)
-    i.LL_DMA_EnableStream                    0x08000af0   Section        0  echem_stim.o(i.LL_DMA_EnableStream)
-    LL_DMA_EnableStream                      0x08000af1   Thumb Code    14  echem_stim.o(i.LL_DMA_EnableStream)
-    i.LL_DMA_IsEnabledStream                 0x08000b04   Section        0  echem_stim.o(i.LL_DMA_IsEnabledStream)
-    LL_DMA_IsEnabledStream                   0x08000b05   Thumb Code    12  echem_stim.o(i.LL_DMA_IsEnabledStream)
-    i.LL_DMA_SetDataLength                   0x08000b14   Section        0  echem_stim.o(i.LL_DMA_SetDataLength)
-    LL_DMA_SetDataLength                     0x08000b15   Thumb Code    18  echem_stim.o(i.LL_DMA_SetDataLength)
-    i.LL_DMA_SetMemoryAddress                0x08000b2c   Section        0  echem_stim.o(i.LL_DMA_SetMemoryAddress)
-    LL_DMA_SetMemoryAddress                  0x08000b2d   Thumb Code    10  echem_stim.o(i.LL_DMA_SetMemoryAddress)
-    i.LL_GPIO_Init                           0x08000b3c   Section        0  stm32f4xx_ll_gpio.o(i.LL_GPIO_Init)
-    i.LL_Init1msTick                         0x08000c72   Section        0  stm32f4xx_ll_utils.o(i.LL_Init1msTick)
-    i.LL_RCC_GetSystemClocksFreq             0x08000c8c   Section        0  stm32f4xx_ll_rcc.o(i.LL_RCC_GetSystemClocksFreq)
-    i.LL_SPI_Init                            0x08000cac   Section        0  stm32f4xx_ll_spi.o(i.LL_SPI_Init)
-    i.LL_SetSystemCoreClock                  0x08000d10   Section        0  stm32f4xx_ll_utils.o(i.LL_SetSystemCoreClock)
-    i.LL_USART_Init                          0x08000d1c   Section        0  stm32f4xx_ll_usart.o(i.LL_USART_Init)
-    i.LL_USART_SetBaudRate                   0x08000da0   Section        0  stm32f4xx_ll_usart.o(i.LL_USART_SetBaudRate)
-    LL_USART_SetBaudRate                     0x08000da1   Thumb Code   176  stm32f4xx_ll_usart.o(i.LL_USART_SetBaudRate)
-    i.LL_mDelay                              0x08000e50   Section        0  stm32f4xx_ll_utils.o(i.LL_mDelay)
-    i.MemManage_Handler                      0x08000e6e   Section        0  stm32f4xx_it.o(i.MemManage_Handler)
-    i.NMI_Handler                            0x08000e70   Section        0  stm32f4xx_it.o(i.NMI_Handler)
-    i.PendSV_Handler                         0x08000e72   Section        0  stm32f4xx_it.o(i.PendSV_Handler)
-    i.PingPong_DMA_GetProgress               0x08000e74   Section        0  echem_stim.o(i.PingPong_DMA_GetProgress)
-    i.PingPong_DMA_Stop                      0x08000eac   Section        0  echem_stim.o(i.PingPong_DMA_Stop)
-    i.RCC_GetHCLKClockFreq                   0x08000f6c   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetHCLKClockFreq)
-    i.RCC_GetPCLK1ClockFreq                  0x08000f88   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK1ClockFreq)
-    i.RCC_GetPCLK2ClockFreq                  0x08000fa4   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK2ClockFreq)
-    i.RCC_GetSystemClockFreq                 0x08000fc0   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetSystemClockFreq)
-    i.RCC_PLL_GetFreqDomain_SYS              0x08000fec   Section        0  stm32f4xx_ll_rcc.o(i.RCC_PLL_GetFreqDomain_SYS)
-    i.SPI2_Init                              0x0800103c   Section        0  spi.o(i.SPI2_Init)
-    i.SPI_Transmit8_Time                     0x080010f0   Section        0  spi.o(i.SPI_Transmit8_Time)
-    i.SVC_Handler                            0x0800114c   Section        0  stm32f4xx_it.o(i.SVC_Handler)
-    i.SYNC_Cycle_Stop                        0x0800114e   Section        0  dds_dac80004.o(i.SYNC_Cycle_Stop)
-    i.Serial_ResetRxState                    0x08001154   Section        0  serial.o(i.Serial_ResetRxState)
-    Serial_ResetRxState                      0x08001155   Thumb Code    20  serial.o(i.Serial_ResetRxState)
-    i.SysTick_Handler                        0x0800116c   Section        0  stm32f4xx_it.o(i.SysTick_Handler)
-    i.SystemClock_Config                     0x08001170   Section        0  main.o(i.SystemClock_Config)
-    i.SystemInit                             0x08001248   Section        0  system_stm32f4xx.o(i.SystemInit)
-    i.System_GPIO_Init                       0x08001258   Section        0  gpio.o(i.System_GPIO_Init)
-    i.TIM3_PWM_Stop                          0x08001274   Section        0  tim.o(i.TIM3_PWM_Stop)
-    i.USART1_IRQHandler                      0x08001294   Section        0  serial.o(i.USART1_IRQHandler)
-    i.USART1_IRQ_Task                        0x08001298   Section        0  serial.o(i.USART1_IRQ_Task)
-    i.USART1_Init                            0x08001360   Section        0  usart.o(i.USART1_Init)
-    i.UsageFault_Handler                     0x08001448   Section        0  stm32f4xx_it.o(i.UsageFault_Handler)
-    i.__scatterload_copy                     0x0800144a   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x08001458   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x0800145a   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i.main                                   0x08001468   Section        0  main.o(i.main)
-    .constdata                               0x0800155c   Section        8  spi.o(.constdata)
-    STREAM_OFFSET_TAB                        0x0800155c   Data           8  spi.o(.constdata)
-    .constdata                               0x08001564   Section       16  system_stm32f4xx.o(.constdata)
-    .constdata                               0x08001574   Section        8  system_stm32f4xx.o(.constdata)
-    .constdata                               0x0800157c   Section        8  echem_stim.o(.constdata)
-    STREAM_OFFSET_TAB                        0x0800157c   Data           8  echem_stim.o(.constdata)
+    .text                                    0x08000236   Section        0  memcpya.o(.text)
+    .text                                    0x0800025a   Section        0  memseta.o(.text)
+    .text                                    0x0800027e   Section        0  dadd.o(.text)
+    .text                                    0x080003cc   Section        0  dmul.o(.text)
+    .text                                    0x080004b0   Section        0  ddiv.o(.text)
+    .text                                    0x0800058e   Section        0  dfltui.o(.text)
+    .text                                    0x080005a8   Section        0  dfixui.o(.text)
+    .text                                    0x080005dc   Section       48  cdcmple.o(.text)
+    .text                                    0x0800060c   Section       48  cdrcmple.o(.text)
+    .text                                    0x0800063c   Section        0  llshl.o(.text)
+    .text                                    0x0800065a   Section        0  llushr.o(.text)
+    .text                                    0x0800067a   Section        0  llsshr.o(.text)
+    .text                                    0x0800069e   Section        0  iusefp.o(.text)
+    .text                                    0x0800069e   Section        0  depilogue.o(.text)
+    .text                                    0x08000758   Section        0  drnd.o(.text)
+    .text                                    0x080007e0   Section        0  drem.o(.text)
+    .text                                    0x08000866   Section        0  dcmp4.o(.text)
+    .text                                    0x080008c8   Section       36  init.o(.text)
+    .text                                    0x080008ec   Section        0  __dczerorl2.o(.text)
+    i.BusFault_Handler                       0x08000942   Section        0  stm32f4xx_it.o(i.BusFault_Handler)
+    i.CLR                                    0x08000944   Section        0  dac80004.o(i.CLR)
+    i.CS                                     0x08000952   Section        0  dac80004.o(i.CS)
+    i.CV_DDS_Start_Precise                   0x08000960   Section        0  echem_stim.o(i.CV_DDS_Start_Precise)
+    i.CV_Fill_Next_Buffer                    0x08000fc4   Section        0  echem_stim.o(i.CV_Fill_Next_Buffer)
+    i.CV_NeedFillBuffer                      0x08001030   Section        0  echem_stim.o(i.CV_NeedFillBuffer)
+    i.CV_PingPong_DMA2_Stream4_IRQHandler    0x0800105c   Section        0  echem_stim.o(i.CV_PingPong_DMA2_Stream4_IRQHandler)
+    i.CV_PingPong_DMA2_Stream5_IRQHandler    0x08001164   Section        0  echem_stim.o(i.CV_PingPong_DMA2_Stream5_IRQHandler)
+    i.ChannelGain_GPIO_Init                  0x08001260   Section        0  channelgain.o(i.ChannelGain_GPIO_Init)
+    i.ChannelGain_Init                       0x08001324   Section        0  channelgain.o(i.ChannelGain_Init)
+    i.DAC80004_Channel_Config                0x08001328   Section        0  dac80004.o(i.DAC80004_Channel_Config)
+    i.DAC80004_Command_Config                0x08001338   Section        0  dac80004.o(i.DAC80004_Command_Config)
+    i.DAC80004_Data_Set                      0x08001348   Section        0  dac80004.o(i.DAC80004_Data_Set)
+    i.DAC80004_GPIO_init                     0x0800135c   Section        0  dac80004.o(i.DAC80004_GPIO_init)
+    i.DAC80004_Init                          0x080013bc   Section        0  dac80004.o(i.DAC80004_Init)
+    i.DAC80004_Mode_Config                   0x08001416   Section        0  dac80004.o(i.DAC80004_Mode_Config)
+    i.DAC80004_WR_Config                     0x08001424   Section        0  dac80004.o(i.DAC80004_WR_Config)
+    i.DAC80004_WriteData                     0x08001434   Section        0  dac80004.o(i.DAC80004_WriteData)
+    i.DMA2_Stream2_IRQHandler                0x08001460   Section        0  stm32f4xx_it.o(i.DMA2_Stream2_IRQHandler)
+    i.DMA2_Stream3_IRQHandler                0x08001464   Section        0  spi.o(i.DMA2_Stream3_IRQHandler)
+    i.DMA2_Stream4_IRQHandler                0x08001498   Section        0  echem_stim.o(i.DMA2_Stream4_IRQHandler)
+    i.DMA2_Stream5_IRQHandler                0x080014bc   Section        0  echem_stim.o(i.DMA2_Stream5_IRQHandler)
+    i.DPV_DDS_Start_Precise                  0x080014e0   Section        0  echem_stim.o(i.DPV_DDS_Start_Precise)
+    i.DPV_Fill_Next_Buffer                   0x08001c00   Section        0  echem_stim.o(i.DPV_Fill_Next_Buffer)
+    i.DPV_NeedFillBuffer                     0x08001c6c   Section        0  echem_stim.o(i.DPV_NeedFillBuffer)
+    i.DPV_PingPong_DMA2_Stream4_IRQHandler   0x08001c88   Section        0  echem_stim.o(i.DPV_PingPong_DMA2_Stream4_IRQHandler)
+    i.DPV_PingPong_DMA2_Stream5_IRQHandler   0x08001d90   Section        0  echem_stim.o(i.DPV_PingPong_DMA2_Stream5_IRQHandler)
+    i.DebugMon_Handler                       0x08001e8c   Section        0  stm32f4xx_it.o(i.DebugMon_Handler)
+    i.Echem_stim_Init                        0x08001e8e   Section        0  echem_stim.o(i.Echem_stim_Init)
+    i.Feedback1_Select                       0x08001ea4   Section        0  channelgain.o(i.Feedback1_Select)
+    i.Feedback2_Select                       0x08001ebc   Section        0  channelgain.o(i.Feedback2_Select)
+    i.Feedback3_Select                       0x08001ed4   Section        0  channelgain.o(i.Feedback3_Select)
+    i.Feedback4_Select                       0x08001eec   Section        0  channelgain.o(i.Feedback4_Select)
+    i.GPIOC_Group1_Init                      0x08001f04   Section        0  gpio.o(i.GPIOC_Group1_Init)
+    i.Generate_CV_Data_Partial               0x08001f3c   Section        0  echem_stim.o(i.Generate_CV_Data_Partial)
+    Generate_CV_Data_Partial                 0x08001f3d   Thumb Code   454  echem_stim.o(i.Generate_CV_Data_Partial)
+    i.Generate_DPV_Data_Partial              0x08002120   Section        0  echem_stim.o(i.Generate_DPV_Data_Partial)
+    Generate_DPV_Data_Partial                0x08002121   Thumb Code   290  echem_stim.o(i.Generate_DPV_Data_Partial)
+    i.HAL_GetTick                            0x08002268   Section        0  stm32f4xx_hal.o(i.HAL_GetTick)
+    i.HardFault_Handler                      0x08002274   Section        0  stm32f4xx_it.o(i.HardFault_Handler)
+    i.IV_Gain_Set                            0x08002278   Section        0  channelgain.o(i.IV_Gain_Set)
+    i.LDAC                                   0x08002298   Section        0  dac80004.o(i.LDAC)
+    i.LED_Init                               0x080022a6   Section        0  led.o(i.LED_Init)
+    i.LED_OFF                                0x080022ac   Section        0  led.o(i.LED_OFF)
+    i.LED_ON                                 0x080022bc   Section        0  led.o(i.LED_ON)
+    i.LL_AHB1_GRP1_EnableClock               0x080022cc   Section        0  gpio.o(i.LL_AHB1_GRP1_EnableClock)
+    LL_AHB1_GRP1_EnableClock                 0x080022cd   Thumb Code    18  gpio.o(i.LL_AHB1_GRP1_EnableClock)
+    i.LL_AHB1_GRP1_EnableClock               0x080022e4   Section        0  spi.o(i.LL_AHB1_GRP1_EnableClock)
+    LL_AHB1_GRP1_EnableClock                 0x080022e5   Thumb Code    18  spi.o(i.LL_AHB1_GRP1_EnableClock)
+    i.LL_AHB1_GRP1_EnableClock               0x080022fc   Section        0  tim.o(i.LL_AHB1_GRP1_EnableClock)
+    LL_AHB1_GRP1_EnableClock                 0x080022fd   Thumb Code    18  tim.o(i.LL_AHB1_GRP1_EnableClock)
+    i.LL_AHB1_GRP1_EnableClock               0x08002314   Section        0  channelgain.o(i.LL_AHB1_GRP1_EnableClock)
+    LL_AHB1_GRP1_EnableClock                 0x08002315   Thumb Code    18  channelgain.o(i.LL_AHB1_GRP1_EnableClock)
+    i.LL_DMA_DisableFifoMode                 0x0800232c   Section        0  tim.o(i.LL_DMA_DisableFifoMode)
+    LL_DMA_DisableFifoMode                   0x0800232d   Thumb Code    16  tim.o(i.LL_DMA_DisableFifoMode)
+    i.LL_DMA_DisableIT_TC                    0x08002340   Section        0  echem_stim.o(i.LL_DMA_DisableIT_TC)
+    LL_DMA_DisableIT_TC                      0x08002341   Thumb Code    14  echem_stim.o(i.LL_DMA_DisableIT_TC)
+    i.LL_DMA_DisableIT_TE                    0x08002354   Section        0  echem_stim.o(i.LL_DMA_DisableIT_TE)
+    LL_DMA_DisableIT_TE                      0x08002355   Thumb Code    14  echem_stim.o(i.LL_DMA_DisableIT_TE)
+    i.LL_DMA_DisableStream                   0x08002368   Section        0  echem_stim.o(i.LL_DMA_DisableStream)
+    LL_DMA_DisableStream                     0x08002369   Thumb Code    14  echem_stim.o(i.LL_DMA_DisableStream)
+    i.LL_DMA_EnableIT_TC                     0x0800237c   Section        0  echem_stim.o(i.LL_DMA_EnableIT_TC)
+    LL_DMA_EnableIT_TC                       0x0800237d   Thumb Code    14  echem_stim.o(i.LL_DMA_EnableIT_TC)
+    i.LL_DMA_EnableIT_TE                     0x08002390   Section        0  echem_stim.o(i.LL_DMA_EnableIT_TE)
+    LL_DMA_EnableIT_TE                       0x08002391   Thumb Code    14  echem_stim.o(i.LL_DMA_EnableIT_TE)
+    i.LL_DMA_EnableStream                    0x080023a4   Section        0  echem_stim.o(i.LL_DMA_EnableStream)
+    LL_DMA_EnableStream                      0x080023a5   Thumb Code    14  echem_stim.o(i.LL_DMA_EnableStream)
+    i.LL_DMA_IsEnabledStream                 0x080023b8   Section        0  echem_stim.o(i.LL_DMA_IsEnabledStream)
+    LL_DMA_IsEnabledStream                   0x080023b9   Thumb Code    12  echem_stim.o(i.LL_DMA_IsEnabledStream)
+    i.LL_DMA_SetChannelSelection             0x080023c8   Section        0  tim.o(i.LL_DMA_SetChannelSelection)
+    LL_DMA_SetChannelSelection               0x080023c9   Thumb Code    16  tim.o(i.LL_DMA_SetChannelSelection)
+    i.LL_DMA_SetDataLength                   0x080023dc   Section        0  echem_stim.o(i.LL_DMA_SetDataLength)
+    LL_DMA_SetDataLength                     0x080023dd   Thumb Code    18  echem_stim.o(i.LL_DMA_SetDataLength)
+    i.LL_DMA_SetDataTransferDirection        0x080023f4   Section        0  tim.o(i.LL_DMA_SetDataTransferDirection)
+    LL_DMA_SetDataTransferDirection          0x080023f5   Thumb Code    16  tim.o(i.LL_DMA_SetDataTransferDirection)
+    i.LL_DMA_SetMemoryAddress                0x08002408   Section        0  echem_stim.o(i.LL_DMA_SetMemoryAddress)
+    LL_DMA_SetMemoryAddress                  0x08002409   Thumb Code    10  echem_stim.o(i.LL_DMA_SetMemoryAddress)
+    i.LL_DMA_SetMemoryIncMode                0x08002418   Section        0  tim.o(i.LL_DMA_SetMemoryIncMode)
+    LL_DMA_SetMemoryIncMode                  0x08002419   Thumb Code    16  tim.o(i.LL_DMA_SetMemoryIncMode)
+    i.LL_DMA_SetMemorySize                   0x0800242c   Section        0  tim.o(i.LL_DMA_SetMemorySize)
+    LL_DMA_SetMemorySize                     0x0800242d   Thumb Code    16  tim.o(i.LL_DMA_SetMemorySize)
+    i.LL_DMA_SetMode                         0x08002440   Section        0  tim.o(i.LL_DMA_SetMode)
+    LL_DMA_SetMode                           0x08002441   Thumb Code    16  tim.o(i.LL_DMA_SetMode)
+    i.LL_DMA_SetMode                         0x08002454   Section        0  echem_stim.o(i.LL_DMA_SetMode)
+    LL_DMA_SetMode                           0x08002455   Thumb Code    16  echem_stim.o(i.LL_DMA_SetMode)
+    i.LL_DMA_SetPeriphIncMode                0x08002468   Section        0  tim.o(i.LL_DMA_SetPeriphIncMode)
+    LL_DMA_SetPeriphIncMode                  0x08002469   Thumb Code    16  tim.o(i.LL_DMA_SetPeriphIncMode)
+    i.LL_DMA_SetPeriphSize                   0x0800247c   Section        0  tim.o(i.LL_DMA_SetPeriphSize)
+    LL_DMA_SetPeriphSize                     0x0800247d   Thumb Code    16  tim.o(i.LL_DMA_SetPeriphSize)
+    i.LL_DMA_SetStreamPriorityLevel          0x08002490   Section        0  tim.o(i.LL_DMA_SetStreamPriorityLevel)
+    LL_DMA_SetStreamPriorityLevel            0x08002491   Thumb Code    16  tim.o(i.LL_DMA_SetStreamPriorityLevel)
+    i.LL_GPIO_Init                           0x080024a4   Section        0  stm32f4xx_ll_gpio.o(i.LL_GPIO_Init)
+    i.LL_Init1msTick                         0x080025da   Section        0  stm32f4xx_ll_utils.o(i.LL_Init1msTick)
+    i.LL_RCC_GetSystemClocksFreq             0x080025f4   Section        0  stm32f4xx_ll_rcc.o(i.LL_RCC_GetSystemClocksFreq)
+    i.LL_SPI_Init                            0x08002614   Section        0  stm32f4xx_ll_spi.o(i.LL_SPI_Init)
+    i.LL_SetSystemCoreClock                  0x08002678   Section        0  stm32f4xx_ll_utils.o(i.LL_SetSystemCoreClock)
+    i.LL_TIM_BDTR_Init                       0x08002684   Section        0  stm32f4xx_ll_tim.o(i.LL_TIM_BDTR_Init)
+    i.LL_TIM_Init                            0x080026b8   Section        0  stm32f4xx_ll_tim.o(i.LL_TIM_Init)
+    i.LL_TIM_OC_DisableFast                  0x08002750   Section        0  tim.o(i.LL_TIM_OC_DisableFast)
+    LL_TIM_OC_DisableFast                    0x08002751   Thumb Code    80  tim.o(i.LL_TIM_OC_DisableFast)
+    i.LL_TIM_OC_EnablePreload                0x080027a4   Section        0  tim.o(i.LL_TIM_OC_EnablePreload)
+    LL_TIM_OC_EnablePreload                  0x080027a5   Thumb Code    80  tim.o(i.LL_TIM_OC_EnablePreload)
+    i.LL_TIM_OC_Init                         0x080027f8   Section        0  stm32f4xx_ll_tim.o(i.LL_TIM_OC_Init)
+    i.LL_USART_Init                          0x08002984   Section        0  stm32f4xx_ll_usart.o(i.LL_USART_Init)
+    i.LL_USART_SetBaudRate                   0x08002a08   Section        0  stm32f4xx_ll_usart.o(i.LL_USART_SetBaudRate)
+    LL_USART_SetBaudRate                     0x08002a09   Thumb Code   176  stm32f4xx_ll_usart.o(i.LL_USART_SetBaudRate)
+    i.LL_mDelay                              0x08002ab8   Section        0  stm32f4xx_ll_utils.o(i.LL_mDelay)
+    i.MX_DMA_Init                            0x08002ad8   Section        0  dma.o(i.MX_DMA_Init)
+    i.MemManage_Handler                      0x08002b34   Section        0  stm32f4xx_it.o(i.MemManage_Handler)
+    i.NMI_Handler                            0x08002b36   Section        0  stm32f4xx_it.o(i.NMI_Handler)
+    i.NVIC_EncodePriority                    0x08002b38   Section        0  dma.o(i.NVIC_EncodePriority)
+    NVIC_EncodePriority                      0x08002b39   Thumb Code    50  dma.o(i.NVIC_EncodePriority)
+    i.PendSV_Handler                         0x08002b6a   Section        0  stm32f4xx_it.o(i.PendSV_Handler)
+    i.PingPong_DMA_GetProgress               0x08002b6c   Section        0  echem_stim.o(i.PingPong_DMA_GetProgress)
+    i.PingPong_DMA_IsComplete                0x08002ba4   Section        0  echem_stim.o(i.PingPong_DMA_IsComplete)
+    i.PingPong_DMA_Stop                      0x08002bc0   Section        0  echem_stim.o(i.PingPong_DMA_Stop)
+    i.RCC_GetHCLKClockFreq                   0x08002c80   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetHCLKClockFreq)
+    i.RCC_GetPCLK1ClockFreq                  0x08002c9c   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK1ClockFreq)
+    i.RCC_GetPCLK2ClockFreq                  0x08002cb8   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK2ClockFreq)
+    i.RCC_GetSystemClockFreq                 0x08002cd4   Section        0  stm32f4xx_ll_rcc.o(i.RCC_GetSystemClockFreq)
+    i.RCC_PLL_GetFreqDomain_SYS              0x08002d00   Section        0  stm32f4xx_ll_rcc.o(i.RCC_PLL_GetFreqDomain_SYS)
+    i.SPI1_Init                              0x08002d50   Section        0  spi.o(i.SPI1_Init)
+    i.SPI1_Transmit16_Time                   0x08002de4   Section        0  spi.o(i.SPI1_Transmit16_Time)
+    i.SVC_Handler                            0x08002e44   Section        0  stm32f4xx_it.o(i.SVC_Handler)
+    i.SYNC_Cycle_Init                        0x08002e46   Section        0  dds_dac80004.o(i.SYNC_Cycle_Init)
+    i.SYNC_Cycle_SetPara                     0x08002e4a   Section        0  dds_dac80004.o(i.SYNC_Cycle_SetPara)
+    i.SYNC_Cycle_Start                       0x08002e4e   Section        0  dds_dac80004.o(i.SYNC_Cycle_Start)
+    i.SYNC_Cycle_Stop                        0x08002e52   Section        0  dds_dac80004.o(i.SYNC_Cycle_Stop)
+    i.Serial_CV_CreateWave                   0x08002e58   Section        0  serial_process.o(i.Serial_CV_CreateWave)
+    i.Serial_CommandTask                     0x08002f4c   Section        0  serial_process.o(i.Serial_CommandTask)
+    i.Serial_DPV_CreateWave                  0x08002f64   Section        0  serial_process.o(i.Serial_DPV_CreateWave)
+    i.Serial_GetRxCommand                    0x08003050   Section        0  serial.o(i.Serial_GetRxCommand)
+    i.Serial_GetRxData                       0x0800305c   Section        0  serial.o(i.Serial_GetRxData)
+    i.Serial_GetRxFlag                       0x08003098   Section        0  serial.o(i.Serial_GetRxFlag)
+    i.Serial_Process                         0x080030b4   Section        0  serial_process.o(i.Serial_Process)
+    i.Serial_ResetRxState                    0x080030e8   Section        0  serial.o(i.Serial_ResetRxState)
+    Serial_ResetRxState                      0x080030e9   Thumb Code    20  serial.o(i.Serial_ResetRxState)
+    i.SysTick_Handler                        0x08003100   Section        0  stm32f4xx_it.o(i.SysTick_Handler)
+    i.SystemClock_Config                     0x08003104   Section        0  main.o(i.SystemClock_Config)
+    i.SystemInit                             0x080031dc   Section        0  system_stm32f4xx.o(i.SystemInit)
+    i.System_GPIO_Init                       0x080031ec   Section        0  gpio.o(i.System_GPIO_Init)
+    i.TIM1_DMA_SPI1_Init                     0x08003208   Section        0  tim.o(i.TIM1_DMA_SPI1_Init)
+    i.TIM3_ApplyPWMConfig                    0x080033fc   Section        0  tim.o(i.TIM3_ApplyPWMConfig)
+    i.TIM3_PWM_Init                          0x080034d0   Section        0  tim.o(i.TIM3_PWM_Init)
+    i.TIM3_PWM_Start                         0x080035a0   Section        0  tim.o(i.TIM3_PWM_Start)
+    i.TIM3_PWM_Stop                          0x080035b0   Section        0  tim.o(i.TIM3_PWM_Stop)
+    i.TIM_ApplyFreqConfig_DualDMA            0x080035d0   Section        0  tim.o(i.TIM_ApplyFreqConfig_DualDMA)
+    i.TIM_CalculateFreqDivision_Precise      0x08003690   Section        0  tim.o(i.TIM_CalculateFreqDivision_Precise)
+    i.USART1_IRQHandler                      0x08003840   Section        0  serial.o(i.USART1_IRQHandler)
+    i.USART1_IRQ_Task                        0x08003844   Section        0  serial.o(i.USART1_IRQ_Task)
+    i.USART1_Init                            0x0800390c   Section        0  usart.o(i.USART1_Init)
+    i.UsageFault_Handler                     0x080039f4   Section        0  stm32f4xx_it.o(i.UsageFault_Handler)
+    i.Voltage_Gain_Stage1_Set                0x080039f8   Section        0  channelgain.o(i.Voltage_Gain_Stage1_Set)
+    i.Voltage_Gain_Stage2_Set                0x08003a10   Section        0  channelgain.o(i.Voltage_Gain_Stage2_Set)
+    i.WE_Channel_Select                      0x08003a30   Section        0  channelgain.o(i.WE_Channel_Select)
+    i.__NVIC_EnableIRQ                       0x08003a50   Section        0  dma.o(i.__NVIC_EnableIRQ)
+    __NVIC_EnableIRQ                         0x08003a51   Thumb Code    26  dma.o(i.__NVIC_EnableIRQ)
+    i.__NVIC_EnableIRQ                       0x08003a6a   Section        0  echem_stim.o(i.__NVIC_EnableIRQ)
+    __NVIC_EnableIRQ                         0x08003a6b   Thumb Code    26  echem_stim.o(i.__NVIC_EnableIRQ)
+    i.__NVIC_SetPriority                     0x08003a84   Section        0  dma.o(i.__NVIC_SetPriority)
+    __NVIC_SetPriority                       0x08003a85   Thumb Code    32  dma.o(i.__NVIC_SetPriority)
+    i.__hardfp_ceil                          0x08003aa8   Section        0  ceil.o(i.__hardfp_ceil)
+    i.__hardfp_fabs                          0x08003bc0   Section        0  fabs.o(i.__hardfp_fabs)
+    i.__hardfp_fmax                          0x08003bd4   Section        0  fmax.o(i.__hardfp_fmax)
+    i.__hardfp_fmin                          0x08003c48   Section        0  fmin.o(i.__hardfp_fmin)
+    i.__hardfp_fmod                          0x08003cbc   Section        0  fmod.o(i.__hardfp_fmod)
+    i.__hardfp_round                         0x08003dc0   Section        0  round.o(i.__hardfp_round)
+    i.__mathlib_dbl_invalid                  0x08003ea0   Section        0  dunder.o(i.__mathlib_dbl_invalid)
+    i.__scatterload_copy                     0x08003ec0   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x08003ece   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x08003ed0   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i.__set_errno                            0x08003ee0   Section        0  errno.o(i.__set_errno)
+    i.gcd_double                             0x08003eec   Section        0  echem_stim.o(i.gcd_double)
+    gcd_double                               0x08003eed   Thumb Code   260  echem_stim.o(i.gcd_double)
+    i.main                                   0x08004008   Section        0  main.o(i.main)
+    .constdata                               0x080040b8   Section        8  spi.o(.constdata)
+    STREAM_OFFSET_TAB                        0x080040b8   Data           8  spi.o(.constdata)
+    .constdata                               0x080040c0   Section       22  tim.o(.constdata)
+    OFFSET_TAB_CCMRx                         0x080040c0   Data           7  tim.o(.constdata)
+    SHIFT_TAB_OCxx                           0x080040c7   Data           7  tim.o(.constdata)
+    STREAM_OFFSET_TAB                        0x080040ce   Data           8  tim.o(.constdata)
+    .constdata                               0x080040d6   Section       16  system_stm32f4xx.o(.constdata)
+    .constdata                               0x080040e6   Section        8  system_stm32f4xx.o(.constdata)
+    .constdata                               0x080040ee   Section        8  echem_stim.o(.constdata)
+    STREAM_OFFSET_TAB                        0x080040ee   Data           8  echem_stim.o(.constdata)
+    .constdata                               0x080040f8   Section      176  serial_process.o(.constdata)
     .data                                    0x20000000   Section        1  spi.o(.data)
-    .data                                    0x20000004   Section       12  stm32f4xx_hal.o(.data)
-    .data                                    0x20000010   Section        4  system_stm32f4xx.o(.data)
-    .data                                    0x20000014   Section       28  echem_stim.o(.data)
-    g_dac_module                             0x20000014   Data           4  echem_stim.o(.data)
-    g_progress_callback                      0x20000018   Data           4  echem_stim.o(.data)
-    g_error_callback                         0x2000001c   Data           4  echem_stim.o(.data)
-    g_cv_wave_high_data1                     0x20000020   Data           4  echem_stim.o(.data)
-    g_cv_wave_high_data2                     0x20000024   Data           4  echem_stim.o(.data)
-    g_cv_wave_low_data1                      0x20000028   Data           4  echem_stim.o(.data)
-    g_cv_wave_low_data2                      0x2000002c   Data           4  echem_stim.o(.data)
-    .data                                    0x20000030   Section      176  serial.o(.data)
-    g_serial_rx_packet                       0x20000030   Data         176  serial.o(.data)
-    .bss                                     0x200000e0   Section      272  echem_stim.o(.bss)
-    g_cv_params                              0x20000140   Data          88  echem_stim.o(.bss)
-    g_dpv_params                             0x20000198   Data          88  echem_stim.o(.bss)
-    STACK                                    0x200001f0   Section     1024  startup_stm32f411xe.o(STACK)
+    .data                                    0x20000004   Section       24  main_init.o(.data)
+    .data                                    0x2000001c   Section       16  main_init.o(.data)
+    .data                                    0x20000030   Section       32  main_init.o(.data)
+    .data                                    0x20000050   Section       12  stm32f4xx_hal.o(.data)
+    .data                                    0x2000005c   Section        4  system_stm32f4xx.o(.data)
+    .data                                    0x20000060   Section       28  echem_stim.o(.data)
+    g_dac_module                             0x20000060   Data           4  echem_stim.o(.data)
+    g_progress_callback                      0x20000064   Data           4  echem_stim.o(.data)
+    g_error_callback                         0x20000068   Data           4  echem_stim.o(.data)
+    g_cv_wave_high_data1                     0x2000006c   Data           4  echem_stim.o(.data)
+    g_cv_wave_high_data2                     0x20000070   Data           4  echem_stim.o(.data)
+    g_cv_wave_low_data1                      0x20000074   Data           4  echem_stim.o(.data)
+    g_cv_wave_low_data2                      0x20000078   Data           4  echem_stim.o(.data)
+    .data                                    0x20000080   Section      176  serial.o(.data)
+    g_serial_rx_packet                       0x20000080   Data         176  serial.o(.data)
+    .data                                    0x20000130   Section        1  serial_process.o(.data)
+    .data                                    0x20000134   Section        4  errno.o(.data)
+    _errno                                   0x20000134   Data           4  errno.o(.data)
+    .bss                                     0x20000138   Section    65536  main_init.o(.bss)
+    .bss                                     0x20010138   Section      272  echem_stim.o(.bss)
+    g_cv_params                              0x20010198   Data          88  echem_stim.o(.bss)
+    g_dpv_params                             0x200101f0   Data          88  echem_stim.o(.bss)
+    .bss                                     0x20010248   Section       80  serial_process.o(.bss)
+    STACK                                    0x20010298   Section     1024  startup_stm32f411xe.o(STACK)
 
     Global Symbols
 
@@ -1337,7 +1403,6 @@ Image Symbol Table
     __arm_fini_                               - Undefined Weak Reference
     __cpp_initialize__aeabi_                  - Undefined Weak Reference
     __cxa_finalize                            - Undefined Weak Reference
-    __decompress                              - Undefined Weak Reference
     _clock_init                               - Undefined Weak Reference
     _microlib_exit                            - Undefined Weak Reference
     __Vectors_Size                           0x00000198   Number         0  startup_stm32f411xe.o ABSOLUTE
@@ -1407,92 +1472,172 @@ Image Symbol Table
     USART6_IRQHandler                        0x080001cb   Thumb Code     0  startup_stm32f411xe.o(.text)
     WWDG_IRQHandler                          0x080001cb   Thumb Code     0  startup_stm32f411xe.o(.text)
     __aeabi_uldivmod                         0x080001d5   Thumb Code    98  uldiv.o(.text)
-    __aeabi_memset                           0x08000237   Thumb Code    14  memseta.o(.text)
-    __aeabi_memset4                          0x08000237   Thumb Code     0  memseta.o(.text)
-    __aeabi_memset8                          0x08000237   Thumb Code     0  memseta.o(.text)
-    __aeabi_memclr                           0x08000245   Thumb Code     4  memseta.o(.text)
-    __aeabi_memclr4                          0x08000245   Thumb Code     0  memseta.o(.text)
-    __aeabi_memclr8                          0x08000245   Thumb Code     0  memseta.o(.text)
-    _memset$wrapper                          0x08000249   Thumb Code    18  memseta.o(.text)
-    __aeabi_llsl                             0x0800025b   Thumb Code    30  llshl.o(.text)
-    _ll_shift_l                              0x0800025b   Thumb Code     0  llshl.o(.text)
-    __aeabi_llsr                             0x08000279   Thumb Code    32  llushr.o(.text)
-    _ll_ushift_r                             0x08000279   Thumb Code     0  llushr.o(.text)
-    __scatterload                            0x08000299   Thumb Code    28  init.o(.text)
-    __scatterload_rt2                        0x08000299   Thumb Code     0  init.o(.text)
-    AD5260_CS                                0x080002bd   Thumb Code    20  ad5260.o(i.AD5260_CS)
-    AD5260_Init                              0x080002d5   Thumb Code    78  ad5260.o(i.AD5260_Init)
-    AD5260_WriteRDAC                         0x0800032d   Thumb Code    56  ad5260.o(i.AD5260_WriteRDAC)
-    ADC1_FifterRead                          0x08000369   Thumb Code    44  adc.o(i.ADC1_FifterRead)
-    ADC1_Init                                0x08000395   Thumb Code   250  adc.o(i.ADC1_Init)
-    ADC1_Read                                0x080004a1   Thumb Code    32  adc.o(i.ADC1_Read)
-    BusFault_Handler                         0x080004c5   Thumb Code     2  stm32f4xx_it.o(i.BusFault_Handler)
-    CV_PingPong_DMA2_Stream4_IRQHandler      0x080004c9   Thumb Code   252  echem_stim.o(i.CV_PingPong_DMA2_Stream4_IRQHandler)
-    CV_PingPong_DMA2_Stream5_IRQHandler      0x080005d1   Thumb Code   240  echem_stim.o(i.CV_PingPong_DMA2_Stream5_IRQHandler)
-    DMA2_Stream2_IRQHandler                  0x080006cd   Thumb Code     2  stm32f4xx_it.o(i.DMA2_Stream2_IRQHandler)
-    DMA2_Stream3_IRQHandler                  0x080006d1   Thumb Code    40  spi.o(i.DMA2_Stream3_IRQHandler)
-    DMA2_Stream4_IRQHandler                  0x08000705   Thumb Code    32  echem_stim.o(i.DMA2_Stream4_IRQHandler)
-    DMA2_Stream5_IRQHandler                  0x08000729   Thumb Code    32  echem_stim.o(i.DMA2_Stream5_IRQHandler)
-    DPV_PingPong_DMA2_Stream4_IRQHandler     0x0800074d   Thumb Code   252  echem_stim.o(i.DPV_PingPong_DMA2_Stream4_IRQHandler)
-    DPV_PingPong_DMA2_Stream5_IRQHandler     0x08000855   Thumb Code   240  echem_stim.o(i.DPV_PingPong_DMA2_Stream5_IRQHandler)
-    DebugMon_Handler                         0x08000951   Thumb Code     2  stm32f4xx_it.o(i.DebugMon_Handler)
-    GPIOC_Group1_Init                        0x08000955   Thumb Code    52  gpio.o(i.GPIOC_Group1_Init)
-    HAL_GetTick                              0x0800098d   Thumb Code     6  stm32f4xx_hal.o(i.HAL_GetTick)
-    HardFault_Handler                        0x08000999   Thumb Code     2  stm32f4xx_it.o(i.HardFault_Handler)
-    LED_Init                                 0x0800099b   Thumb Code     4  led.o(i.LED_Init)
-    LED_OFF                                  0x080009a1   Thumb Code    10  led.o(i.LED_OFF)
-    LED_ON                                   0x080009b1   Thumb Code    10  led.o(i.LED_ON)
-    LED_Reveral                              0x080009c1   Thumb Code    22  led.o(i.LED_Reveral)
-    LL_ADC_CommonInit                        0x080009dd   Thumb Code    32  stm32f4xx_ll_adc.o(i.LL_ADC_CommonInit)
-    LL_ADC_Init                              0x08000a01   Thumb Code    48  stm32f4xx_ll_adc.o(i.LL_ADC_Init)
-    LL_ADC_REG_Init                          0x08000a35   Thumb Code    74  stm32f4xx_ll_adc.o(i.LL_ADC_REG_Init)
-    LL_GPIO_Init                             0x08000b3d   Thumb Code   310  stm32f4xx_ll_gpio.o(i.LL_GPIO_Init)
-    LL_Init1msTick                           0x08000c73   Thumb Code    26  stm32f4xx_ll_utils.o(i.LL_Init1msTick)
-    LL_RCC_GetSystemClocksFreq               0x08000c8d   Thumb Code    32  stm32f4xx_ll_rcc.o(i.LL_RCC_GetSystemClocksFreq)
-    LL_SPI_Init                              0x08000cad   Thumb Code   100  stm32f4xx_ll_spi.o(i.LL_SPI_Init)
-    LL_SetSystemCoreClock                    0x08000d11   Thumb Code     6  stm32f4xx_ll_utils.o(i.LL_SetSystemCoreClock)
-    LL_USART_Init                            0x08000d1d   Thumb Code   118  stm32f4xx_ll_usart.o(i.LL_USART_Init)
-    LL_mDelay                                0x08000e51   Thumb Code    30  stm32f4xx_ll_utils.o(i.LL_mDelay)
-    MemManage_Handler                        0x08000e6f   Thumb Code     2  stm32f4xx_it.o(i.MemManage_Handler)
-    NMI_Handler                              0x08000e71   Thumb Code     2  stm32f4xx_it.o(i.NMI_Handler)
-    PendSV_Handler                           0x08000e73   Thumb Code     2  stm32f4xx_it.o(i.PendSV_Handler)
-    PingPong_DMA_GetProgress                 0x08000e75   Thumb Code    50  echem_stim.o(i.PingPong_DMA_GetProgress)
-    PingPong_DMA_Stop                        0x08000ead   Thumb Code   174  echem_stim.o(i.PingPong_DMA_Stop)
-    RCC_GetHCLKClockFreq                     0x08000f6d   Thumb Code    18  stm32f4xx_ll_rcc.o(i.RCC_GetHCLKClockFreq)
-    RCC_GetPCLK1ClockFreq                    0x08000f89   Thumb Code    20  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK1ClockFreq)
-    RCC_GetPCLK2ClockFreq                    0x08000fa5   Thumb Code    20  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK2ClockFreq)
-    RCC_GetSystemClockFreq                   0x08000fc1   Thumb Code    30  stm32f4xx_ll_rcc.o(i.RCC_GetSystemClockFreq)
-    RCC_PLL_GetFreqDomain_SYS                0x08000fed   Thumb Code    68  stm32f4xx_ll_rcc.o(i.RCC_PLL_GetFreqDomain_SYS)
-    SPI2_Init                                0x0800103d   Thumb Code   162  spi.o(i.SPI2_Init)
-    SPI_Transmit8_Time                       0x080010f1   Thumb Code    92  spi.o(i.SPI_Transmit8_Time)
-    SVC_Handler                              0x0800114d   Thumb Code     2  stm32f4xx_it.o(i.SVC_Handler)
-    SYNC_Cycle_Stop                          0x0800114f   Thumb Code     4  dds_dac80004.o(i.SYNC_Cycle_Stop)
-    SysTick_Handler                          0x0800116d   Thumb Code     2  stm32f4xx_it.o(i.SysTick_Handler)
-    SystemClock_Config                       0x08001171   Thumb Code   190  main.o(i.SystemClock_Config)
-    SystemInit                               0x08001249   Thumb Code    12  system_stm32f4xx.o(i.SystemInit)
-    System_GPIO_Init                         0x08001259   Thumb Code    28  gpio.o(i.System_GPIO_Init)
-    TIM3_PWM_Stop                            0x08001275   Thumb Code    22  tim.o(i.TIM3_PWM_Stop)
-    USART1_IRQHandler                        0x08001295   Thumb Code     4  serial.o(i.USART1_IRQHandler)
-    USART1_IRQ_Task                          0x08001299   Thumb Code   192  serial.o(i.USART1_IRQ_Task)
-    USART1_Init                              0x08001361   Thumb Code   212  usart.o(i.USART1_Init)
-    UsageFault_Handler                       0x08001449   Thumb Code     2  stm32f4xx_it.o(i.UsageFault_Handler)
-    __scatterload_copy                       0x0800144b   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x08001459   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x0800145b   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    main                                     0x08001469   Thumb Code   214  main.o(i.main)
-    AHBPrescTable                            0x08001564   Data          16  system_stm32f4xx.o(.constdata)
-    APBPrescTable                            0x08001574   Data           8  system_stm32f4xx.o(.constdata)
-    Region$$Table$$Base                      0x08001584   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x080015a4   Number         0  anon$$obj.o(Region$$Table)
+    __aeabi_memcpy                           0x08000237   Thumb Code    36  memcpya.o(.text)
+    __aeabi_memcpy4                          0x08000237   Thumb Code     0  memcpya.o(.text)
+    __aeabi_memcpy8                          0x08000237   Thumb Code     0  memcpya.o(.text)
+    __aeabi_memset                           0x0800025b   Thumb Code    14  memseta.o(.text)
+    __aeabi_memset4                          0x0800025b   Thumb Code     0  memseta.o(.text)
+    __aeabi_memset8                          0x0800025b   Thumb Code     0  memseta.o(.text)
+    __aeabi_memclr                           0x08000269   Thumb Code     4  memseta.o(.text)
+    __aeabi_memclr4                          0x08000269   Thumb Code     0  memseta.o(.text)
+    __aeabi_memclr8                          0x08000269   Thumb Code     0  memseta.o(.text)
+    _memset$wrapper                          0x0800026d   Thumb Code    18  memseta.o(.text)
+    __aeabi_dadd                             0x0800027f   Thumb Code   322  dadd.o(.text)
+    __aeabi_dsub                             0x080003c1   Thumb Code     6  dadd.o(.text)
+    __aeabi_drsub                            0x080003c7   Thumb Code     6  dadd.o(.text)
+    __aeabi_dmul                             0x080003cd   Thumb Code   228  dmul.o(.text)
+    __aeabi_ddiv                             0x080004b1   Thumb Code   222  ddiv.o(.text)
+    __aeabi_ui2d                             0x0800058f   Thumb Code    26  dfltui.o(.text)
+    __aeabi_d2uiz                            0x080005a9   Thumb Code    50  dfixui.o(.text)
+    __aeabi_cdcmpeq                          0x080005dd   Thumb Code     0  cdcmple.o(.text)
+    __aeabi_cdcmple                          0x080005dd   Thumb Code    48  cdcmple.o(.text)
+    __aeabi_cdrcmple                         0x0800060d   Thumb Code    48  cdrcmple.o(.text)
+    __aeabi_llsl                             0x0800063d   Thumb Code    30  llshl.o(.text)
+    _ll_shift_l                              0x0800063d   Thumb Code     0  llshl.o(.text)
+    __aeabi_llsr                             0x0800065b   Thumb Code    32  llushr.o(.text)
+    _ll_ushift_r                             0x0800065b   Thumb Code     0  llushr.o(.text)
+    __aeabi_lasr                             0x0800067b   Thumb Code    36  llsshr.o(.text)
+    _ll_sshift_r                             0x0800067b   Thumb Code     0  llsshr.o(.text)
+    __I$use$fp                               0x0800069f   Thumb Code     0  iusefp.o(.text)
+    _double_round                            0x0800069f   Thumb Code    30  depilogue.o(.text)
+    _double_epilogue                         0x080006bd   Thumb Code   156  depilogue.o(.text)
+    _drnd                                    0x08000759   Thumb Code   132  drnd.o(.text)
+    _drem                                    0x080007e1   Thumb Code   134  drem.o(.text)
+    __ARM_dcmp4                              0x08000867   Thumb Code    96  dcmp4.o(.text)
+    _dcmp4                                   0x08000867   Thumb Code     0  dcmp4.o(.text)
+    __scatterload                            0x080008c9   Thumb Code    28  init.o(.text)
+    __scatterload_rt2                        0x080008c9   Thumb Code     0  init.o(.text)
+    __decompress                             0x080008ed   Thumb Code     0  __dczerorl2.o(.text)
+    __decompress1                            0x080008ed   Thumb Code    86  __dczerorl2.o(.text)
+    BusFault_Handler                         0x08000943   Thumb Code     2  stm32f4xx_it.o(i.BusFault_Handler)
+    CLR                                      0x08000945   Thumb Code    14  dac80004.o(i.CLR)
+    CS                                       0x08000953   Thumb Code    14  dac80004.o(i.CS)
+    CV_DDS_Start_Precise                     0x08000961   Thumb Code  1590  echem_stim.o(i.CV_DDS_Start_Precise)
+    CV_Fill_Next_Buffer                      0x08000fc5   Thumb Code   100  echem_stim.o(i.CV_Fill_Next_Buffer)
+    CV_NeedFillBuffer                        0x08001031   Thumb Code    38  echem_stim.o(i.CV_NeedFillBuffer)
+    CV_PingPong_DMA2_Stream4_IRQHandler      0x0800105d   Thumb Code   252  echem_stim.o(i.CV_PingPong_DMA2_Stream4_IRQHandler)
+    CV_PingPong_DMA2_Stream5_IRQHandler      0x08001165   Thumb Code   240  echem_stim.o(i.CV_PingPong_DMA2_Stream5_IRQHandler)
+    ChannelGain_GPIO_Init                    0x08001261   Thumb Code   182  channelgain.o(i.ChannelGain_GPIO_Init)
+    ChannelGain_Init                         0x08001325   Thumb Code     4  channelgain.o(i.ChannelGain_Init)
+    DAC80004_Channel_Config                  0x08001329   Thumb Code    16  dac80004.o(i.DAC80004_Channel_Config)
+    DAC80004_Command_Config                  0x08001339   Thumb Code    16  dac80004.o(i.DAC80004_Command_Config)
+    DAC80004_Data_Set                        0x08001349   Thumb Code    16  dac80004.o(i.DAC80004_Data_Set)
+    DAC80004_GPIO_init                       0x0800135d   Thumb Code    92  dac80004.o(i.DAC80004_GPIO_init)
+    DAC80004_Init                            0x080013bd   Thumb Code    90  dac80004.o(i.DAC80004_Init)
+    DAC80004_Mode_Config                     0x08001417   Thumb Code    14  dac80004.o(i.DAC80004_Mode_Config)
+    DAC80004_WR_Config                       0x08001425   Thumb Code    16  dac80004.o(i.DAC80004_WR_Config)
+    DAC80004_WriteData                       0x08001435   Thumb Code    44  dac80004.o(i.DAC80004_WriteData)
+    DMA2_Stream2_IRQHandler                  0x08001461   Thumb Code     2  stm32f4xx_it.o(i.DMA2_Stream2_IRQHandler)
+    DMA2_Stream3_IRQHandler                  0x08001465   Thumb Code    40  spi.o(i.DMA2_Stream3_IRQHandler)
+    DMA2_Stream4_IRQHandler                  0x08001499   Thumb Code    32  echem_stim.o(i.DMA2_Stream4_IRQHandler)
+    DMA2_Stream5_IRQHandler                  0x080014bd   Thumb Code    32  echem_stim.o(i.DMA2_Stream5_IRQHandler)
+    DPV_DDS_Start_Precise                    0x080014e1   Thumb Code  1770  echem_stim.o(i.DPV_DDS_Start_Precise)
+    DPV_Fill_Next_Buffer                     0x08001c01   Thumb Code    98  echem_stim.o(i.DPV_Fill_Next_Buffer)
+    DPV_NeedFillBuffer                       0x08001c6d   Thumb Code    22  echem_stim.o(i.DPV_NeedFillBuffer)
+    DPV_PingPong_DMA2_Stream4_IRQHandler     0x08001c89   Thumb Code   252  echem_stim.o(i.DPV_PingPong_DMA2_Stream4_IRQHandler)
+    DPV_PingPong_DMA2_Stream5_IRQHandler     0x08001d91   Thumb Code   240  echem_stim.o(i.DPV_PingPong_DMA2_Stream5_IRQHandler)
+    DebugMon_Handler                         0x08001e8d   Thumb Code     2  stm32f4xx_it.o(i.DebugMon_Handler)
+    Echem_stim_Init                          0x08001e8f   Thumb Code    22  echem_stim.o(i.Echem_stim_Init)
+    Feedback1_Select                         0x08001ea5   Thumb Code    20  channelgain.o(i.Feedback1_Select)
+    Feedback2_Select                         0x08001ebd   Thumb Code    20  channelgain.o(i.Feedback2_Select)
+    Feedback3_Select                         0x08001ed5   Thumb Code    20  channelgain.o(i.Feedback3_Select)
+    Feedback4_Select                         0x08001eed   Thumb Code    18  channelgain.o(i.Feedback4_Select)
+    GPIOC_Group1_Init                        0x08001f05   Thumb Code    52  gpio.o(i.GPIOC_Group1_Init)
+    HAL_GetTick                              0x08002269   Thumb Code     6  stm32f4xx_hal.o(i.HAL_GetTick)
+    HardFault_Handler                        0x08002275   Thumb Code     2  stm32f4xx_it.o(i.HardFault_Handler)
+    IV_Gain_Set                              0x08002279   Thumb Code    26  channelgain.o(i.IV_Gain_Set)
+    LDAC                                     0x08002299   Thumb Code    14  dac80004.o(i.LDAC)
+    LED_Init                                 0x080022a7   Thumb Code     4  led.o(i.LED_Init)
+    LED_OFF                                  0x080022ad   Thumb Code    10  led.o(i.LED_OFF)
+    LED_ON                                   0x080022bd   Thumb Code    10  led.o(i.LED_ON)
+    LL_GPIO_Init                             0x080024a5   Thumb Code   310  stm32f4xx_ll_gpio.o(i.LL_GPIO_Init)
+    LL_Init1msTick                           0x080025db   Thumb Code    26  stm32f4xx_ll_utils.o(i.LL_Init1msTick)
+    LL_RCC_GetSystemClocksFreq               0x080025f5   Thumb Code    32  stm32f4xx_ll_rcc.o(i.LL_RCC_GetSystemClocksFreq)
+    LL_SPI_Init                              0x08002615   Thumb Code   100  stm32f4xx_ll_spi.o(i.LL_SPI_Init)
+    LL_SetSystemCoreClock                    0x08002679   Thumb Code     6  stm32f4xx_ll_utils.o(i.LL_SetSystemCoreClock)
+    LL_TIM_BDTR_Init                         0x08002685   Thumb Code    52  stm32f4xx_ll_tim.o(i.LL_TIM_BDTR_Init)
+    LL_TIM_Init                              0x080026b9   Thumb Code   122  stm32f4xx_ll_tim.o(i.LL_TIM_Init)
+    LL_TIM_OC_Init                           0x080027f9   Thumb Code   390  stm32f4xx_ll_tim.o(i.LL_TIM_OC_Init)
+    LL_USART_Init                            0x08002985   Thumb Code   118  stm32f4xx_ll_usart.o(i.LL_USART_Init)
+    LL_mDelay                                0x08002ab9   Thumb Code    30  stm32f4xx_ll_utils.o(i.LL_mDelay)
+    MX_DMA_Init                              0x08002ad9   Thumb Code    82  dma.o(i.MX_DMA_Init)
+    MemManage_Handler                        0x08002b35   Thumb Code     2  stm32f4xx_it.o(i.MemManage_Handler)
+    NMI_Handler                              0x08002b37   Thumb Code     2  stm32f4xx_it.o(i.NMI_Handler)
+    PendSV_Handler                           0x08002b6b   Thumb Code     2  stm32f4xx_it.o(i.PendSV_Handler)
+    PingPong_DMA_GetProgress                 0x08002b6d   Thumb Code    50  echem_stim.o(i.PingPong_DMA_GetProgress)
+    PingPong_DMA_IsComplete                  0x08002ba5   Thumb Code    22  echem_stim.o(i.PingPong_DMA_IsComplete)
+    PingPong_DMA_Stop                        0x08002bc1   Thumb Code   174  echem_stim.o(i.PingPong_DMA_Stop)
+    RCC_GetHCLKClockFreq                     0x08002c81   Thumb Code    18  stm32f4xx_ll_rcc.o(i.RCC_GetHCLKClockFreq)
+    RCC_GetPCLK1ClockFreq                    0x08002c9d   Thumb Code    20  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK1ClockFreq)
+    RCC_GetPCLK2ClockFreq                    0x08002cb9   Thumb Code    20  stm32f4xx_ll_rcc.o(i.RCC_GetPCLK2ClockFreq)
+    RCC_GetSystemClockFreq                   0x08002cd5   Thumb Code    30  stm32f4xx_ll_rcc.o(i.RCC_GetSystemClockFreq)
+    RCC_PLL_GetFreqDomain_SYS                0x08002d01   Thumb Code    68  stm32f4xx_ll_rcc.o(i.RCC_PLL_GetFreqDomain_SYS)
+    SPI1_Init                                0x08002d51   Thumb Code   136  spi.o(i.SPI1_Init)
+    SPI1_Transmit16_Time                     0x08002de5   Thumb Code    92  spi.o(i.SPI1_Transmit16_Time)
+    SVC_Handler                              0x08002e45   Thumb Code     2  stm32f4xx_it.o(i.SVC_Handler)
+    SYNC_Cycle_Init                          0x08002e47   Thumb Code     4  dds_dac80004.o(i.SYNC_Cycle_Init)
+    SYNC_Cycle_SetPara                       0x08002e4b   Thumb Code     4  dds_dac80004.o(i.SYNC_Cycle_SetPara)
+    SYNC_Cycle_Start                         0x08002e4f   Thumb Code     4  dds_dac80004.o(i.SYNC_Cycle_Start)
+    SYNC_Cycle_Stop                          0x08002e53   Thumb Code     4  dds_dac80004.o(i.SYNC_Cycle_Stop)
+    Serial_CV_CreateWave                     0x08002e59   Thumb Code   214  serial_process.o(i.Serial_CV_CreateWave)
+    Serial_CommandTask                       0x08002f4d   Thumb Code    20  serial_process.o(i.Serial_CommandTask)
+    Serial_DPV_CreateWave                    0x08002f65   Thumb Code   206  serial_process.o(i.Serial_DPV_CreateWave)
+    Serial_GetRxCommand                      0x08003051   Thumb Code     6  serial.o(i.Serial_GetRxCommand)
+    Serial_GetRxData                         0x0800305d   Thumb Code    54  serial.o(i.Serial_GetRxData)
+    Serial_GetRxFlag                         0x08003099   Thumb Code    22  serial.o(i.Serial_GetRxFlag)
+    Serial_Process                           0x080030b5   Thumb Code    42  serial_process.o(i.Serial_Process)
+    SysTick_Handler                          0x08003101   Thumb Code     2  stm32f4xx_it.o(i.SysTick_Handler)
+    SystemClock_Config                       0x08003105   Thumb Code   190  main.o(i.SystemClock_Config)
+    SystemInit                               0x080031dd   Thumb Code    12  system_stm32f4xx.o(i.SystemInit)
+    System_GPIO_Init                         0x080031ed   Thumb Code    28  gpio.o(i.System_GPIO_Init)
+    TIM1_DMA_SPI1_Init                       0x08003209   Thumb Code   474  tim.o(i.TIM1_DMA_SPI1_Init)
+    TIM3_ApplyPWMConfig                      0x080033fd   Thumb Code   190  tim.o(i.TIM3_ApplyPWMConfig)
+    TIM3_PWM_Init                            0x080034d1   Thumb Code   196  tim.o(i.TIM3_PWM_Init)
+    TIM3_PWM_Start                           0x080035a1   Thumb Code    12  tim.o(i.TIM3_PWM_Start)
+    TIM3_PWM_Stop                            0x080035b1   Thumb Code    22  tim.o(i.TIM3_PWM_Stop)
+    TIM_ApplyFreqConfig_DualDMA              0x080035d1   Thumb Code   176  tim.o(i.TIM_ApplyFreqConfig_DualDMA)
+    TIM_CalculateFreqDivision_Precise        0x08003691   Thumb Code   392  tim.o(i.TIM_CalculateFreqDivision_Precise)
+    USART1_IRQHandler                        0x08003841   Thumb Code     4  serial.o(i.USART1_IRQHandler)
+    USART1_IRQ_Task                          0x08003845   Thumb Code   192  serial.o(i.USART1_IRQ_Task)
+    USART1_Init                              0x0800390d   Thumb Code   212  usart.o(i.USART1_Init)
+    UsageFault_Handler                       0x080039f5   Thumb Code     2  stm32f4xx_it.o(i.UsageFault_Handler)
+    Voltage_Gain_Stage1_Set                  0x080039f9   Thumb Code    18  channelgain.o(i.Voltage_Gain_Stage1_Set)
+    Voltage_Gain_Stage2_Set                  0x08003a11   Thumb Code    28  channelgain.o(i.Voltage_Gain_Stage2_Set)
+    WE_Channel_Select                        0x08003a31   Thumb Code    26  channelgain.o(i.WE_Channel_Select)
+    __hardfp_ceil                            0x08003aa9   Thumb Code   252  ceil.o(i.__hardfp_ceil)
+    __hardfp_fabs                            0x08003bc1   Thumb Code    20  fabs.o(i.__hardfp_fabs)
+    __hardfp_fmax                            0x08003bd5   Thumb Code   116  fmax.o(i.__hardfp_fmax)
+    __hardfp_fmin                            0x08003c49   Thumb Code   116  fmin.o(i.__hardfp_fmin)
+    __hardfp_fmod                            0x08003cbd   Thumb Code   254  fmod.o(i.__hardfp_fmod)
+    __hardfp_round                           0x08003dc1   Thumb Code   194  round.o(i.__hardfp_round)
+    __mathlib_dbl_invalid                    0x08003ea1   Thumb Code    24  dunder.o(i.__mathlib_dbl_invalid)
+    __scatterload_copy                       0x08003ec1   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x08003ecf   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x08003ed1   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    __set_errno                              0x08003ee1   Thumb Code     6  errno.o(i.__set_errno)
+    main                                     0x08004009   Thumb Code   154  main.o(i.main)
+    AHBPrescTable                            0x080040d6   Data          16  system_stm32f4xx.o(.constdata)
+    APBPrescTable                            0x080040e6   Data           8  system_stm32f4xx.o(.constdata)
+    Region$$Table$$Base                      0x080041a8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080041c8   Number         0  anon$$obj.o(Region$$Table)
     dma_tx_complete                          0x20000000   Data           1  spi.o(.data)
-    uwTickFreq                               0x20000004   Data           1  stm32f4xx_hal.o(.data)
-    uwTickPrio                               0x20000008   Data           4  stm32f4xx_hal.o(.data)
-    uwTick                                   0x2000000c   Data           4  stm32f4xx_hal.o(.data)
-    SystemCoreClock                          0x20000010   Data           4  system_stm32f4xx.o(.data)
-    g_pingpong_dma_stream4                   0x200000e0   Data          20  echem_stim.o(.bss)
-    g_pingpong_dma_stream5                   0x200000f4   Data          20  echem_stim.o(.bss)
-    g_echem_result                           0x20000108   Data          56  echem_stim.o(.bss)
-    __initial_sp                             0x200005f0   Data           0  startup_stm32f411xe.o(STACK)
+    DAC80004_dev1                            0x20000004   Data          24  main_init.o(.data)
+    DAC80004_Module1                         0x2000001c   Data          16  main_init.o(.data)
+    config                                   0x20000030   Data          32  main_init.o(.data)
+    uwTickFreq                               0x20000050   Data           1  stm32f4xx_hal.o(.data)
+    uwTickPrio                               0x20000054   Data           4  stm32f4xx_hal.o(.data)
+    uwTick                                   0x20000058   Data           4  stm32f4xx_hal.o(.data)
+    SystemCoreClock                          0x2000005c   Data           4  system_stm32f4xx.o(.data)
+    g_serial_rx_command                      0x20000130   Data           1  serial_process.o(.data)
+    wave_high_data1                          0x20000138   Data       16384  main_init.o(.bss)
+    wave_high_data2                          0x20004138   Data       16384  main_init.o(.bss)
+    wave_low_data1                           0x20008138   Data       16384  main_init.o(.bss)
+    wave_low_data2                           0x2000c138   Data       16384  main_init.o(.bss)
+    g_pingpong_dma_stream4                   0x20010138   Data          20  echem_stim.o(.bss)
+    g_pingpong_dma_stream5                   0x2001014c   Data          20  echem_stim.o(.bss)
+    g_echem_result                           0x20010160   Data          56  echem_stim.o(.bss)
+    g_serial_rx_doubel_data                  0x20010248   Data          80  serial_process.o(.bss)
+    __initial_sp                             0x20010698   Data           0  startup_stm32f411xe.o(STACK)
 
 
 
@@ -1502,125 +1647,228 @@ Memory Map of the image
 
   Image Entry point : 0x08000199
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00001684, Max: 0x00080000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00004300, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x000041f0])
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000015a4, Max: 0x00080000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000041c8, Max: 0x00080000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x08000000   0x08000000   0x00000198   Data   RO            3    RESET               startup_stm32f411xe.o
-    0x08000198   0x08000198   0x00000000   Code   RO         2706  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x08000198   0x08000198   0x00000004   Code   RO         2763    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x0800019c   0x0800019c   0x00000004   Code   RO         2766    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x080001a0   0x080001a0   0x00000000   Code   RO         2768    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x080001a0   0x080001a0   0x00000000   Code   RO         2770    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x080001a0   0x080001a0   0x00000008   Code   RO         2771    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x080001a8   0x080001a8   0x00000004   Code   RO         2778    .ARM.Collect$$$$0000000E  mc_w.l(entry12b.o)
-    0x080001ac   0x080001ac   0x00000000   Code   RO         2773    .ARM.Collect$$$$0000000F  mc_w.l(entry10a.o)
-    0x080001ac   0x080001ac   0x00000000   Code   RO         2775    .ARM.Collect$$$$00000011  mc_w.l(entry11a.o)
-    0x080001ac   0x080001ac   0x00000004   Code   RO         2764    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x08000198   0x08000198   0x00000000   Code   RO         2755  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x08000198   0x08000198   0x00000004   Code   RO         2812    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x0800019c   0x0800019c   0x00000004   Code   RO         2815    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x080001a0   0x080001a0   0x00000000   Code   RO         2817    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x080001a0   0x080001a0   0x00000000   Code   RO         2819    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x080001a0   0x080001a0   0x00000008   Code   RO         2820    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x080001a8   0x080001a8   0x00000004   Code   RO         2827    .ARM.Collect$$$$0000000E  mc_w.l(entry12b.o)
+    0x080001ac   0x080001ac   0x00000000   Code   RO         2822    .ARM.Collect$$$$0000000F  mc_w.l(entry10a.o)
+    0x080001ac   0x080001ac   0x00000000   Code   RO         2824    .ARM.Collect$$$$00000011  mc_w.l(entry11a.o)
+    0x080001ac   0x080001ac   0x00000004   Code   RO         2813    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
     0x080001b0   0x080001b0   0x00000024   Code   RO            4    .text               startup_stm32f411xe.o
-    0x080001d4   0x080001d4   0x00000062   Code   RO         2709    .text               mc_w.l(uldiv.o)
-    0x08000236   0x08000236   0x00000024   Code   RO         2713    .text               mc_w.l(memseta.o)
-    0x0800025a   0x0800025a   0x0000001e   Code   RO         2779    .text               mc_w.l(llshl.o)
-    0x08000278   0x08000278   0x00000020   Code   RO         2781    .text               mc_w.l(llushr.o)
-    0x08000298   0x08000298   0x00000024   Code   RO         2805    .text               mc_w.l(init.o)
-    0x080002bc   0x080002bc   0x00000018   Code   RO         2625    i.AD5260_CS         ad5260.o
-    0x080002d4   0x080002d4   0x00000058   Code   RO         2626    i.AD5260_Init       ad5260.o
-    0x0800032c   0x0800032c   0x0000003c   Code   RO         2627    i.AD5260_WriteRDAC  ad5260.o
-    0x08000368   0x08000368   0x0000002c   Code   RO          776    i.ADC1_FifterRead   adc.o
-    0x08000394   0x08000394   0x0000010c   Code   RO          777    i.ADC1_Init         adc.o
-    0x080004a0   0x080004a0   0x00000024   Code   RO          778    i.ADC1_Read         adc.o
-    0x080004c4   0x080004c4   0x00000002   Code   RO          448    i.BusFault_Handler  stm32f4xx_it.o
-    0x080004c6   0x080004c6   0x00000002   PAD
-    0x080004c8   0x080004c8   0x00000108   Code   RO         2170    i.CV_PingPong_DMA2_Stream4_IRQHandler  echem_stim.o
-    0x080005d0   0x080005d0   0x000000fc   Code   RO         2171    i.CV_PingPong_DMA2_Stream5_IRQHandler  echem_stim.o
-    0x080006cc   0x080006cc   0x00000002   Code   RO          449    i.DMA2_Stream2_IRQHandler  stm32f4xx_it.o
-    0x080006ce   0x080006ce   0x00000002   PAD
-    0x080006d0   0x080006d0   0x00000034   Code   RO          334    i.DMA2_Stream3_IRQHandler  spi.o
-    0x08000704   0x08000704   0x00000024   Code   RO         2172    i.DMA2_Stream4_IRQHandler  echem_stim.o
-    0x08000728   0x08000728   0x00000024   Code   RO         2173    i.DMA2_Stream5_IRQHandler  echem_stim.o
-    0x0800074c   0x0800074c   0x00000108   Code   RO         2177    i.DPV_PingPong_DMA2_Stream4_IRQHandler  echem_stim.o
-    0x08000854   0x08000854   0x000000fc   Code   RO         2178    i.DPV_PingPong_DMA2_Stream5_IRQHandler  echem_stim.o
-    0x08000950   0x08000950   0x00000002   Code   RO          450    i.DebugMon_Handler  stm32f4xx_it.o
-    0x08000952   0x08000952   0x00000002   PAD
-    0x08000954   0x08000954   0x00000038   Code   RO          232    i.GPIOC_Group1_Init  gpio.o
-    0x0800098c   0x0800098c   0x0000000c   Code   RO         1210    i.HAL_GetTick       stm32f4xx_hal.o
-    0x08000998   0x08000998   0x00000002   Code   RO          451    i.HardFault_Handler  stm32f4xx_it.o
-    0x0800099a   0x0800099a   0x00000004   Code   RO         1833    i.LED_Init          led.o
-    0x0800099e   0x0800099e   0x00000002   PAD
-    0x080009a0   0x080009a0   0x00000010   Code   RO         1834    i.LED_OFF           led.o
-    0x080009b0   0x080009b0   0x00000010   Code   RO         1835    i.LED_ON            led.o
-    0x080009c0   0x080009c0   0x0000001c   Code   RO         1836    i.LED_Reveral       led.o
-    0x080009dc   0x080009dc   0x00000024   Code   RO         1712    i.LL_ADC_CommonInit  stm32f4xx_ll_adc.o
-    0x08000a00   0x08000a00   0x00000034   Code   RO         1717    i.LL_ADC_Init       stm32f4xx_ll_adc.o
-    0x08000a34   0x08000a34   0x00000050   Code   RO         1718    i.LL_ADC_REG_Init   stm32f4xx_ll_adc.o
-    0x08000a84   0x08000a84   0x00000018   Code   RO          233    i.LL_AHB1_GRP1_EnableClock  gpio.o
-    0x08000a9c   0x08000a9c   0x00000018   Code   RO          335    i.LL_AHB1_GRP1_EnableClock  spi.o
-    0x08000ab4   0x08000ab4   0x00000014   Code   RO         2186    i.LL_DMA_DisableIT_TC  echem_stim.o
-    0x08000ac8   0x08000ac8   0x00000014   Code   RO         2187    i.LL_DMA_DisableIT_TE  echem_stim.o
-    0x08000adc   0x08000adc   0x00000014   Code   RO         2188    i.LL_DMA_DisableStream  echem_stim.o
-    0x08000af0   0x08000af0   0x00000014   Code   RO         2191    i.LL_DMA_EnableStream  echem_stim.o
-    0x08000b04   0x08000b04   0x00000010   Code   RO         2192    i.LL_DMA_IsEnabledStream  echem_stim.o
-    0x08000b14   0x08000b14   0x00000018   Code   RO         2193    i.LL_DMA_SetDataLength  echem_stim.o
-    0x08000b2c   0x08000b2c   0x00000010   Code   RO         2194    i.LL_DMA_SetMemoryAddress  echem_stim.o
-    0x08000b3c   0x08000b3c   0x00000136   Code   RO          818    i.LL_GPIO_Init      stm32f4xx_ll_gpio.o
-    0x08000c72   0x08000c72   0x0000001a   Code   RO         1075    i.LL_Init1msTick    stm32f4xx_ll_utils.o
-    0x08000c8c   0x08000c8c   0x00000020   Code   RO          988    i.LL_RCC_GetSystemClocksFreq  stm32f4xx_ll_rcc.o
-    0x08000cac   0x08000cac   0x00000064   Code   RO          919    i.LL_SPI_Init       stm32f4xx_ll_spi.o
-    0x08000d10   0x08000d10   0x0000000c   Code   RO         1080    i.LL_SetSystemCoreClock  stm32f4xx_ll_utils.o
-    0x08000d1c   0x08000d1c   0x00000084   Code   RO         1658    i.LL_USART_Init     stm32f4xx_ll_usart.o
-    0x08000da0   0x08000da0   0x000000b0   Code   RO         1659    i.LL_USART_SetBaudRate  stm32f4xx_ll_usart.o
-    0x08000e50   0x08000e50   0x0000001e   Code   RO         1081    i.LL_mDelay         stm32f4xx_ll_utils.o
-    0x08000e6e   0x08000e6e   0x00000002   Code   RO          452    i.MemManage_Handler  stm32f4xx_it.o
-    0x08000e70   0x08000e70   0x00000002   Code   RO          453    i.NMI_Handler       stm32f4xx_it.o
-    0x08000e72   0x08000e72   0x00000002   Code   RO          454    i.PendSV_Handler    stm32f4xx_it.o
-    0x08000e74   0x08000e74   0x00000038   Code   RO         2196    i.PingPong_DMA_GetProgress  echem_stim.o
-    0x08000eac   0x08000eac   0x000000c0   Code   RO         2201    i.PingPong_DMA_Stop  echem_stim.o
-    0x08000f6c   0x08000f6c   0x0000001c   Code   RO          990    i.RCC_GetHCLKClockFreq  stm32f4xx_ll_rcc.o
-    0x08000f88   0x08000f88   0x0000001c   Code   RO          991    i.RCC_GetPCLK1ClockFreq  stm32f4xx_ll_rcc.o
-    0x08000fa4   0x08000fa4   0x0000001c   Code   RO          992    i.RCC_GetPCLK2ClockFreq  stm32f4xx_ll_rcc.o
-    0x08000fc0   0x08000fc0   0x0000002c   Code   RO          993    i.RCC_GetSystemClockFreq  stm32f4xx_ll_rcc.o
-    0x08000fec   0x08000fec   0x00000050   Code   RO          996    i.RCC_PLL_GetFreqDomain_SYS  stm32f4xx_ll_rcc.o
-    0x0800103c   0x0800103c   0x000000b4   Code   RO          346    i.SPI2_Init         spi.o
-    0x080010f0   0x080010f0   0x0000005c   Code   RO          347    i.SPI_Transmit8_Time  spi.o
-    0x0800114c   0x0800114c   0x00000002   Code   RO          455    i.SVC_Handler       stm32f4xx_it.o
-    0x0800114e   0x0800114e   0x00000004   Code   RO         1990    i.SYNC_Cycle_Stop   dds_dac80004.o
-    0x08001152   0x08001152   0x00000002   PAD
-    0x08001154   0x08001154   0x00000018   Code   RO         2408    i.Serial_ResetRxState  serial.o
-    0x0800116c   0x0800116c   0x00000002   Code   RO          456    i.SysTick_Handler   stm32f4xx_it.o
-    0x0800116e   0x0800116e   0x00000002   PAD
-    0x08001170   0x08001170   0x000000d8   Code   RO           14    i.SystemClock_Config  main.o
-    0x08001248   0x08001248   0x00000010   Code   RO         1796    i.SystemInit        system_stm32f4xx.o
-    0x08001258   0x08001258   0x0000001c   Code   RO          234    i.System_GPIO_Init  gpio.o
-    0x08001274   0x08001274   0x00000020   Code   RO          572    i.TIM3_PWM_Stop     tim.o
-    0x08001294   0x08001294   0x00000004   Code   RO         2412    i.USART1_IRQHandler  serial.o
-    0x08001298   0x08001298   0x000000c8   Code   RO         2413    i.USART1_IRQ_Task   serial.o
-    0x08001360   0x08001360   0x000000e8   Code   RO          703    i.USART1_Init       usart.o
-    0x08001448   0x08001448   0x00000002   Code   RO          457    i.UsageFault_Handler  stm32f4xx_it.o
-    0x0800144a   0x0800144a   0x0000000e   Code   RO         2811    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x08001458   0x08001458   0x00000002   Code   RO         2812    i.__scatterload_null  mc_w.l(handlers.o)
-    0x0800145a   0x0800145a   0x0000000e   Code   RO         2813    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x08001468   0x08001468   0x000000f4   Code   RO           15    i.main              main.o
-    0x0800155c   0x0800155c   0x00000008   Data   RO          348    .constdata          spi.o
-    0x08001564   0x08001564   0x00000010   Data   RO         1797    .constdata          system_stm32f4xx.o
-    0x08001574   0x08001574   0x00000008   Data   RO         1798    .constdata          system_stm32f4xx.o
-    0x0800157c   0x0800157c   0x00000008   Data   RO         2205    .constdata          echem_stim.o
-    0x08001584   0x08001584   0x00000020   Data   RO         2809    Region$$Table       anon$$obj.o
+    0x080001d4   0x080001d4   0x00000062   Code   RO         2758    .text               mc_w.l(uldiv.o)
+    0x08000236   0x08000236   0x00000024   Code   RO         2760    .text               mc_w.l(memcpya.o)
+    0x0800025a   0x0800025a   0x00000024   Code   RO         2762    .text               mc_w.l(memseta.o)
+    0x0800027e   0x0800027e   0x0000014e   Code   RO         2766    .text               mf_w.l(dadd.o)
+    0x080003cc   0x080003cc   0x000000e4   Code   RO         2768    .text               mf_w.l(dmul.o)
+    0x080004b0   0x080004b0   0x000000de   Code   RO         2770    .text               mf_w.l(ddiv.o)
+    0x0800058e   0x0800058e   0x0000001a   Code   RO         2774    .text               mf_w.l(dfltui.o)
+    0x080005a8   0x080005a8   0x00000032   Code   RO         2778    .text               mf_w.l(dfixui.o)
+    0x080005da   0x080005da   0x00000002   PAD
+    0x080005dc   0x080005dc   0x00000030   Code   RO         2780    .text               mf_w.l(cdcmple.o)
+    0x0800060c   0x0800060c   0x00000030   Code   RO         2782    .text               mf_w.l(cdrcmple.o)
+    0x0800063c   0x0800063c   0x0000001e   Code   RO         2828    .text               mc_w.l(llshl.o)
+    0x0800065a   0x0800065a   0x00000020   Code   RO         2830    .text               mc_w.l(llushr.o)
+    0x0800067a   0x0800067a   0x00000024   Code   RO         2832    .text               mc_w.l(llsshr.o)
+    0x0800069e   0x0800069e   0x00000000   Code   RO         2841    .text               mc_w.l(iusefp.o)
+    0x0800069e   0x0800069e   0x000000ba   Code   RO         2842    .text               mf_w.l(depilogue.o)
+    0x08000758   0x08000758   0x00000088   Code   RO         2844    .text               mf_w.l(drnd.o)
+    0x080007e0   0x080007e0   0x00000086   Code   RO         2846    .text               mf_w.l(drem.o)
+    0x08000866   0x08000866   0x00000060   Code   RO         2848    .text               mf_w.l(dcmp4.o)
+    0x080008c6   0x080008c6   0x00000002   PAD
+    0x080008c8   0x080008c8   0x00000024   Code   RO         2854    .text               mc_w.l(init.o)
+    0x080008ec   0x080008ec   0x00000056   Code   RO         2866    .text               mc_w.l(__dczerorl2.o)
+    0x08000942   0x08000942   0x00000002   Code   RO          448    i.BusFault_Handler  stm32f4xx_it.o
+    0x08000944   0x08000944   0x0000000e   Code   RO         1878    i.CLR               dac80004.o
+    0x08000952   0x08000952   0x0000000e   Code   RO         1879    i.CS                dac80004.o
+    0x08000960   0x08000960   0x00000664   Code   RO         2167    i.CV_DDS_Start_Precise  echem_stim.o
+    0x08000fc4   0x08000fc4   0x0000006c   Code   RO         2168    i.CV_Fill_Next_Buffer  echem_stim.o
+    0x08001030   0x08001030   0x0000002c   Code   RO         2169    i.CV_NeedFillBuffer  echem_stim.o
+    0x0800105c   0x0800105c   0x00000108   Code   RO         2170    i.CV_PingPong_DMA2_Stream4_IRQHandler  echem_stim.o
+    0x08001164   0x08001164   0x000000fc   Code   RO         2171    i.CV_PingPong_DMA2_Stream5_IRQHandler  echem_stim.o
+    0x08001260   0x08001260   0x000000c4   Code   RO         2542    i.ChannelGain_GPIO_Init  channelgain.o
+    0x08001324   0x08001324   0x00000004   Code   RO         2543    i.ChannelGain_Init  channelgain.o
+    0x08001328   0x08001328   0x00000010   Code   RO         1880    i.DAC80004_Channel_Config  dac80004.o
+    0x08001338   0x08001338   0x00000010   Code   RO         1881    i.DAC80004_Command_Config  dac80004.o
+    0x08001348   0x08001348   0x00000014   Code   RO         1882    i.DAC80004_Data_Set  dac80004.o
+    0x0800135c   0x0800135c   0x00000060   Code   RO         1883    i.DAC80004_GPIO_init  dac80004.o
+    0x080013bc   0x080013bc   0x0000005a   Code   RO         1884    i.DAC80004_Init     dac80004.o
+    0x08001416   0x08001416   0x0000000e   Code   RO         1885    i.DAC80004_Mode_Config  dac80004.o
+    0x08001424   0x08001424   0x00000010   Code   RO         1886    i.DAC80004_WR_Config  dac80004.o
+    0x08001434   0x08001434   0x0000002c   Code   RO         1887    i.DAC80004_WriteData  dac80004.o
+    0x08001460   0x08001460   0x00000002   Code   RO          449    i.DMA2_Stream2_IRQHandler  stm32f4xx_it.o
+    0x08001462   0x08001462   0x00000002   PAD
+    0x08001464   0x08001464   0x00000034   Code   RO          334    i.DMA2_Stream3_IRQHandler  spi.o
+    0x08001498   0x08001498   0x00000024   Code   RO         2172    i.DMA2_Stream4_IRQHandler  echem_stim.o
+    0x080014bc   0x080014bc   0x00000024   Code   RO         2173    i.DMA2_Stream5_IRQHandler  echem_stim.o
+    0x080014e0   0x080014e0   0x00000720   Code   RO         2174    i.DPV_DDS_Start_Precise  echem_stim.o
+    0x08001c00   0x08001c00   0x0000006c   Code   RO         2175    i.DPV_Fill_Next_Buffer  echem_stim.o
+    0x08001c6c   0x08001c6c   0x0000001c   Code   RO         2176    i.DPV_NeedFillBuffer  echem_stim.o
+    0x08001c88   0x08001c88   0x00000108   Code   RO         2177    i.DPV_PingPong_DMA2_Stream4_IRQHandler  echem_stim.o
+    0x08001d90   0x08001d90   0x000000fc   Code   RO         2178    i.DPV_PingPong_DMA2_Stream5_IRQHandler  echem_stim.o
+    0x08001e8c   0x08001e8c   0x00000002   Code   RO          450    i.DebugMon_Handler  stm32f4xx_it.o
+    0x08001e8e   0x08001e8e   0x00000016   Code   RO         2183    i.Echem_stim_Init   echem_stim.o
+    0x08001ea4   0x08001ea4   0x00000018   Code   RO         2545    i.Feedback1_Select  channelgain.o
+    0x08001ebc   0x08001ebc   0x00000018   Code   RO         2547    i.Feedback2_Select  channelgain.o
+    0x08001ed4   0x08001ed4   0x00000018   Code   RO         2549    i.Feedback3_Select  channelgain.o
+    0x08001eec   0x08001eec   0x00000018   Code   RO         2551    i.Feedback4_Select  channelgain.o
+    0x08001f04   0x08001f04   0x00000038   Code   RO          232    i.GPIOC_Group1_Init  gpio.o
+    0x08001f3c   0x08001f3c   0x000001e4   Code   RO         2184    i.Generate_CV_Data_Partial  echem_stim.o
+    0x08002120   0x08002120   0x00000148   Code   RO         2185    i.Generate_DPV_Data_Partial  echem_stim.o
+    0x08002268   0x08002268   0x0000000c   Code   RO         1210    i.HAL_GetTick       stm32f4xx_hal.o
+    0x08002274   0x08002274   0x00000002   Code   RO          451    i.HardFault_Handler  stm32f4xx_it.o
+    0x08002276   0x08002276   0x00000002   PAD
+    0x08002278   0x08002278   0x00000020   Code   RO         2553    i.IV_Gain_Set       channelgain.o
+    0x08002298   0x08002298   0x0000000e   Code   RO         1889    i.LDAC              dac80004.o
+    0x080022a6   0x080022a6   0x00000004   Code   RO         1833    i.LED_Init          led.o
+    0x080022aa   0x080022aa   0x00000002   PAD
+    0x080022ac   0x080022ac   0x00000010   Code   RO         1834    i.LED_OFF           led.o
+    0x080022bc   0x080022bc   0x00000010   Code   RO         1835    i.LED_ON            led.o
+    0x080022cc   0x080022cc   0x00000018   Code   RO          233    i.LL_AHB1_GRP1_EnableClock  gpio.o
+    0x080022e4   0x080022e4   0x00000018   Code   RO          335    i.LL_AHB1_GRP1_EnableClock  spi.o
+    0x080022fc   0x080022fc   0x00000018   Code   RO          556    i.LL_AHB1_GRP1_EnableClock  tim.o
+    0x08002314   0x08002314   0x00000018   Code   RO         2554    i.LL_AHB1_GRP1_EnableClock  channelgain.o
+    0x0800232c   0x0800232c   0x00000014   Code   RO          557    i.LL_DMA_DisableFifoMode  tim.o
+    0x08002340   0x08002340   0x00000014   Code   RO         2186    i.LL_DMA_DisableIT_TC  echem_stim.o
+    0x08002354   0x08002354   0x00000014   Code   RO         2187    i.LL_DMA_DisableIT_TE  echem_stim.o
+    0x08002368   0x08002368   0x00000014   Code   RO         2188    i.LL_DMA_DisableStream  echem_stim.o
+    0x0800237c   0x0800237c   0x00000014   Code   RO         2189    i.LL_DMA_EnableIT_TC  echem_stim.o
+    0x08002390   0x08002390   0x00000014   Code   RO         2190    i.LL_DMA_EnableIT_TE  echem_stim.o
+    0x080023a4   0x080023a4   0x00000014   Code   RO         2191    i.LL_DMA_EnableStream  echem_stim.o
+    0x080023b8   0x080023b8   0x00000010   Code   RO         2192    i.LL_DMA_IsEnabledStream  echem_stim.o
+    0x080023c8   0x080023c8   0x00000014   Code   RO          558    i.LL_DMA_SetChannelSelection  tim.o
+    0x080023dc   0x080023dc   0x00000018   Code   RO         2193    i.LL_DMA_SetDataLength  echem_stim.o
+    0x080023f4   0x080023f4   0x00000014   Code   RO          559    i.LL_DMA_SetDataTransferDirection  tim.o
+    0x08002408   0x08002408   0x00000010   Code   RO         2194    i.LL_DMA_SetMemoryAddress  echem_stim.o
+    0x08002418   0x08002418   0x00000014   Code   RO          560    i.LL_DMA_SetMemoryIncMode  tim.o
+    0x0800242c   0x0800242c   0x00000014   Code   RO          561    i.LL_DMA_SetMemorySize  tim.o
+    0x08002440   0x08002440   0x00000014   Code   RO          562    i.LL_DMA_SetMode    tim.o
+    0x08002454   0x08002454   0x00000014   Code   RO         2195    i.LL_DMA_SetMode    echem_stim.o
+    0x08002468   0x08002468   0x00000014   Code   RO          563    i.LL_DMA_SetPeriphIncMode  tim.o
+    0x0800247c   0x0800247c   0x00000014   Code   RO          564    i.LL_DMA_SetPeriphSize  tim.o
+    0x08002490   0x08002490   0x00000014   Code   RO          565    i.LL_DMA_SetStreamPriorityLevel  tim.o
+    0x080024a4   0x080024a4   0x00000136   Code   RO          818    i.LL_GPIO_Init      stm32f4xx_ll_gpio.o
+    0x080025da   0x080025da   0x0000001a   Code   RO         1075    i.LL_Init1msTick    stm32f4xx_ll_utils.o
+    0x080025f4   0x080025f4   0x00000020   Code   RO          988    i.LL_RCC_GetSystemClocksFreq  stm32f4xx_ll_rcc.o
+    0x08002614   0x08002614   0x00000064   Code   RO          919    i.LL_SPI_Init       stm32f4xx_ll_spi.o
+    0x08002678   0x08002678   0x0000000c   Code   RO         1080    i.LL_SetSystemCoreClock  stm32f4xx_ll_utils.o
+    0x08002684   0x08002684   0x00000034   Code   RO         1540    i.LL_TIM_BDTR_Init  stm32f4xx_ll_tim.o
+    0x080026b8   0x080026b8   0x00000098   Code   RO         1549    i.LL_TIM_Init       stm32f4xx_ll_tim.o
+    0x08002750   0x08002750   0x00000054   Code   RO          566    i.LL_TIM_OC_DisableFast  tim.o
+    0x080027a4   0x080027a4   0x00000054   Code   RO          567    i.LL_TIM_OC_EnablePreload  tim.o
+    0x080027f8   0x080027f8   0x0000018c   Code   RO         1550    i.LL_TIM_OC_Init    stm32f4xx_ll_tim.o
+    0x08002984   0x08002984   0x00000084   Code   RO         1658    i.LL_USART_Init     stm32f4xx_ll_usart.o
+    0x08002a08   0x08002a08   0x000000b0   Code   RO         1659    i.LL_USART_SetBaudRate  stm32f4xx_ll_usart.o
+    0x08002ab8   0x08002ab8   0x0000001e   Code   RO         1081    i.LL_mDelay         stm32f4xx_ll_utils.o
+    0x08002ad6   0x08002ad6   0x00000002   PAD
+    0x08002ad8   0x08002ad8   0x0000005c   Code   RO          291    i.MX_DMA_Init       dma.o
+    0x08002b34   0x08002b34   0x00000002   Code   RO          452    i.MemManage_Handler  stm32f4xx_it.o
+    0x08002b36   0x08002b36   0x00000002   Code   RO          453    i.NMI_Handler       stm32f4xx_it.o
+    0x08002b38   0x08002b38   0x00000032   Code   RO          292    i.NVIC_EncodePriority  dma.o
+    0x08002b6a   0x08002b6a   0x00000002   Code   RO          454    i.PendSV_Handler    stm32f4xx_it.o
+    0x08002b6c   0x08002b6c   0x00000038   Code   RO         2196    i.PingPong_DMA_GetProgress  echem_stim.o
+    0x08002ba4   0x08002ba4   0x0000001c   Code   RO         2197    i.PingPong_DMA_IsComplete  echem_stim.o
+    0x08002bc0   0x08002bc0   0x000000c0   Code   RO         2201    i.PingPong_DMA_Stop  echem_stim.o
+    0x08002c80   0x08002c80   0x0000001c   Code   RO          990    i.RCC_GetHCLKClockFreq  stm32f4xx_ll_rcc.o
+    0x08002c9c   0x08002c9c   0x0000001c   Code   RO          991    i.RCC_GetPCLK1ClockFreq  stm32f4xx_ll_rcc.o
+    0x08002cb8   0x08002cb8   0x0000001c   Code   RO          992    i.RCC_GetPCLK2ClockFreq  stm32f4xx_ll_rcc.o
+    0x08002cd4   0x08002cd4   0x0000002c   Code   RO          993    i.RCC_GetSystemClockFreq  stm32f4xx_ll_rcc.o
+    0x08002d00   0x08002d00   0x00000050   Code   RO          996    i.RCC_PLL_GetFreqDomain_SYS  stm32f4xx_ll_rcc.o
+    0x08002d50   0x08002d50   0x00000094   Code   RO          339    i.SPI1_Init         spi.o
+    0x08002de4   0x08002de4   0x00000060   Code   RO          341    i.SPI1_Transmit16_Time  spi.o
+    0x08002e44   0x08002e44   0x00000002   Code   RO          455    i.SVC_Handler       stm32f4xx_it.o
+    0x08002e46   0x08002e46   0x00000004   Code   RO         1987    i.SYNC_Cycle_Init   dds_dac80004.o
+    0x08002e4a   0x08002e4a   0x00000004   Code   RO         1988    i.SYNC_Cycle_SetPara  dds_dac80004.o
+    0x08002e4e   0x08002e4e   0x00000004   Code   RO         1989    i.SYNC_Cycle_Start  dds_dac80004.o
+    0x08002e52   0x08002e52   0x00000004   Code   RO         1990    i.SYNC_Cycle_Stop   dds_dac80004.o
+    0x08002e56   0x08002e56   0x00000002   PAD
+    0x08002e58   0x08002e58   0x000000f4   Code   RO         2488    i.Serial_CV_CreateWave  serial_process.o
+    0x08002f4c   0x08002f4c   0x00000018   Code   RO         2489    i.Serial_CommandTask  serial_process.o
+    0x08002f64   0x08002f64   0x000000ec   Code   RO         2490    i.Serial_DPV_CreateWave  serial_process.o
+    0x08003050   0x08003050   0x0000000c   Code   RO         2405    i.Serial_GetRxCommand  serial.o
+    0x0800305c   0x0800305c   0x0000003c   Code   RO         2406    i.Serial_GetRxData  serial.o
+    0x08003098   0x08003098   0x0000001c   Code   RO         2407    i.Serial_GetRxFlag  serial.o
+    0x080030b4   0x080030b4   0x00000034   Code   RO         2491    i.Serial_Process    serial_process.o
+    0x080030e8   0x080030e8   0x00000018   Code   RO         2408    i.Serial_ResetRxState  serial.o
+    0x08003100   0x08003100   0x00000002   Code   RO          456    i.SysTick_Handler   stm32f4xx_it.o
+    0x08003102   0x08003102   0x00000002   PAD
+    0x08003104   0x08003104   0x000000d8   Code   RO           14    i.SystemClock_Config  main.o
+    0x080031dc   0x080031dc   0x00000010   Code   RO         1796    i.SystemInit        system_stm32f4xx.o
+    0x080031ec   0x080031ec   0x0000001c   Code   RO          234    i.System_GPIO_Init  gpio.o
+    0x08003208   0x08003208   0x000001f4   Code   RO          568    i.TIM1_DMA_SPI1_Init  tim.o
+    0x080033fc   0x080033fc   0x000000d4   Code   RO          569    i.TIM3_ApplyPWMConfig  tim.o
+    0x080034d0   0x080034d0   0x000000d0   Code   RO          570    i.TIM3_PWM_Init     tim.o
+    0x080035a0   0x080035a0   0x00000010   Code   RO          571    i.TIM3_PWM_Start    tim.o
+    0x080035b0   0x080035b0   0x00000020   Code   RO          572    i.TIM3_PWM_Stop     tim.o
+    0x080035d0   0x080035d0   0x000000c0   Code   RO          574    i.TIM_ApplyFreqConfig_DualDMA  tim.o
+    0x08003690   0x08003690   0x000001b0   Code   RO          575    i.TIM_CalculateFreqDivision_Precise  tim.o
+    0x08003840   0x08003840   0x00000004   Code   RO         2412    i.USART1_IRQHandler  serial.o
+    0x08003844   0x08003844   0x000000c8   Code   RO         2413    i.USART1_IRQ_Task   serial.o
+    0x0800390c   0x0800390c   0x000000e8   Code   RO          703    i.USART1_Init       usart.o
+    0x080039f4   0x080039f4   0x00000002   Code   RO          457    i.UsageFault_Handler  stm32f4xx_it.o
+    0x080039f6   0x080039f6   0x00000002   PAD
+    0x080039f8   0x080039f8   0x00000018   Code   RO         2557    i.Voltage_Gain_Stage1_Set  channelgain.o
+    0x08003a10   0x08003a10   0x00000020   Code   RO         2559    i.Voltage_Gain_Stage2_Set  channelgain.o
+    0x08003a30   0x08003a30   0x00000020   Code   RO         2561    i.WE_Channel_Select  channelgain.o
+    0x08003a50   0x08003a50   0x0000001a   Code   RO          293    i.__NVIC_EnableIRQ  dma.o
+    0x08003a6a   0x08003a6a   0x0000001a   Code   RO         2202    i.__NVIC_EnableIRQ  echem_stim.o
+    0x08003a84   0x08003a84   0x00000020   Code   RO          294    i.__NVIC_SetPriority  dma.o
+    0x08003aa4   0x08003aa4   0x00000004   PAD
+    0x08003aa8   0x08003aa8   0x00000118   Code   RO         2707    i.__hardfp_ceil     m_wm.l(ceil.o)
+    0x08003bc0   0x08003bc0   0x00000014   Code   RO         2713    i.__hardfp_fabs     m_wm.l(fabs.o)
+    0x08003bd4   0x08003bd4   0x00000074   Code   RO         2719    i.__hardfp_fmax     m_wm.l(fmax.o)
+    0x08003c48   0x08003c48   0x00000074   Code   RO         2751    i.__hardfp_fmin     m_wm.l(fmin.o)
+    0x08003cbc   0x08003cbc   0x00000104   Code   RO         2723    i.__hardfp_fmod     m_wm.l(fmod.o)
+    0x08003dc0   0x08003dc0   0x000000e0   Code   RO         2735    i.__hardfp_round    m_wm.l(round.o)
+    0x08003ea0   0x08003ea0   0x00000020   Code   RO         2790    i.__mathlib_dbl_invalid  m_wm.l(dunder.o)
+    0x08003ec0   0x08003ec0   0x0000000e   Code   RO         2860    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x08003ece   0x08003ece   0x00000002   Code   RO         2861    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08003ed0   0x08003ed0   0x0000000e   Code   RO         2862    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x08003ede   0x08003ede   0x00000002   PAD
+    0x08003ee0   0x08003ee0   0x0000000c   Code   RO         2836    i.__set_errno       mc_w.l(errno.o)
+    0x08003eec   0x08003eec   0x0000011c   Code   RO         2203    i.gcd_double        echem_stim.o
+    0x08004008   0x08004008   0x000000b0   Code   RO           15    i.main              main.o
+    0x080040b8   0x080040b8   0x00000008   Data   RO          348    .constdata          spi.o
+    0x080040c0   0x080040c0   0x00000016   Data   RO          576    .constdata          tim.o
+    0x080040d6   0x080040d6   0x00000010   Data   RO         1797    .constdata          system_stm32f4xx.o
+    0x080040e6   0x080040e6   0x00000008   Data   RO         1798    .constdata          system_stm32f4xx.o
+    0x080040ee   0x080040ee   0x00000008   Data   RO         2205    .constdata          echem_stim.o
+    0x080040f6   0x080040f6   0x00000002   PAD
+    0x080040f8   0x080040f8   0x000000b0   Data   RO         2493    .constdata          serial_process.o
+    0x080041a8   0x080041a8   0x00000020   Data   RO         2858    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080015a4, Size: 0x000005f0, Max: 0x00020000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080041c8, Size: 0x00010698, Max: 0x00020000, ABSOLUTE, COMPRESSED[0x00000028])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x080015a4   0x00000001   Data   RW          349    .data               spi.o
-    0x20000001   0x080015a5   0x00000003   PAD
-    0x20000004   0x080015a8   0x0000000c   Data   RW         1224    .data               stm32f4xx_hal.o
-    0x20000010   0x080015b4   0x00000004   Data   RW         1799    .data               system_stm32f4xx.o
-    0x20000014   0x080015b8   0x0000001c   Data   RW         2206    .data               echem_stim.o
-    0x20000030   0x080015d4   0x000000b0   Data   RW         2414    .data               serial.o
-    0x200000e0        -       0x00000110   Zero   RW         2204    .bss                echem_stim.o
-    0x200001f0        -       0x00000400   Zero   RW            1    STACK               startup_stm32f411xe.o
+    0x20000000   COMPRESSED   0x00000001   Data   RW          349    .data               spi.o
+    0x20000001   COMPRESSED   0x00000003   PAD
+    0x20000004   COMPRESSED   0x00000018   Data   RW          745    .data               main_init.o
+    0x2000001c   COMPRESSED   0x00000010   Data   RW          746    .data               main_init.o
+    0x2000002c   COMPRESSED   0x00000004   PAD
+    0x20000030   COMPRESSED   0x00000020   Data   RW          747    .data               main_init.o
+    0x20000050   COMPRESSED   0x0000000c   Data   RW         1224    .data               stm32f4xx_hal.o
+    0x2000005c   COMPRESSED   0x00000004   Data   RW         1799    .data               system_stm32f4xx.o
+    0x20000060   COMPRESSED   0x0000001c   Data   RW         2206    .data               echem_stim.o
+    0x2000007c   COMPRESSED   0x00000004   PAD
+    0x20000080   COMPRESSED   0x000000b0   Data   RW         2414    .data               serial.o
+    0x20000130   COMPRESSED   0x00000001   Data   RW         2494    .data               serial_process.o
+    0x20000131   COMPRESSED   0x00000003   PAD
+    0x20000134   COMPRESSED   0x00000004   Data   RW         2837    .data               mc_w.l(errno.o)
+    0x20000138        -       0x00010000   Zero   RW          744    .bss                main_init.o
+    0x20010138        -       0x00000110   Zero   RW         2204    .bss                echem_stim.o
+    0x20010248        -       0x00000050   Zero   RW         2492    .bss                serial_process.o
+    0x20010298        -       0x00000400   Zero   RW            1    STACK               startup_stm32f411xe.o
 
 
 ==============================================================================
@@ -1630,38 +1878,48 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       172         18          0          0          0       2317   ad5260.o
-       348         22          0          0          0      39374   adc.o
-         0          0          0          0          0       4068   dac80004.o
-         4          0          0          0          0      28083   dds_dac80004.o
-      1488        120          8         28        272      38123   echem_stim.o
+       440         60          0          0          0      11727   channelgain.o
+       354          8          0          0          0      11122   dac80004.o
+        16          0          0          0          0      59418   dds_dac80004.o
+       200         10          0          0          0      32337   dma.o
+      6468        564          8         28        272      60224   echem_stim.o
        108         10          0          0          0      36583   gpio.o
-        64         18          0          0          0       6160   led.o
-       460         56          0          0          0     398875   main.o
-       228         12          0        176          0      15200   serial.o
-       348         36          8          1          0      32985   spi.o
+        36         12          0          0          0       5570   led.o
+       392         48          0          0          0     398147   main.o
+         0          0          0         72      65536        858   main_init.o
+       328         30          0        176          0      16972   serial.o
+       556         74        176          1         80       7867   serial_process.o
+       320         34          8          1          0      32927   spi.o
         36          8        408          0       1024        844   startup_stm32f411xe.o
         12          6          0         12          0       6889   stm32f4xx_hal.o
         20          0          0          0          0       4752   stm32f4xx_it.o
-       168         14          0          0          0      46200   stm32f4xx_ll_adc.o
        310          0          0          0          0       7207   stm32f4xx_ll_gpio.o
        240         52          0          0          0      31987   stm32f4xx_ll_rcc.o
        100          0          0          0          0      14558   stm32f4xx_ll_spi.o
+       600         36          0          0          0      33566   stm32f4xx_ll_tim.o
        308         14          0          0          0      16404   stm32f4xx_ll_usart.o
         68          6          0          0          0       9393   stm32f4xx_ll_utils.o
         16          4         24          4          0       1159   system_stm32f4xx.o
-        32         10          0          0          0      29892   tim.o
+      1964        180         22          0          0      59602   tim.o
        232         20          0          0          0      47645   usart.o
 
     ----------------------------------------------------------------------
-      4774        426        480        224       1296     818698   Object Totals
+     13142       1176        680        308      66912     907758   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        12          0          0          3          0          0   (incl. Padding)
+        18          0          2         14          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Member Name
 
+       280         28          0          0          0        156   ceil.o
+        32          8          0          0          0        124   dunder.o
+        20          0          0          0          0        124   fabs.o
+       116          0          0          0          0        164   fmax.o
+       116          0          0          0          0        164   fmin.o
+       260          6          0          0          0        144   fmod.o
+       224         30          0          0          0        172   round.o
+        86          0          0          0          0          0   __dczerorl2.o
          0          0          0          0          0          0   entry.o
          0          0          0          0          0          0   entry10a.o
          0          0          0          0          0          0   entry11a.o
@@ -1671,25 +1929,42 @@ Image component sizes
          0          0          0          0          0          0   entry7b.o
          0          0          0          0          0          0   entry8b.o
          8          4          0          0          0          0   entry9a.o
+        12          6          0          4          0         68   errno.o
         30          0          0          0          0          0   handlers.o
         36          8          0          0          0         68   init.o
+         0          0          0          0          0          0   iusefp.o
         30          0          0          0          0         68   llshl.o
+        36          0          0          0          0         68   llsshr.o
         32          0          0          0          0         68   llushr.o
+        36          0          0          0          0         68   memcpya.o
         36          0          0          0          0        108   memseta.o
         98          0          0          0          0         92   uldiv.o
+        48          0          0          0          0         68   cdcmple.o
+        48          0          0          0          0         68   cdrcmple.o
+       334          0          0          0          0        148   dadd.o
+        96          0          0          0          0         80   dcmp4.o
+       222          0          0          0          0        100   ddiv.o
+       186          0          0          0          0        176   depilogue.o
+        50          0          0          0          0         76   dfixui.o
+        26          0          0          0          0         76   dfltui.o
+       228          0          0          0          0         96   dmul.o
+       134          0          0          0          0         96   drem.o
+       136          4          0          0          0         92   drnd.o
 
     ----------------------------------------------------------------------
-       286         16          0          0          0        404   Library Totals
-         0          0          0          0          0          0   (incl. Padding)
+      3018         98          0          4          0       2732   Library Totals
+         6          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Name
 
-       286         16          0          0          0        404   mc_w.l
+      1048         72          0          0          0       1048   m_wm.l
+       456         22          0          4          0        608   mc_w.l
+      1508          4          0          0          0       1076   mf_w.l
 
     ----------------------------------------------------------------------
-       286         16          0          0          0        404   Library Totals
+      3018         98          0          4          0       2732   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -1698,15 +1973,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      5060        442        480        224       1296     813002   Grand Totals
-      5060        442        480        224       1296     813002   ELF Image Totals
-      5060        442        480        224          0          0   ROM Totals
+     16160       1274        680        312      66912     897042   Grand Totals
+     16160       1274        680         40      66912     897042   ELF Image Totals (compressed)
+     16160       1274        680         40          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 5540 (   5.41kB)
-    Total RW  Size (RW Data + ZI Data)              1520 (   1.48kB)
-    Total ROM Size (Code + RO Data + RW Data)       5764 (   5.63kB)
+    Total RO  Size (Code + RO Data)                16840 (  16.45kB)
+    Total RW  Size (RW Data + ZI Data)             67224 (  65.65kB)
+    Total ROM Size (Code + RO Data + RW Data)      16880 (  16.48kB)
 
 ==============================================================================
 

@@ -45,4 +45,3 @@ void GPIOB_Group1_Init(void)
   GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
-

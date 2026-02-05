@@ -40,45 +40,16 @@ int main(void)
   LED_Init(); 
   LED_ON();
   USART1_Init();
-  // ChannelGain_Init();
-  // WE_Channel_Select(WE_CHANNEL_1);
+  ChannelGain_Init();
   LL_mDelay(500);
   LED_OFF();
 
+  Echem_stim_Init(&DAC80004_Module1);
 
-    //数字电位器测试开始
-  AD5260_Init();
-  ADC1_Init();
-  volatile uint32_t adc_value = 0;
-  volatile float f_adc_value = 0;
   while (1)
   {
-    
-    // SPI_Transmit8_Time(SPI2, 0xA5, 1); // 发送命令字节
-    AD5260_WriteRDAC(255);
-    adc_value = ADC1_FifterRead();
-    f_adc_value = (float)adc_value * 3.3f / 4095.0f;
-    LED_Reveral();
-    LL_mDelay(500);
+    Serial_Process();
   }
-  
-  
-
-
-
-
-  //数字电位器测试结束
-
-
-
-
-
-  // Echem_stim_Init(&DAC80004_Module1);
-
-  // while (1)
-  // {
-  //   Serial_Process();
-  // }
   
 
 }
