@@ -22,12 +22,12 @@ Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
 E:\MCU_Project\STM32F411Project\DAC8004_Driver\MDK-ARM\Project.uvprojx
-Project File Date:  01/22/2026
+Project File Date:  02/05/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling Serial_Process.c...
+compiling main.c...
 ../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE" 
   #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
 ../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE" 
@@ -36,13 +36,15 @@ compiling Serial_Process.c...
   #define  INSTRUCTION_CACHE_ENABLE     1U
 ../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE" 
   #define  DATA_CACHE_ENABLE            1U
+..\BSP\AD5260.h(29): warning:  #1-D: last line of file ends without a newline
+  #endif /* __AD5260_H */
 ..\BSP\ChannelGain.h(74): warning:  #1-D: last line of file ends without a newline
   #endif /* __CHANNELGAIN_H */
-..\BSP\Serial_Process.c: 5 warnings, 0 errors
+../Core/Src/main.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=15880 RO-data=680 RW-data=312 ZI-data=66912  
+Program Size: Code=5060 RO-data=480 RW-data=224 ZI-data=1296  
 FromELF: creating hex file...
-"Project\Project.axf" - 0 Error(s), 5 Warning(s).
+"Project\Project.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -64,7 +66,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

@@ -586,16 +586,6 @@
               <FilePath>..\BSP\Serial_Process.h</FilePath>
             </File>
             <File>
-              <FileName>AD5231.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\AD5231.c</FilePath>
-            </File>
-            <File>
-              <FileName>AD5231.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\BSP\AD5231.h</FilePath>
-            </File>
-            <File>
               <FileName>ChannelGain.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\ChannelGain.c</FilePath>
@@ -604,6 +594,16 @@
               <FileName>ChannelGain.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\BSP\ChannelGain.h</FilePath>
+            </File>
+            <File>
+              <FileName>AD5260.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\AD5260.c</FilePath>
+            </File>
+            <File>
+              <FileName>AD5260.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\AD5260.h</FilePath>
             </File>
           </Files>
         </Group>
