@@ -67,10 +67,10 @@ virtualFolder:
         - path: ../BSP/Serial.h
         - path: ../BSP/Serial_Process.c
         - path: ../BSP/Serial_Process.h
-        - path: ../BSP/AD5231.c
-        - path: ../BSP/AD5231.h
         - path: ../BSP/ChannelGain.c
         - path: ../BSP/ChannelGain.h
+        - path: ../BSP/AD5260.c
+        - path: ../BSP/AD5260.h
       folders: []
     - name: SYSTEM
       files: []
@@ -110,6 +110,8 @@ targets:
         - RTE/_Project
       libList: []
     excludeList: []
+    settings:
+      debugger: cortex-debug
     toolchain: AC5
     toolchainConfigMap:
       AC5:
@@ -119,7 +121,8 @@ targets:
         options:
           version: 4
           afterBuildTasks: []
-          asm-compiler: {}
+          asm-compiler:
+            defines: []
           beforeBuildTasks: []
           c/cpp-compiler:
             CXX_FLAGS: --diag_suppress=1 --diag_suppress=1295
