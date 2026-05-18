@@ -15,24 +15,24 @@ typedef enum {
 
 /* IV转换倍数定义 (PB5, PB6控制四选一模拟开关) */
 typedef enum {
-    IV_GAIN_1K   = 0x00,  // PB6=0, PB5=0, 1K
-    IV_GAIN_100K = 0x01,  // PB6=0, PB5=1, 100K
-    IV_GAIN_10M  = 0x02,  // PB6=1, PB5=0, 10M
-    IV_GAIN_100M = 0x03   // PB6=1, PB5=1, 100M
+    IV_GAIN_33   = 0x00,  // PB6=0, PB5=0, 33
+    IV_GAIN_1K   = 0x01,  // PB6=0, PB5=1, 1K
+    IV_GAIN_10K  = 0x02,  // PB6=1, PB5=0, 10K
+    IV_GAIN_100K = 0x03   // PB6=1, PB5=1, 100K
 } IV_Gain_TypeDef;
 
 /* 第一级电压放大倍数定义 (PB7控制二选一模拟开关) */
 typedef enum {
-    VOLTAGE_GAIN_STAGE1_5X  = 0x00,  // PB7=0, 5倍
-    VOLTAGE_GAIN_STAGE1_20X = 0x01   // PB7=1, 20倍
+    VOLTAGE_GAIN_STAGE1_1X  = 0x00,  // PB7=0, 1倍
+    VOLTAGE_GAIN_STAGE1_10X = 0x01   // PB7=1, 10倍
 } Voltage_Gain_Stage1_TypeDef;
 
 /* 第二级电压放大倍数定义 (PB8, PB9控制四选一模拟开关) */
 typedef enum {
-    VOLTAGE_GAIN_STAGE2_1X  = 0x00,  // PB9=0, PB8=0, 1倍
-    VOLTAGE_GAIN_STAGE2_5X  = 0x01,  // PB9=0, PB8=1, 5倍
-    VOLTAGE_GAIN_STAGE2_20X = 0x02,  // PB9=1, PB8=0, 20倍
-    VOLTAGE_GAIN_STAGE2_50X = 0x03   // PB9=1, PB8=1, 50倍
+    VOLTAGE_GAIN_STAGE2_1X   = 0x00,  // PB9=0, PB8=0, 1倍
+    VOLTAGE_GAIN_STAGE2_3_3X = 0x01,  // PB9=0, PB8=1, 3.3倍
+    VOLTAGE_GAIN_STAGE2_10X  = 0x02,  // PB9=1, PB8=0, 10倍
+    VOLTAGE_GAIN_STAGE2_33X  = 0x03   // PB9=1, PB8=1, 33倍
 } Voltage_Gain_Stage2_TypeDef;
 
 /* 反馈选择定义 (二选一模拟开关) */

@@ -3,9 +3,9 @@
 /**
  * @brief  通道增益控制GPIO初始化
  * @note   PB3、PB4控制WE信号通道选择（四选一）
- *         PB5、PB6控制IV转换倍数（四选一：1K、100K、10M、100M）
- *         PB7控制第一级电压放大倍数（二选一：1倍、20倍）
- *         PB8、PB9控制第二级电压放大倍数（四选一：1倍、5倍、20倍、50倍）
+ *         PB5、PB6控制IV转换倍数（四选一：33、1K、10K、100K）
+ *         PB7控制第一级电压放大倍数（二选一：1倍、10倍）
+ *         PB8、PB9控制第二级电压放大倍数（四选一：1倍、3.3倍、10倍、33倍）
  *         PC10控制第一个反馈选择（二选一：GND、FB）
  *         PC11控制第二个反馈选择（二选一：GND、FB）
  *         PC12控制第三个反馈选择（二选一：GND、FB）
@@ -51,8 +51,8 @@ void ChannelGain_GPIO_Init(void)
 
     /* 默认设置 */
     WE_Channel_Select(WE_CHANNEL_1);
-    IV_Gain_Set(IV_GAIN_1K);
-    Voltage_Gain_Stage1_Set(VOLTAGE_GAIN_STAGE1_5X);
+    IV_Gain_Set(IV_GAIN_33);
+    Voltage_Gain_Stage1_Set(VOLTAGE_GAIN_STAGE1_1X);
     Voltage_Gain_Stage2_Set(VOLTAGE_GAIN_STAGE2_1X);
     Feedback1_Select(FEEDBACK_GND);
     Feedback2_Select(FEEDBACK_GND);
@@ -117,10 +117,10 @@ WE_Channel_TypeDef WE_Channel_GetCurrent(void)
 /**
  * @brief  设置IV转换倍数
  * @param  gain: IV转换倍数选择
- *         @arg IV_GAIN_1K:   1K (PB6=0, PB5=0)
- *         @arg IV_GAIN_100K: 100K (PB6=0, PB5=1)
- *         @arg IV_GAIN_10M:  10M (PB6=1, PB5=0)
- *         @arg IV_GAIN_100M: 100M (PB6=1, PB5=1)
+ *         @arg IV_GAIN_33:   33 (PB6=0, PB5=0)
+ *         @arg IV_GAIN_1K:   1K (PB6=0, PB5=1)
+ *         @arg IV_GAIN_10K:  10K (PB6=1, PB5=0)
+ *         @arg IV_GAIN_100K: 100K (PB6=1, PB5=1)
  */
 void IV_Gain_Set(IV_Gain_TypeDef gain)
 {
@@ -136,7 +136,7 @@ void IV_Gain_Set(IV_Gain_TypeDef gain)
     /* 设置PB6 (高位) */
     if (gain & 0x02)
     {
-        LL_GPIO_SetOutputPin(IV_GAIN_GPIO_PORT, IV_GAIN_PIN_B);
+        LL_GPIO_SetOutputPin (IV_GAIN_GPIO_PORT, IV_GAIN_PIN_B);
     }
 }
 
@@ -164,11 +164,11 @@ IV_Gain_TypeDef IV_Gain_GetCurrent(void)
  * @brief  设置第一级电压放大倍数
  * @param  gain: 第一级电压放大倍数选择
  *         @arg VOLTAGE_GAIN_STAGE1_1X:  1倍 (PB7=0)
- *         @arg VOLTAGE_GAIN_STAGE1_20X: 20倍 (PB7=1)
+ *         @arg VOLTAGE_GAIN_STAGE1_10X: 10倍 (PB7=1)
  */
 void Voltage_Gain_Stage1_Set(Voltage_Gain_Stage1_TypeDef gain)
 {
-    if (gain == VOLTAGE_GAIN_STAGE1_20X)
+    if (gain == VOLTAGE_GAIN_STAGE1_10X)
     {
         LL_GPIO_SetOutputPin(VOLTAGE_GAIN_STAGE1_GPIO_PORT, VOLTAGE_GAIN_STAGE1_PIN);
     }
@@ -186,18 +186,18 @@ Voltage_Gain_Stage1_TypeDef Voltage_Gain_Stage1_GetCurrent(void)
 {
     if (LL_GPIO_IsOutputPinSet(VOLTAGE_GAIN_STAGE1_GPIO_PORT, VOLTAGE_GAIN_STAGE1_PIN))
     {
-        return VOLTAGE_GAIN_STAGE1_20X;
+        return VOLTAGE_GAIN_STAGE1_10X;
     }
-    return VOLTAGE_GAIN_STAGE1_5X;
+    return VOLTAGE_GAIN_STAGE1_1X;
 }
 
 /**
  * @brief  设置第二级电压放大倍数
  * @param  gain: 第二级电压放大倍数选择
- *         @arg VOLTAGE_GAIN_STAGE2_1X:  1倍 (PB9=0, PB8=0)
- *         @arg VOLTAGE_GAIN_STAGE2_5X:  5倍 (PB9=0, PB8=1)
- *         @arg VOLTAGE_GAIN_STAGE2_20X: 20倍 (PB9=1, PB8=0)
- *         @arg VOLTAGE_GAIN_STAGE2_50X: 50倍 (PB9=1, PB8=1)
+ *         @arg VOLTAGE_GAIN_STAGE2_1X:   1倍 (PB9=0, PB8=0)
+ *         @arg VOLTAGE_GAIN_STAGE2_3_3X: 3.3倍 (PB9=0, PB8=1)
+ *         @arg VOLTAGE_GAIN_STAGE2_10X:  10倍 (PB9=1, PB8=0)
+ *         @arg VOLTAGE_GAIN_STAGE2_33X:  33倍 (PB9=1, PB8=1)
  */
 void Voltage_Gain_Stage2_Set(Voltage_Gain_Stage2_TypeDef gain)
 {

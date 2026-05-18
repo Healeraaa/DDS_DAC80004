@@ -57,7 +57,7 @@ I (../Core/Inc/usart.h)(0x68C81B09)
 I (..\BSP\Serial.h)(0x68CA6CD8)
 I (D:\Keil\Keil_v5\ARM\ARMCC\include\stdio.h)(0x60252374)
 I (..\BSP\Serial_Process.h)(0x68D0AD84)
-I (..\BSP\ChannelGain.h)(0x69847D8E)
+I (..\BSP\ChannelGain.h)(0x6A0411D8)
 F (../Core/Src/gpio.c)(0x69847C13)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP-I.\RTE\_Project-ID:\Keil\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F411xE -D_RTE_ -DUSE_FULL_LL_DRIVER -DHSE_VALUE="25000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DEXTERNAL_CLOCK_VALUE="12288000" -DHSI_VALUE="16000000" -DLSI_VALUE="32000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="1" -DDATA_CACHE_ENABLE="1" -DSTM32F411xE-o project\gpio.o --depend project\gpio.d)
 I (../Core/Inc/gpio.h)(0x69847C1F)
 I (../Core/Inc/main.h)(0x6932C748)
@@ -917,10 +917,10 @@ I (..\BSP\DAC80004.h)(0x68BA5C03)
 I (../Core/Inc/tim.h)(0x68BE41A4)
 I (../Core/Inc/main_init.h)(0x68CA6A52)
 I (..\BSP\LED.h)(0x68ABCF35)
-I (..\BSP\ChannelGain.h)(0x69847D8E)
+I (..\BSP\ChannelGain.h)(0x6A0411D8)
 F (..\BSP\Serial_Process.h)(0x68D0AD84)()
-F (..\BSP\ChannelGain.c)(0x69847DDF)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP-I.\RTE\_Project-ID:\Keil\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F411xE -D_RTE_ -DUSE_FULL_LL_DRIVER -DHSE_VALUE="25000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DEXTERNAL_CLOCK_VALUE="12288000" -DHSI_VALUE="16000000" -DLSI_VALUE="32000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="1" -DDATA_CACHE_ENABLE="1" -DSTM32F411xE-o project\channelgain.o --depend project\channelgain.d)
-I (..\BSP\ChannelGain.h)(0x69847D8E)
+F (..\BSP\ChannelGain.c)(0x6A042D70)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP-I.\RTE\_Project-ID:\Keil\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F411xE -D_RTE_ -DUSE_FULL_LL_DRIVER -DHSE_VALUE="25000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DEXTERNAL_CLOCK_VALUE="12288000" -DHSI_VALUE="16000000" -DLSI_VALUE="32000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="1" -DDATA_CACHE_ENABLE="1" -DSTM32F411xE-o project\channelgain.o --depend project\channelgain.d)
+I (..\BSP\ChannelGain.h)(0x6A0411D8)
 I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h)(0x68ABC5FE)
 I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h)(0x68ABC5FE)
 I (../Drivers/CMSIS/Include/core_cm4.h)(0x68ABC5FD)
@@ -932,7 +932,7 @@ I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x68ABC5FD)
 I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h)(0x68ABC5FE)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_gpio.h)(0x68ABC600)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_bus.h)(0x68D0BD2B)
-F (..\BSP\ChannelGain.h)(0x69847D8E)()
+F (..\BSP\ChannelGain.h)(0x6A0411D8)()
 F (..\BSP\AD5260.c)(0x69841136)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP-I.\RTE\_Project-ID:\Keil\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-D__UVISION_VERSION="542" -DSTM32F411xE -D_RTE_ -DUSE_FULL_LL_DRIVER -DHSE_VALUE="25000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DEXTERNAL_CLOCK_VALUE="12288000" -DHSI_VALUE="16000000" -DLSI_VALUE="32000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="1" -DDATA_CACHE_ENABLE="1" -DSTM32F411xE-o project\ad5260.o --depend project\ad5260.d)
 I (..\BSP\AD5260.h)(0x69847FAE)
 I (../Core/Inc/main.h)(0x6932C748)
