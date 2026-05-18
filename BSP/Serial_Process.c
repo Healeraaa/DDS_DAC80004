@@ -103,6 +103,56 @@ void Serial_DPV_CreateWave(double *data)
         
     }
 }
+
+void Serial_CA_CreateWave(double *data)
+{
+    Serial_DoubleConverter_t converter;
+    converter.double_val = data[6];
+    WE_Channel_Select((WE_Channel_TypeDef)converter.u8_array[0]);
+    IV_Gain_Set((IV_Gain_TypeDef)converter.u8_array[1]);
+    Voltage_Gain_Stage1_Set((Voltage_Gain_Stage1_TypeDef)converter.u8_array[2]);
+    Voltage_Gain_Stage2_Set((Voltage_Gain_Stage2_TypeDef)converter.u8_array[3]);
+    Feedback1_Select((Feedback_Select_TypeDef)converter.u8_array[4]);
+    Feedback2_Select((Feedback_Select_TypeDef)converter.u8_array[5]);
+    Feedback3_Select((Feedback_Select_TypeDef)converter.u8_array[6]);
+    Feedback4_Select((Feedback_Select_TypeDef)converter.u8_array[7]);
+
+    DAC80004_Channel_Config(&DAC80004_Module1, (uint8_t)(data[7])); // 选择DAC通道
+
+    EchemCA_Params_t ca_params = {
+        // 预阶跃参数
+        .Pre_Step_E = data[0],      // 预阶跃电位 (mV)
+        .Pre_Step_Time = data[1],   // 预阶跃时间 (s)
+        // 阶跃1参数
+        .Step1_E = data[2],         // 阶跃1电位 (mV)
+        .Step1_Time = data[3],      // 阶跃1时间 (s)
+        // 阶跃2参数
+        .Step2_E = data[4],         // 阶跃2电位 (mV)
+        .Step2_Time = data[5],      // 阶跃2时间 (s)
+        .equilibrium_time = 2.0,    // 平衡时间 2s
+        .auto_sensitivity = true,
+        // 以下字段会由系统自动计算填充，无需手动设置
+        .pre_step_points = 0,
+        .step1_points = 0,
+        .step2_points = 0,
+        .total_points = 0,
+        .actual_sample_rate = 0.0
+    };
+    CA_DDS_Start_Precise(&DAC80004_Module1, 
+                         &ca_params, 
+                         &config, 
+                         wave_high_data1,
+                         wave_high_data2,
+                         wave_low_data1, 
+                         wave_low_data2);
+    LED_ON();
+    while (!PingPong_DMA_IsComplete()) 
+    {
+        if (CA_NeedFillBuffer()) {
+            CA_Fill_Next_Buffer();
+        }
+    }
+}
 /**
  * @brief  串口命令处理函数
  * @param  method: 方法命令字
@@ -116,6 +166,9 @@ void Serial_CommandTask(uint8_t method)
         break;
     case ECHEM_METHOD_DPV:
         Serial_DPV_CreateWave(g_serial_rx_doubel_data);
+        break;
+    case ECHEM_METHOD_CA:
+        Serial_CA_CreateWave(g_serial_rx_doubel_data);
         break;
     default:
         break;

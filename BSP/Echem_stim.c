@@ -23,6 +23,8 @@ static DAC80004_InitStruct *g_dac_module = NULL;
 static EchemCV_Params_t g_cv_params = {0};
 // DPV全局变量保存参数
 static EchemDPV_Params_t g_dpv_params = {0};
+// CA全局变量保存参数
+static EchemCA_Params_t g_ca_params = {0};
 
 
 // 回调函数指针
@@ -1330,10 +1332,502 @@ void DPV_PingPong_DMA2_Stream4_IRQHandler(void)
     }
 }
 
+// ==================== CA专用函数 ====================
+
+/**
+ * @brief  生成CA波形数据到指定缓冲区（前向声明）
+ */
+static void Generate_CA_Data_Partial(DAC80004_InitStruct *module,
+                                    uint16_t *wave_high_data, uint16_t *wave_low_data,
+                                    uint32_t start_point, uint32_t points_to_fill,
+                                    const EchemCA_Params_t *ca_params);
+
+/**
+ * @brief  恒电位法DDS输出 - 乒乓DMA精确版本
+ * @param  module: DAC80004模块结构体指针
+ * @param  ca_params: CA参数结构体指针
+ * @param  config: 乒乓DMA配置结构体指针
+ * @param  wave_high_data1: 乒乓缓冲区1高16位数据
+ * @param  wave_high_data2: 乒乓缓冲区2高16位数据
+ * @param  wave_low_data1: 乒乓缓冲区1低16位数据
+ * @param  wave_low_data2: 乒乓缓冲区2低16位数据
+ * @retval true: 成功启动, false: 启动失败
+ */
+bool CA_DDS_Start_Precise(DAC80004_InitStruct *module,
+                         const EchemCA_Params_t *ca_params,
+                         const PingPongConfig_t *config,
+                         uint16_t *wave_high_data1, uint16_t *wave_high_data2,
+                         uint16_t *wave_low_data1, uint16_t *wave_low_data2)
+{
+    // 参数验证
+    if (module == NULL || ca_params == NULL || config == NULL ||
+        wave_high_data1 == NULL || wave_high_data2 == NULL || 
+        wave_low_data1 == NULL || wave_low_data2 == NULL) {
+        
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_INVALID_PARAMS);
+        }
+        return false;
+    }
+    
+    // 验证CA参数
+    if (!CA_IS_VOLTAGE_VALID(ca_params->Pre_Step_E) ||
+        !CA_IS_VOLTAGE_VALID(ca_params->Step1_E) ||
+        !CA_IS_VOLTAGE_VALID(ca_params->Step2_E) ||
+        !CA_IS_PRE_STEP_TIME_VALID(ca_params->Pre_Step_Time) ||
+        !CA_IS_STEP_TIME_VALID(ca_params->Step1_Time) ||
+        !CA_IS_STEP_TIME_VALID(ca_params->Step2_Time)) {
+        
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_INVALID_PARAMS);
+        }
+        return false;
+    }
+    
+    // 创建可修改的CA参数副本
+    EchemCA_Params_t ca_params_calc = *ca_params;
+    
+    // 保存DAC模块和缓冲区指针到全局变量
+    g_dac_module = module;
+    g_cv_wave_high_data1 = wave_high_data1;
+    g_cv_wave_high_data2 = wave_high_data2;
+    g_cv_wave_low_data1 = wave_low_data1;
+    g_cv_wave_low_data2 = wave_low_data2;
+    
+    /* 1. 计算采样率和点数 */
+    // 恒电位法为台阶阶跃波形，只有3个恒定电位点，需要根据时间精度来计算采样率
+    // 找到最短的非零阶段时间
+    double min_time = 0;
+    if (ca_params->Pre_Step_Time > 0) {
+        min_time = ca_params->Pre_Step_Time;
+    }
+    if (ca_params->Step1_Time > 0 && (min_time == 0 || ca_params->Step1_Time < min_time)) {
+        min_time = ca_params->Step1_Time;
+    }
+    if (ca_params->Step2_Time > 0 && (min_time == 0 || ca_params->Step2_Time < min_time)) {
+        min_time = ca_params->Step2_Time;
+    }
+    
+    // 如果所有时间都为0，返回错误
+    if (min_time <= 0) {
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_INVALID_PARAMS);
+        }
+        return false;
+    }
+    
+    // 确保最短时间段至少被采样3次，保证时间精度
+    const uint32_t samples_per_segment = 3;
+    double best_sample_rate = samples_per_segment / min_time;
+    
+    // 确保采样率不超过最大采样率限制
+    if (best_sample_rate > config->max_sample_rate) {
+        best_sample_rate = config->max_sample_rate;
+    }
+
+    if (best_sample_rate < 100.0) {  // 最低20Hz，避免过低
+        best_sample_rate = 100.0;
+    }
+    
+    // 根据时间计算各段点数并四舍五入
+    ca_params_calc.pre_step_points = (uint32_t)round(best_sample_rate * ca_params->Pre_Step_Time);
+    ca_params_calc.step1_points = (uint32_t)round(best_sample_rate * ca_params->Step1_Time);
+    ca_params_calc.step2_points = (uint32_t)round(best_sample_rate * ca_params->Step2_Time);
+    
+    // 总点数 = 预阶跃点数 + 阶跃1点数 + 阶跃2点数
+    ca_params_calc.total_points = ca_params_calc.pre_step_points + 
+                                  ca_params_calc.step1_points + 
+                                  ca_params_calc.step2_points;
+
+    
+    // 保存实际采样率
+    ca_params_calc.actual_sample_rate = best_sample_rate;
+    
+    // 保存计算后的CA参数到全局变量
+    g_ca_params = ca_params_calc;
+    
+    /* 2. 初始化乒乓DMA管理结构体 */
+    g_pingpong_dma_stream4.active_buffer = 0;
+    g_pingpong_dma_stream4.total_points = ca_params_calc.total_points;
+    g_pingpong_dma_stream4.points_sent = 0;
+    g_pingpong_dma_stream4.buffer_size = config->buffer_size;
+    g_pingpong_dma_stream4.transfer_complete = false;
+    g_pingpong_dma_stream4.is_running = true;
+    g_pingpong_dma_stream4.need_fill_buffer = false;
+    g_pingpong_dma_stream4.buffer_to_fill = 0;
+
+    g_pingpong_dma_stream5.active_buffer = 0;
+    g_pingpong_dma_stream5.total_points = ca_params_calc.total_points;
+    g_pingpong_dma_stream5.points_sent = 0;
+    g_pingpong_dma_stream5.buffer_size = config->buffer_size;
+    g_pingpong_dma_stream5.transfer_complete = false;
+    g_pingpong_dma_stream5.is_running = true;
+    g_pingpong_dma_stream5.need_fill_buffer = false;
+    g_pingpong_dma_stream5.buffer_to_fill = 0;
+    
+    /* 3. 更新实验结果结构体 */
+    g_echem_result.total_points = ca_params_calc.total_points;
+    g_echem_result.actual_sample_rate = best_sample_rate;
+    g_echem_result.total_duration = ca_params_calc.total_points / best_sample_rate;
+    g_echem_result.method = ECHEM_METHOD_CA;
+    g_echem_result.state = ECHEM_STATE_PREPARING;
+    g_echem_result.success = false;
+    g_echem_result.timestamp = LL_SYSTICK_GetClkSource();
+    
+    /* 4. 填充第一个缓冲区（缓冲区1） */
+    uint32_t first_batch_size = (ca_params_calc.total_points > config->buffer_size) ? 
+                                config->buffer_size : ca_params_calc.total_points;
+    Generate_CA_Data_Partial(module, wave_high_data1, wave_low_data1,
+                             0, first_batch_size, &ca_params_calc);
+    
+    /* 5. 如果数据量大于一个缓冲区，填充第二个缓冲区（缓冲区2） */
+    if (ca_params_calc.total_points > config->buffer_size) {
+        uint32_t second_batch_size = ((ca_params_calc.total_points - config->buffer_size) > config->buffer_size) ? 
+                                     config->buffer_size : (ca_params_calc.total_points - config->buffer_size);
+        Generate_CA_Data_Partial(module, wave_high_data2, wave_low_data2,
+                                 config->buffer_size, second_batch_size, &ca_params_calc);
+    }
+    
+    /* 6. 配置DMA使用乒乓缓冲区模式 */
+    // 等待SPI空闲
+    while(!LL_SPI_IsActiveFlag_TXE(SPI1)) {}
+    while(LL_SPI_IsActiveFlag_BSY(SPI1)) {}
+    
+    // 停止当前DMA传输
+    LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
+    while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+    while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
+    
+    // 清除DMA标志位
+    LL_DMA_ClearFlag_TE5(DMA2);
+    LL_DMA_ClearFlag_TC5(DMA2);
+    LL_DMA_ClearFlag_DME5(DMA2);
+    LL_DMA_ClearFlag_FE5(DMA2);
+    LL_DMA_ClearFlag_HT5(DMA2);
+    
+    LL_DMA_ClearFlag_TE4(DMA2);
+    LL_DMA_ClearFlag_TC4(DMA2);
+    LL_DMA_ClearFlag_DME4(DMA2);
+    LL_DMA_ClearFlag_FE4(DMA2);
+    LL_DMA_ClearFlag_HT4(DMA2);
+    
+    LL_TIM_ClearFlag_UPDATE(TIM1);
+    LL_TIM_ClearFlag_CC4(TIM1);
+    
+    // 配置DMA为正常模式（非循环）
+    LL_DMA_SetMode(DMA2, LL_DMA_STREAM_5, LL_DMA_MODE_NORMAL);
+    LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)wave_high_data1);
+    LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, first_batch_size);
+    
+    LL_DMA_SetMode(DMA2, LL_DMA_STREAM_4, LL_DMA_MODE_NORMAL);
+    LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)wave_low_data1);
+    LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, first_batch_size);
+    
+    // 使能DMA传输完成中断
+    LL_DMA_EnableIT_TC(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_EnableIT_TE(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_EnableIT_TC(DMA2, LL_DMA_STREAM_4);
+    LL_DMA_EnableIT_TE(DMA2, LL_DMA_STREAM_4);
+    NVIC_EnableIRQ(DMA2_Stream5_IRQn);
+    NVIC_EnableIRQ(DMA2_Stream4_IRQn);
+    
+    /* 7. 配置定时器频率 */
+    TIM_FreqConfig_t freq_config;
+    uint32_t timer_clock = 100000000;
+    
+    if (TIM_CalculateFreqDivision_Precise(timer_clock, best_sample_rate, &freq_config) != 0) {
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_TIMER_CONFIG);
+        }
+        return false;
+    }
+    
+    TIM_ApplyFreqConfig_DualDMA(TIM1, &freq_config, 100000000, 100000000/2);
+    SYNC_Cycle_SetPara(&freq_config, 100000000, 100000000/2);
+    
+    /* 8. 启动传输 */
+    g_echem_result.state = ECHEM_STATE_RUNNING;
+    
+    LL_SPI_EnableDMAReq_TX(SPI1);
+    LL_TIM_EnableDMAReq_UPDATE(TIM1);
+    LL_TIM_EnableDMAReq_CC4(TIM1);
+    
+    // 启动DMA流
+    LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
+    LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);
+    
+    // 启动定时器和同步信号
+    LL_TIM_ClearFlag_UPDATE(TIM1);
+    LL_TIM_ClearFlag_CC4(TIM1);
+    
+    LL_TIM_GenerateEvent_UPDATE(TIM3);
+    LL_TIM_GenerateEvent_UPDATE(TIM1);
+    
+    SYNC_Cycle_Start();
+    LL_TIM_EnableCounter(TIM1);
+    
+    g_echem_result.success = true;
+    
+    return true;
+}
+
+/**
+ * @brief  生成CA波形数据到指定缓冲区
+ * @param  module: DAC80004模块结构体指针
+ * @param  wave_high_data: 高16位数据缓冲区
+ * @param  wave_low_data: 低16位数据缓冲区
+ * @param  start_point: 起始点索引
+ * @param  points_to_fill: 要填充的点数
+ * @param  ca_params: CA参数结构体指针
+ * @retval None
+ */
+static void Generate_CA_Data_Partial(DAC80004_InitStruct *module,
+                                    uint16_t *wave_high_data, uint16_t *wave_low_data,
+                                    uint32_t start_point, uint32_t points_to_fill,
+                                    const EchemCA_Params_t *ca_params)
+{
+    uint32_t control_mask = module->TX_Data & ~(0xFFFF << 4);
+    uint32_t encoded_data;
+
+    for (uint32_t i = 0; i < points_to_fill; i++) {
+        uint32_t global_index = start_point + i;
+        double voltage = 0.0;
+
+        // 三段式恒定电位划分
+        if (global_index < ca_params->pre_step_points) {
+            // 第一段：预阶跃阶段
+            voltage = ca_params->Pre_Step_E;
+        }
+        else if (global_index < (ca_params->pre_step_points + ca_params->step1_points)) {
+            // 第二段：阶跃1阶段
+            voltage = ca_params->Step1_E;
+        }
+        else {
+            // 第三段：阶跃2阶段
+            voltage = ca_params->Step2_E;
+        }
+
+        // 使用宏进行电位到DAC值的转换
+        uint16_t dac_value = ECHEM_VOLTAGE_TO_DAC(voltage);
+
+        // 编码并存储到缓冲区
+        encoded_data = control_mask | ((uint32_t)dac_value << 4);
+        wave_high_data[i] = (uint16_t)(encoded_data >> 16);
+        wave_low_data[i] = (uint16_t)(encoded_data & 0xFFFF);
+    }
+}
+
+/**
+ * @brief  填充下一个CA缓冲区的数据（在主循环中调用）
+ * @retval None
+ */
+void CA_Fill_Next_Buffer(void)
+{
+    if (!g_pingpong_dma_stream4.need_fill_buffer || 
+        !g_pingpong_dma_stream4.is_running || 
+        g_pingpong_dma_stream4.transfer_complete) {
+        return;
+    }
+    
+    // 计算下次需要填充的起始点 以Stream4为准
+    uint32_t next_start_point = g_pingpong_dma_stream4.points_sent + g_pingpong_dma_stream4.buffer_size;
+    
+    if (next_start_point >= g_pingpong_dma_stream4.total_points) {
+        g_pingpong_dma_stream4.need_fill_buffer = false;
+        g_pingpong_dma_stream5.need_fill_buffer = false;
+        return;
+    }
+    
+    uint32_t remaining_points = g_pingpong_dma_stream4.total_points - next_start_point;
+    uint32_t points_to_fill = (remaining_points > g_pingpong_dma_stream4.buffer_size) ? 
+                              g_pingpong_dma_stream4.buffer_size : remaining_points;
+    
+    // 根据标志位指示的缓冲区索引选择目标缓冲区
+    if (g_pingpong_dma_stream4.buffer_to_fill == 0) {
+        Generate_CA_Data_Partial(g_dac_module, g_cv_wave_high_data1, g_cv_wave_low_data1,
+                                 next_start_point, points_to_fill, &g_ca_params);
+    } else {
+        Generate_CA_Data_Partial(g_dac_module, g_cv_wave_high_data2, g_cv_wave_low_data2,
+                                 next_start_point, points_to_fill, &g_ca_params);
+    }
+    
+    // 清除填充标志
+    g_pingpong_dma_stream4.need_fill_buffer = false;
+    g_pingpong_dma_stream5.need_fill_buffer = false;
+}
+
+/**
+ * @brief  检查是否需要填充CA缓冲区
+ * @retval true: 需要填充, false: 不需要填充
+ */
+bool CA_NeedFillBuffer(void)
+{
+    return g_pingpong_dma_stream4.need_fill_buffer && 
+           g_pingpong_dma_stream4.is_running && 
+           !g_pingpong_dma_stream4.transfer_complete;
+}
+
+/**
+ * @brief  CA乒乓DMA中断处理函数 - Stream5（高16位）
+ */
+void CA_PingPong_DMA2_Stream5_IRQHandler(void)
+{
+    if (LL_DMA_IsActiveFlag_TC5(DMA2)) {
+        LL_DMA_ClearFlag_TC5(DMA2);
+
+        if (!g_pingpong_dma_stream5.is_running) {
+            return;
+        }
+        
+        // Stream5独立管理自己的传输计数
+        g_pingpong_dma_stream5.points_sent += g_pingpong_dma_stream5.buffer_size;
+        
+        // 检查Stream5是否完成传输
+        if (g_pingpong_dma_stream5.points_sent >= g_pingpong_dma_stream5.total_points) {
+            g_pingpong_dma_stream5.transfer_complete = true;
+            g_pingpong_dma_stream5.is_running = false;
+            
+            // 检查是否两个Stream都完成了
+            if (g_pingpong_dma_stream4.transfer_complete) {
+                g_echem_result.state = ECHEM_STATE_COMPLETED;
+                PingPong_DMA_Stop();
+                
+                if (g_progress_callback != NULL) {
+                    g_progress_callback(100, ECHEM_STATE_COMPLETED);
+                }
+            }
+            return;
+        }
+        
+        // 先保存当前缓冲区索引（用于后续填充）
+        uint8_t completed_buffer = g_pingpong_dma_stream5.active_buffer;
+        // 切换到另一个缓冲区
+        g_pingpong_dma_stream5.active_buffer = 1 - g_pingpong_dma_stream5.active_buffer;
+        
+        // 设置填充需求 - 填充刚刚传输完成的缓冲区
+        uint32_t next_start_point = g_pingpong_dma_stream5.points_sent + g_pingpong_dma_stream5.buffer_size;
+        if (next_start_point < g_pingpong_dma_stream5.total_points) {
+            g_pingpong_dma_stream5.buffer_to_fill = completed_buffer;  // 填充刚完成的缓冲区
+            g_pingpong_dma_stream5.need_fill_buffer = true;
+        }
+        
+        // 重新配置Stream5
+        LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_5);
+        while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_5)) {}
+        
+        uint32_t remaining_points = g_pingpong_dma_stream5.total_points - g_pingpong_dma_stream5.points_sent;
+        uint32_t next_transfer_size = (remaining_points > g_pingpong_dma_stream5.buffer_size) ? 
+                                      g_pingpong_dma_stream5.buffer_size : remaining_points;
+        
+        if (g_pingpong_dma_stream5.active_buffer == 0) {
+            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_cv_wave_high_data1);
+        } else {
+            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_5, (uint32_t)g_cv_wave_high_data2);
+        }
+        
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_5, next_transfer_size);
+        LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_5);
+    }
+    
+    if (LL_DMA_IsActiveFlag_TE5(DMA2)) {
+        LL_DMA_ClearFlag_TE5(DMA2);
+        g_pingpong_dma_stream5.is_running = false;
+        g_pingpong_dma_stream5.need_fill_buffer = false;
+        g_echem_result.state = ECHEM_STATE_ERROR;
+        
+        PingPong_DMA_Stop();
+        
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_DMA_FAILURE);
+        }
+    }
+}
+
+/**
+ * @brief  CA乒乓DMA中断处理函数 - Stream4（低16位）
+ */
+void CA_PingPong_DMA2_Stream4_IRQHandler(void)
+{
+    if (LL_DMA_IsActiveFlag_TC4(DMA2)) {
+        LL_DMA_ClearFlag_TC4(DMA2);
+        
+        if (!g_pingpong_dma_stream4.is_running) {
+            return;
+        }
+        
+        // Stream4独立管理自己的传输计数
+        g_pingpong_dma_stream4.points_sent += g_pingpong_dma_stream4.buffer_size;
+        
+        // Stream4负责进度报告（因为通常是后完成的）
+        if (g_progress_callback != NULL) {
+            uint8_t progress = PingPong_DMA_GetProgress();
+            g_progress_callback(progress, ECHEM_STATE_RUNNING);
+        }
+        
+        // 检查Stream4是否完成传输
+        if (g_pingpong_dma_stream4.points_sent >= g_pingpong_dma_stream4.total_points) {
+            g_pingpong_dma_stream4.transfer_complete = true;
+            g_pingpong_dma_stream4.is_running = false;
+            
+            // 检查是否两个Stream都完成了
+            if (g_pingpong_dma_stream5.transfer_complete) {
+                g_echem_result.state = ECHEM_STATE_COMPLETED;
+                PingPong_DMA_Stop();
+                
+                if (g_progress_callback != NULL) {
+                    g_progress_callback(100, ECHEM_STATE_COMPLETED);
+                }
+            }
+            return;
+        }
+        
+        // 先保存当前缓冲区索引（用于后续填充）
+        uint8_t completed_buffer = g_pingpong_dma_stream4.active_buffer;
+        // 切换到另一个缓冲区
+        g_pingpong_dma_stream4.active_buffer = 1 - g_pingpong_dma_stream4.active_buffer;
+        
+        // 设置填充需求 - 填充刚刚传输完成的缓冲区
+        uint32_t next_start_point = g_pingpong_dma_stream4.points_sent + g_pingpong_dma_stream4.buffer_size;
+        if (next_start_point < g_pingpong_dma_stream4.total_points) {
+            g_pingpong_dma_stream4.buffer_to_fill = completed_buffer;  // 填充刚完成的缓冲区
+            g_pingpong_dma_stream4.need_fill_buffer = true;
+        }
+        
+        // 重新配置Stream4
+        LL_DMA_DisableStream(DMA2, LL_DMA_STREAM_4);
+        while(LL_DMA_IsEnabledStream(DMA2, LL_DMA_STREAM_4)) {}
+        
+        uint32_t remaining_points = g_pingpong_dma_stream4.total_points - g_pingpong_dma_stream4.points_sent;
+        uint32_t next_transfer_size = (remaining_points > g_pingpong_dma_stream4.buffer_size) ? 
+                                      g_pingpong_dma_stream4.buffer_size : remaining_points;
+        
+        if (g_pingpong_dma_stream4.active_buffer == 0) {
+            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)g_cv_wave_low_data1);
+        } else {
+            LL_DMA_SetMemoryAddress(DMA2, LL_DMA_STREAM_4, (uint32_t)g_cv_wave_low_data2);
+        }
+        
+        LL_DMA_SetDataLength(DMA2, LL_DMA_STREAM_4, next_transfer_size);
+        LL_DMA_EnableStream(DMA2, LL_DMA_STREAM_4);
+    }
+    
+    if (LL_DMA_IsActiveFlag_TE4(DMA2)) {
+        LL_DMA_ClearFlag_TE4(DMA2);
+        g_pingpong_dma_stream4.is_running = false;
+        g_pingpong_dma_stream4.need_fill_buffer = false;
+        g_echem_result.state = ECHEM_STATE_ERROR;
+        
+        PingPong_DMA_Stop();
+        
+        if (g_error_callback != NULL) {
+            g_error_callback(ECHEM_STATE_ERROR, ECHEM_ERROR_DMA_FAILURE);
+        }
+    }
+}
 
 
-
-// ==================== 实验结果和回调管理 ====================
+// ==================== 实验结果和回调管理 ===================="
 
 void Echem_stim_Init(DAC80004_InitStruct *module)
 {
@@ -1353,6 +1847,10 @@ void Echem_Reset(void)
     
     // 重置CV参数结构体
     memset(&g_cv_params, 0, sizeof(EchemCV_Params_t));
+    // 重置DPV参数结构体
+    memset(&g_dpv_params, 0, sizeof(EchemDPV_Params_t));
+    // 重置CA参数结构体
+    memset(&g_ca_params, 0, sizeof(EchemCA_Params_t));
     
     memset(&g_echem_result, 0, sizeof(EchemResult_t));
     g_echem_result.state = ECHEM_STATE_IDLE;
@@ -1392,7 +1890,7 @@ void Echem_SetErrorCallback(EchemErrorCallback_t callback)
 
 
 /**
- * @brief  DMA2 Stream5中断处理函数 - 支持CV和DPV乒乓DMA
+ * @brief  DMA2 Stream5中断处理函数 - 支持CV、DPV和CA乒乓DMA
  */
 void DMA2_Stream5_IRQHandler(void)
 {
@@ -1405,6 +1903,9 @@ void DMA2_Stream5_IRQHandler(void)
             case ECHEM_METHOD_DPV:
                 DPV_PingPong_DMA2_Stream5_IRQHandler();
                 break;
+            case ECHEM_METHOD_CA:
+                CA_PingPong_DMA2_Stream5_IRQHandler();
+                break;
             default:
                 // 默认使用CV处理函数
                 CV_PingPong_DMA2_Stream5_IRQHandler();
@@ -1414,7 +1915,7 @@ void DMA2_Stream5_IRQHandler(void)
 }
 
 /**
- * @brief  DMA2 Stream4中断处理函数 
+ * @brief  DMA2 Stream4中断处理函数 - 支持CV、DPV和CA乒乓DMA
  */
 void DMA2_Stream4_IRQHandler(void)
 {
@@ -1426,6 +1927,9 @@ void DMA2_Stream4_IRQHandler(void)
                 break;
             case ECHEM_METHOD_DPV:
                 DPV_PingPong_DMA2_Stream4_IRQHandler();
+                break;
+            case ECHEM_METHOD_CA:
+                CA_PingPong_DMA2_Stream4_IRQHandler();
                 break;
             default:
                 // 默认使用CV处理函数

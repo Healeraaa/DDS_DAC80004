@@ -22,12 +22,35 @@ Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
 E:\MCU_Project\STM32F411Project\DAC8004_Driver\MDK-ARM\Project.uvprojx
-Project File Date:  02/05/2026
+Project File Date:  05/18/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\Keil\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-"Project\Project.axf" - 0 Error(s), 0 Warning(s).
+compiling Echem_stim.c...
+../Core/Inc/stm32f4xx_hal_conf.h(150): warning:  #47-D: incompatible redefinition of macro "VDD_VALUE" 
+  #define  VDD_VALUE		      3300U /*!< Value of VDD in mv */
+../Core/Inc/stm32f4xx_hal_conf.h(153): warning:  #47-D: incompatible redefinition of macro "PREFETCH_ENABLE" 
+  #define  PREFETCH_ENABLE              1U
+../Core/Inc/stm32f4xx_hal_conf.h(154): warning:  #47-D: incompatible redefinition of macro "INSTRUCTION_CACHE_ENABLE" 
+  #define  INSTRUCTION_CACHE_ENABLE     1U
+../Core/Inc/stm32f4xx_hal_conf.h(155): warning:  #47-D: incompatible redefinition of macro "DATA_CACHE_ENABLE" 
+  #define  DATA_CACHE_ENABLE            1U
+..\BSP\Echem_stim.c(228): warning:  #177-D: variable "current_cycle"  was declared but never referenced
+              uint32_t current_cycle = cycle_global_index / cycle_points;      // 当前是第几个循环
+..\BSP\Echem_stim.c(395): warning:  #177-D: variable "calculated_total"  was declared but never referenced
+      uint32_t calculated_total = cv_params_calc.initial_points + 
+..\BSP\Echem_stim.c(795): warning:  #177-D: variable "pulse_points"  was declared but never referenced
+      uint32_t pulse_points = dpv_params->pulse_points;
+..\BSP\Echem_stim.c(1849): warning:  #223-D: function "memset" declared implicitly
+      memset(&g_cv_params, 0, sizeof(EchemCV_Params_t));
+..\BSP\Echem_stim.c(1940): warning:  #1-D: last line of file ends without a newline
+  }
+..\BSP\Echem_stim.c: 9 warnings, 0 errors
+linking...
+Program Size: Code=24188 RO-data=908 RW-data=312 ZI-data=67000  
+FromELF: creating hex file...
+"Project\Project.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -49,7 +72,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

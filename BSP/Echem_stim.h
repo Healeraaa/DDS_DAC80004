@@ -38,8 +38,8 @@ typedef struct {
 typedef enum {
     ECHEM_METHOD_CV = 0,            // 循环伏安法 (Cyclic Voltammetry)
     ECHEM_METHOD_DPV,               // 差分脉冲伏安法 (Differential Pulse Voltammetry)
-    ECHEM_METHOD_SWV,               // 方波伏安法 (Square Wave Voltammetry)
     ECHEM_METHOD_CA,                // 计时电流法 (Chronoamperometry)
+    ECHEM_METHOD_SWV,               // 方波伏安法 (Square Wave Voltammetry)
     ECHEM_METHOD_CC,                // 计时库仑法 (Chronocoulometry)
     ECHEM_METHOD_LSV,               // 线性扫描伏安法 (Linear Sweep Voltammetry)
     ECHEM_METHOD_CUSTOM             // 自定义方法
@@ -98,6 +98,28 @@ typedef struct {
     uint32_t total_points;          // 总点数
     double actual_sample_rate;      // 实际采样率 (Hz)
 } EchemDPV_Params_t;
+
+/**
+ * @brief  电化学CA参数结构体（恒电位法）
+ */
+typedef struct {
+    // 用户输入参数
+    double Pre_Step_E;              // 预阶跃电位 (mV)
+    double Pre_Step_Time;           // 预阶跃延迟时间 (s)
+    double Step1_E;                 // 阶跃1电位 (mV)
+    double Step1_Time;              // 阶跃1时间 (s)
+    double Step2_E;                 // 阶跃2电位 (mV)
+    double Step2_Time;              // 阶跃2时间 (s)
+    double equilibrium_time;        // 平衡时间 (s)
+    bool auto_sensitivity;          // 自动灵敏度调节
+    
+    // 系统自动计算参数（由系统自动计算填充）
+    uint32_t pre_step_points;       // 预阶跃段点数
+    uint32_t step1_points;          // 阶跃1段点数
+    uint32_t step2_points;          // 阶跃2段点数
+    uint32_t total_points;          // 总数据点数
+    double actual_sample_rate;      // 实际采样率 (Hz)
+} EchemCA_Params_t;
 /**
  * @brief  电化学实验结果结构体
  */
@@ -199,9 +221,21 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 #define DPV_IS_PULSE_AMPLITUDE_VALID(amplitude_mv) \
     ((amplitude_mv) >= DPV_PULSE_AMPLITUDE_MIN_MV && (amplitude_mv) <= DPV_PULSE_AMPLITUDE_MAX_MV)
 
+// ==================== CA常量定义 ====================
+#define CA_PRE_STEP_TIME_MIN_S         0.0          // 最小预阶跃时间 0s
+#define CA_PRE_STEP_TIME_MAX_S         1000.0       // 最大预阶跃时间 1000s
+#define CA_STEP_TIME_MIN_S             0.001        // 最小阶跃时间 1ms
+#define CA_STEP_TIME_MAX_S             1000.0       // 最大阶跃时间 1000s
 
+// CA参数验证宏
+#define CA_IS_VOLTAGE_VALID(voltage_mv) \
+    ((voltage_mv) >= ECHEM_VOLTAGE_MIN_MV && (voltage_mv) <= ECHEM_VOLTAGE_MAX_MV)
 
+#define CA_IS_PRE_STEP_TIME_VALID(time_s) \
+    ((time_s) >= CA_PRE_STEP_TIME_MIN_S && (time_s) <= CA_PRE_STEP_TIME_MAX_S)
 
+#define CA_IS_STEP_TIME_VALID(time_s) \
+    ((time_s) >= CA_STEP_TIME_MIN_S && (time_s) <= CA_STEP_TIME_MAX_S)
 
 // ==================== 通用乒乓DMA管理函数 ====================
 
@@ -282,6 +316,48 @@ void DPV_Fill_Next_Buffer(void);
  * @brief  检查是否需要填充DPV缓冲区
  */
 bool DPV_NeedFillBuffer(void);
+
+// ==================== CA专用函数 ====================
+/**
+ * @brief  恒电位法DDS输出 - 乒乓DMA精确版本
+ * @param  module: DAC80004模块结构体指针
+ * @param  ca_params: CA参数结构体指针
+ * @param  config: 乒乓DMA配置结构体指针
+ * @param  wave_high_data1: 乒乓缓冲区1高16位数据
+ * @param  wave_high_data2: 乒乓缓冲区2高16位数据
+ * @param  wave_low_data1: 乒乓缓冲区1低16位数据
+ * @param  wave_low_data2: 乒乓缓冲区2低16位数据
+ * @retval true: 成功启动, false: 启动失败
+ */
+bool CA_DDS_Start_Precise(DAC80004_InitStruct *module,
+                         const EchemCA_Params_t *ca_params,
+                         const PingPongConfig_t *config,
+                         uint16_t *wave_high_data1, uint16_t *wave_high_data2,
+                         uint16_t *wave_low_data1, uint16_t *wave_low_data2);
+
+/**
+ * @brief  填充下一个CA缓冲区的数据（在主循环中调用）
+ * @retval None
+ */
+void CA_Fill_Next_Buffer(void);
+
+/**
+ * @brief  检查是否需要填充CA缓冲区
+ * @retval true: 需要填充, false: 不需要填充
+ */
+bool CA_NeedFillBuffer(void);
+
+/**
+ * @brief  CA乒乓DMA中断处理函数 - Stream5（高16位）
+ * @retval None
+ */
+void CA_PingPong_DMA2_Stream5_IRQHandler(void);
+
+/**
+ * @brief  CA乒乓DMA中断处理函数 - Stream4（低16位）
+ * @retval None
+ */
+void CA_PingPong_DMA2_Stream4_IRQHandler(void);
 
 
 
