@@ -224,7 +224,7 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
 // ==================== CA常量定义 ====================
 #define CA_PRE_STEP_TIME_MIN_S         0.0          // 最小预阶跃时间 0s
 #define CA_PRE_STEP_TIME_MAX_S         1000.0       // 最大预阶跃时间 1000s
-#define CA_STEP_TIME_MIN_S             0.001        // 最小阶跃时间 1ms
+#define CA_STEP_TIME_MIN_S             0.0        // 最小阶跃时间 1ms
 #define CA_STEP_TIME_MAX_S             1000.0       // 最大阶跃时间 1000s
 
 // CA参数验证宏
