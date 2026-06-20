@@ -187,10 +187,10 @@ typedef void (*EchemErrorCallback_t)(EchemState_t error_state, uint32_t error_co
     ((uint16_t)((voltage_mv) * (0xFFFF) / 10000.0))
 
 #define ECHEM_VOLTAGE_TO_DAC(voltage_mv) \
-    ((uint16_t)(32768 + ((voltage_mv) * 32768.0 / 5000.0)))
+    ((uint16_t)((6.550463 * (voltage_mv)) + 32830.996116))
 
 #define ECHEM_DAC_TO_VOLTAGE(dac_value) \
-    (((double)(dac_value) - 32768.0) * 5000.0 / 32768.0)
+    ((0.152661 * (double)(dac_value)) - 5012.008358)
 
 #define ECHEM_IS_VOLTAGE_VALID(voltage_mv) \
     ((voltage_mv) >= ECHEM_VOLTAGE_MIN_MV && (voltage_mv) <= ECHEM_VOLTAGE_MAX_MV)

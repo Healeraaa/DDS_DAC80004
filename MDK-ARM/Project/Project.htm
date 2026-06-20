@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Project\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Project\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Tue May 19 10:03:38 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Tue May 26 20:37:35 2026
 <BR><P>
 <H3>Maximum Stack Usage =        600 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -401,9 +401,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_CalculateFreqDivision_Precise
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ApplyFreqConfig_DualDMA
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_ApplyPWMConfig
-<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Generate_DPV_Data_Partial
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Generate_CV_Data_Partial
-<LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Generate_CA_Data_Partial
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__mathlib_dbl_invalid
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DPV_DDS_Start_Precise
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
@@ -598,7 +596,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[70]"></a>CA_Fill_Next_Buffer</STRONG> (Thumb, 98 bytes, Stack size 32 bytes, echem_stim.o(i.CA_Fill_Next_Buffer))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = CA_Fill_Next_Buffer &rArr; Generate_CA_Data_Partial &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = CA_Fill_Next_Buffer &rArr; Generate_CA_Data_Partial &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Generate_CA_Data_Partial
 </UL>
@@ -1652,11 +1650,10 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LL_USART_Init
 </UL>
 
-<P><STRONG><a name="[62]"></a>Generate_CA_Data_Partial</STRONG> (Thumb, 132 bytes, Stack size 40 bytes, echem_stim.o(i.Generate_CA_Data_Partial))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = Generate_CA_Data_Partial &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[62]"></a>Generate_CA_Data_Partial</STRONG> (Thumb, 116 bytes, Stack size 32 bytes, echem_stim.o(i.Generate_CA_Data_Partial))
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = Generate_CA_Data_Partial &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2uiz
 <LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 </UL>
@@ -1664,7 +1661,7 @@ Local Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CA_DDS_Start_Precise
 </UL>
 
-<P><STRONG><a name="[77]"></a>Generate_CV_Data_Partial</STRONG> (Thumb, 454 bytes, Stack size 88 bytes, echem_stim.o(i.Generate_CV_Data_Partial))
+<P><STRONG><a name="[77]"></a>Generate_CV_Data_Partial</STRONG> (Thumb, 444 bytes, Stack size 88 bytes, echem_stim.o(i.Generate_CV_Data_Partial))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = Generate_CV_Data_Partial &rArr; __aeabi_dsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ui2d
@@ -1678,12 +1675,11 @@ Local Symbols
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CV_DDS_Start_Precise
 </UL>
 
-<P><STRONG><a name="[9c]"></a>Generate_DPV_Data_Partial</STRONG> (Thumb, 290 bytes, Stack size 96 bytes, echem_stim.o(i.Generate_DPV_Data_Partial))
+<P><STRONG><a name="[9c]"></a>Generate_DPV_Data_Partial</STRONG> (Thumb, 286 bytes, Stack size 96 bytes, echem_stim.o(i.Generate_DPV_Data_Partial))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = Generate_DPV_Data_Partial &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ui2d
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2uiz
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
