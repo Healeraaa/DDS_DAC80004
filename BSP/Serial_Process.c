@@ -153,6 +153,54 @@ void Serial_CA_CreateWave(double *data)
         }
     }
 }
+
+void Serial_GPCI_CreateWave(double *data)
+{
+    Serial_DoubleConverter_t converter;
+    converter.double_val = data[6];
+    WE_Channel_Select((WE_Channel_TypeDef)converter.u8_array[0]);
+    IV_Gain_Set((IV_Gain_TypeDef)converter.u8_array[1]);
+    Voltage_Gain_Stage1_Set((Voltage_Gain_Stage1_TypeDef)converter.u8_array[2]);
+    Voltage_Gain_Stage2_Set((Voltage_Gain_Stage2_TypeDef)converter.u8_array[3]);
+    Feedback1_Select((Feedback_Select_TypeDef)converter.u8_array[4]);
+    Feedback2_Select((Feedback_Select_TypeDef)converter.u8_array[5]);
+    Feedback3_Select((Feedback_Select_TypeDef)converter.u8_array[6]);
+    Feedback4_Select((Feedback_Select_TypeDef)converter.u8_array[7]);
+
+    DAC80004_Channel_Config(&DAC80004_Module1, (uint8_t)(data[7])); // 选择DAC通道
+
+    EchemGPCI_Params_t gpci_params = {
+        // GPCI参数
+        .Pre_Excitation_E = data[0],        // 预激发电位 (mV)
+        .Response_E = data[1],              // 反应电位 (mV)
+        .Recovery_E = data[2],              // 恢复电位 (mV)
+        .Rest_Recovery_Total_Time = data[3],// 静息恢复总时间 (s)
+        .Pulse_Duration = data[4],          // 脉冲激发时长 (s)
+        .Cycles = (uint32_t)data[5],        // 循环总次数
+        .auto_sensitivity = true,
+        // 以下字段会由系统自动计算填充，无需手动设置
+        .pre_excitation_points = 0,
+        .pulse_points = 0,
+        .recovery_points = 0,
+        .cycle_points = 0,
+        .total_points = 0,
+        .actual_sample_rate = 0.0
+    };
+    GPCI_DDS_Start_Precise(&DAC80004_Module1, 
+                           &gpci_params, 
+                           &config, 
+                           wave_high_data1,
+                           wave_high_data2,
+                           wave_low_data1, 
+                           wave_low_data2);
+    LED_ON();
+    while (!PingPong_DMA_IsComplete()) 
+    {
+        if (GPCI_NeedFillBuffer()) {
+            GPCI_Fill_Next_Buffer();
+        }
+    }
+}
 /**
  * @brief  串口命令处理函数
  * @param  method: 方法命令字
@@ -169,6 +217,9 @@ void Serial_CommandTask(uint8_t method)
         break;
     case ECHEM_METHOD_CA:
         Serial_CA_CreateWave(g_serial_rx_doubel_data);
+        break;
+    case ECHEM_METHOD_GPCI:
+        Serial_GPCI_CreateWave(g_serial_rx_doubel_data);
         break;
     default:
         break;

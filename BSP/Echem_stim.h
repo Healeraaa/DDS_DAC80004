@@ -39,6 +39,7 @@ typedef enum {
     ECHEM_METHOD_CV = 0,            // 循环伏安法 (Cyclic Voltammetry)
     ECHEM_METHOD_DPV,               // 差分脉冲伏安法 (Differential Pulse Voltammetry)
     ECHEM_METHOD_CA,                // 计时电流法 (Chronoamperometry)
+    ECHEM_METHOD_GPCI,              // 门控脉冲激发与循环积分法 (Gated Pulse Excitation with Cyclic Integration)
     ECHEM_METHOD_SWV,               // 方波伏安法 (Square Wave Voltammetry)
     ECHEM_METHOD_CC,                // 计时库仑法 (Chronocoulometry)
     ECHEM_METHOD_LSV,               // 线性扫描伏安法 (Linear Sweep Voltammetry)
@@ -120,6 +121,29 @@ typedef struct {
     uint32_t total_points;          // 总数据点数
     double actual_sample_rate;      // 实际采样率 (Hz)
 } EchemCA_Params_t;
+
+/**
+ * @brief  电化学GPCI参数结构体（门控脉冲激发与循环积分法）
+ */
+typedef struct {
+    // 用户输入参数
+    double Pre_Excitation_E;        // 预激发电位 (mV)
+    double Response_E;              // 反应电位 (mV)
+    double Recovery_E;              // 恢复电位 (mV)
+    double Rest_Recovery_Total_Time;// 静息恢复总时间 (s)
+    double Pulse_Duration;          // 脉冲激发时长 (s)
+    uint32_t Cycles;                // 循环总次数
+    bool auto_sensitivity;          // 自动灵敏度调节
+    
+    // 系统自动计算参数（由系统自动计算填充）
+    uint32_t pre_excitation_points; // 预激发段点数（每个循环）
+    uint32_t pulse_points;          // 脉冲段点数（每个循环）
+    uint32_t recovery_points;       // 恢复段点数（每个循环）
+    uint32_t cycle_points;          // 单个循环的总点数
+    uint32_t total_points;          // 总数据点数
+    double actual_sample_rate;      // 实际采样率 (Hz)
+} EchemGPCI_Params_t;
+
 /**
  * @brief  电化学实验结果结构体
  */
@@ -358,6 +382,48 @@ void CA_PingPong_DMA2_Stream5_IRQHandler(void);
  * @retval None
  */
 void CA_PingPong_DMA2_Stream4_IRQHandler(void);
+
+// ==================== GPCI专用函数 ====================
+/**
+ * @brief  门控脉冲激发与循环积分法DDS输出 - 乒乓DMA精确版本
+ * @param  module: DAC80004模块结构体指针
+ * @param  gpci_params: GPCI参数结构体指针
+ * @param  config: 乒乓DMA配置结构体指针
+ * @param  wave_high_data1: 乒乓缓冲区1高16位数据
+ * @param  wave_high_data2: 乒乓缓冲区2高16位数据
+ * @param  wave_low_data1: 乒乓缓冲区1低16位数据
+ * @param  wave_low_data2: 乒乓缓冲区2低16位数据
+ * @retval true: 成功启动, false: 启动失败
+ */
+bool GPCI_DDS_Start_Precise(DAC80004_InitStruct *module,
+                           const EchemGPCI_Params_t *gpci_params,
+                           const PingPongConfig_t *config,
+                           uint16_t *wave_high_data1, uint16_t *wave_high_data2,
+                           uint16_t *wave_low_data1, uint16_t *wave_low_data2);
+
+/**
+ * @brief  填充下一个GPCI缓冲区的数据（在主循环中调用）
+ * @retval None
+ */
+void GPCI_Fill_Next_Buffer(void);
+
+/**
+ * @brief  检查是否需要填充GPCI缓冲区
+ * @retval true: 需要填充, false: 不需要填充
+ */
+bool GPCI_NeedFillBuffer(void);
+
+/**
+ * @brief  GPCI乒乓DMA中断处理函数 - Stream5（高16位）
+ * @retval None
+ */
+void GPCI_PingPong_DMA2_Stream5_IRQHandler(void);
+
+/**
+ * @brief  GPCI乒乓DMA中断处理函数 - Stream4（低16位）
+ * @retval None
+ */
+void GPCI_PingPong_DMA2_Stream4_IRQHandler(void);
 
 
 
